@@ -83,7 +83,8 @@
     <div id="container"></div>
     <div id="info"></div>
     <script>
-        let mrbeastData = [];
+        let allMrbeastData = [];
+        let filteredMrbeastData = [];
 
         async function fetchDataAndDrawChart() {
             try {
@@ -93,10 +94,17 @@
                 const cutoffTime = new Date("2024-05-16T02:14:04.227Z").getTime();
                 let filteredData = data.filter(entry => new Date(entry.currentTime).getTime() >= cutoffTime);
 
-                mrbeastData = filteredData.map(entry => [new Date(entry.currentTime).getTime(), entry.count]);
+                allMrbeastData = filteredData.map(entry => [new Date(entry.currentTime).getTime(), entry.count]);
+
+                // Keep only the last 4999 data points for the chart
+                if (allMrbeastData.length > 4999) {
+                    filteredMrbeastData = allMrbeastData.slice(-4999);
+                } else {
+                    filteredMrbeastData = allMrbeastData;
+                }
 
                 updateInfoSection(filteredData); 
-                drawChart(mrbeastData);
+                drawChart(filteredMrbeastData);
             } catch (error) {
                 console.error('Failed to fetch data:', error);
             }
@@ -133,117 +141,110 @@
         }
 
         function drawChart(mrbeastData) {
-    Highcharts.chart('container', {
-        chart: {
-            type: 'line',
-            zoomType: 'x',
-            panning: true,
-            panKey: 'shift',
-            animation: true,
-            backgroundColor: '#1E1E1E',
-            style: {
-                color: '#E0E0E0'
-            },
-            events: {
-                dblclick: function () {
-                    this.zoomOut();
-                }
-            },
-            resetZoomButton: {
-                theme: {
-                    fill: '#232323',
-                    stroke: '#2DD4FF',
-                    r: 5,
+            Highcharts.chart('container', {
+                chart: {
+                    type: 'area',
+                    zoomType: 'x',
+                    panning: true,
+                    panKey: 'shift',
+                    animation: true,
+                    backgroundColor: '#1E1E1E',
                     style: {
-                        color: '#2DD4FF',
-                        fontSize: '12px',
-                        fontWeight: 'bold'
+                        color: '#E0E0E0'
                     },
-                    states: {
-                        hover: {
-                            fill: '#2DD4FF',
+                    events: {
+                        dblclick: function () {
+                            this.zoomOut();
+                        }
+                    },
+                    resetZoomButton: {
+                        theme: {
+                            fill: '#232323',
+                            stroke: '#2DD4FF',
+                            r: 5,
                             style: {
-                                color: '#232323'
+                                color: '#2DD4FF',
+                                fontSize: '12px',
+                                fontWeight: 'bold'
+                            },
+                            states: {
+                                hover: {
+                                    fill: '#2DD4FF',
+                                    style: {
+                                        color: '#232323'
+                                    }
+                                }
                             }
+                        },
+                        position: {
+                            align: 'right',
+                            verticalAlign: 'top',
+                            x: -10,
+                            y: 10
                         }
                     }
                 },
-                position: {
+                title: {
+                    text: 'MrBeast Subscriber Count',
+                    style: {
+                        color: '#FFFFFF'
+                    }
+                },
+                xAxis: {
+                    type: 'datetime',
+                    title: {
+                        text: 'Time',
+                        style: {
+                            color: '#E0E0E0'
+                        }
+                    },
+                    labels: {
+                        style: {
+                            color: '#E0E0E0'
+                        }
+                    },
+                    lineColor: '#333333',
+                    tickColor: '#333333'
+                },
+                yAxis: {
+                    title: {
+                        text: 'Subscribers',
+                        style: {
+                            color: '#E0E0E0'
+                        }
+                    },
+                    labels: {
+                        style: {
+                            color: '#E0E0E0'
+                        }
+                    },
+                    gridLineColor: '#333333'
+                },
+                legend: {
+                    enabled: false,
+                    layout: 'vertical',
                     align: 'right',
-                    verticalAlign: 'top',
-                    x: -10,
-                    y: 10
-                }
-            }
-        },
-        title: {
-            text: 'MrBeast Subscriber Count',
-            style: {
-                color: '#FFFFFF'
-            }
-        },
-        xAxis: {
-            type: 'datetime',
-            title: {
-                text: 'Time',
-                style: {
-                    color: '#E0E0E0'
-                }
-            },
-            labels: {
-                style: {
-                    color: '#E0E0E0'
-                }
-            },
-            lineColor: '#333333',
-            tickColor: '#333333'
-        },
-        yAxis: {
-            title: {
-                text: 'Subscribers',
-                style: {
-                    color: '#E0E0E0'
-                }
-            },
-            labels: {
-                style: {
-                    color: '#E0E0E0'
-                }
-            },
-            gridLineColor: '#333333'
-        },
-        legend: {
-            enabled: false,
-            layout: 'vertical',
-            align: 'right',
-            verticalAlign: 'middle',
-            itemStyle: {
-                color: '#E0E0E0'
-            }
-        },
-        plotOptions: {
-            series: {
-                lineWidth: 3,
-                threshold: null,
-                area: {
-                    fillOpacity: 0.1,
-                    fillColor: 'rgba(45, 212, 256, 0.1)'
-                }
-            }
-        },
-        series: [{
-            name: 'MrBeast',
-            data: mrbeastData,
-            color: '#2DD4FF'
-        }]
-    });
-}
-        function formatTime(milliseconds) {
-            const seconds = Math.floor(milliseconds / 1000);
-            const minutes = Math.floor(seconds / 60);
-            const hours = Math.floor(minutes / 60);
-            const days = Math.floor(hours / 24);
-            return days + " days, " + (hours % 24) + " hours, " + (minutes % 60) + " minutes, " + (seconds % 60) + " seconds";
+                    verticalAlign: 'middle',
+                    itemStyle: {
+                        color: '#E0E0E0'
+                    }
+                },
+                plotOptions: {
+                    series: {
+                        lineWidth: 3,
+                        threshold: null,
+                        area: {
+                            fillOpacity: 0.1,
+                            fillColor: 'rgba(45, 212, 256, 0.1)'
+                        }
+                    }
+                },
+                series: [{
+                    name: 'MrBeast',
+                    data: mrbeastData,
+                    color: '#2DD4FF'
+                }]
+            });
         }
 
         function convertDataToCSV(data) {
@@ -260,29 +261,29 @@
         }
 
         function downloadCSVFile(csvText, fileName) {
-        const blob = new Blob([csvText], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement('a');
-        if (link.download !== undefined) {
-            const url = URL.createObjectURL(blob);
-            link.setAttribute('href', url);
-            link.setAttribute('download', fileName);
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        } else {
-            window.open('data:text/csv;charset=utf-8,' + encodeURIComponent(csvText));
+            const blob = new Blob([csvText], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            if (link.download !== undefined) {
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', fileName);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } else {
+                window.open('data:text/csv;charset=utf-8,' + encodeURIComponent(csvText));
+            }
         }
-    }
 
         document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('exportCsvButton').addEventListener('click', function() {
-            const csvData = convertDataToCSV(mrbeastData);
-            downloadCSVFile(csvData, 'MrBeast_Subscribers.csv');
-             });
-        fetchDataAndDrawChart();
-    });
+            document.getElementById('exportCsvButton').addEventListener('click', function() {
+                const csvData = convertDataToCSV(allMrbeastData);
+                downloadCSVFile(csvData, 'MrBeast_Subscribers.csv');
+            });
+            fetchDataAndDrawChart();
+        });
 
-</script>
+    </script>
 </body>
 </html>
