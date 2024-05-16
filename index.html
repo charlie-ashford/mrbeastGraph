@@ -21,8 +21,8 @@
         #container {
             width: 90%;
             height: 400px;
-            margin: 40px auto;
-            padding: 20px;
+            margin: 20px auto; 
+            padding: 10px;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
             border-radius: 8px;
             background-color: #232323;
@@ -32,7 +32,16 @@
             font-weight: 700;
             color: #FFFFFF;
             margin-top: 20px;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
+            font-size: 30px;  
+        }
+        h2 {
+            text-align: center;
+            font-weight: 400;
+            color: #BDBDBD;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            font-size: 15px;
         }
         #info {
             text-align: center;
@@ -65,14 +74,38 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
         }
         @media (max-width: 600px) {
-            #container, #info {
-                width: 98%;
-                margin: 10px auto;
-            }
-            h1 {
-                font-size: 20px;
-            }
+        #container {
+            width: 95%;
+            height: auto;
+            margin: 10px auto;
+            padding: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            border-radius: 4px;
+            background-color: #232323;
         }
+        #info {
+            width: 95%;
+            margin: 10px auto;
+        }
+        h1 {
+            font-size: 18px;
+        }
+        h2 {
+            font-size: 12px;
+        }
+        #exportCsvButton {
+            font-size: 14px;
+            padding: 8px 16px;
+            position: static;
+            margin: 10px auto;
+            display: block;
+        }
+        .button-container {
+            position: static;
+            text-align: center;
+            margin-top: 10px;
+        }
+    }
     </style>
 </head>
 <body>
@@ -80,6 +113,8 @@
         <button id="exportCsvButton">Export Data to CSV</button>
     </div>
     <h1>MrBeast Subscriber Count</h1>
+    <h2>
+        Note: This graph only includes the previous 5,000 points (2.5 hours) worth of data<br>To see all the data, download the CSV with the button above.</h2>
     <div id="container"></div>
     <div id="info"></div>
     <script>
@@ -96,7 +131,6 @@
 
                 allMrbeastData = filteredData.map(entry => [new Date(entry.currentTime).getTime(), entry.count]);
 
-                // Keep only the last 4999 data points for the chart
                 if (allMrbeastData.length > 4999) {
                     filteredMrbeastData = allMrbeastData.slice(-4999);
                 } else {
@@ -187,7 +221,7 @@
                 title: {
                     text: 'MrBeast Subscriber Count',
                     style: {
-                        color: '#FFFFFF'
+                        color: '#FFFFFF',
                     }
                 },
                 xAxis: {
