@@ -108,7 +108,7 @@
     </div>
     <h1>MrBeast Studio Subscriber Count</h1>
     <h2>
-        Note: This graph only includes the previous 5,000 points (around 2.5 hours) worth of data<br>To see all the data, download the CSV with the button above.<br><br>This graph updates in real-time (when you refresh the page) and gets new data every 2 seconds, using MrBeast real studio sub count.</h2>
+        Note: This graph only includes the previous 5,000 points (around 2.5 hours) worth of data<br>To see all the data, download the CSV with the button above.<br><br>This graph updates in real-time (when you refresh the page) and gets new data every 2 seconds, using MrBeast real studio subscriber count.</h2>
     <div id="container"></div>
     <div id="info"></div>
     <script>
@@ -186,30 +186,31 @@
                         }
                     },
                     resetZoomButton: {
-                        theme: {
-                            fill: '#232323',
-                            stroke: '#2DD4FF',
-                            r: 5,
-                            style: {
-                                color: '#2DD4FF',
-                                fontSize: '12px',
-                                fontWeight: 'bold'
-                            },
-                            states: {
-                                hover: {
-                                    fill: '#2DD4FF',
-                                    style: {
-                                        color: '#232323'
-                                    }
+                    theme: {
+                        fill: '#232323',
+                        stroke: '#2DD4FF',
+                        r: 5,
+                        style: {
+                            color: '#2DD4FF',
+                            fontSize: '12px',
+                            fontWeight: 'bold'
+                        },
+                        states: {
+                            hover: {
+                                fill: '#2DD4FF',
+                                style: {
+                                    color: '#232323'
                                 }
                             }
-                        },
-                        position: {
-                            align: 'right',
-                            verticalAlign: 'top',
-                            x: -10,
-                            y: 10
                         }
+                    },
+                    position: {
+                        align: 'right',
+                        verticalAlign: 'top',
+                        x: -10,
+                        y: 10
+                    },
+                    relativeTo: 'chart'  
                     }
                 },
                 title: {
