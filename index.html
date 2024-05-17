@@ -54,8 +54,13 @@
             right: 70px;
             top: 20px;
             z-index: 1000;
+            transition: opacity 0.3s linear;
         }
-        #exportCsvButton {
+        .button-container.hidden {
+            opacity: 0;
+            pointer-events: none; 
+        }        
+        .button-container button {
             display: block;
             padding: 10px 20px;
             font-size: 16px;
@@ -65,8 +70,10 @@
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s;
+            margin-bottom: 10px; 
+            width: 180px; 
         }
-        #exportCsvButton:hover {
+        .button-container button:hover {
             background-color: #1BC6E8;
         }
         .highcharts-reset-zoom {
@@ -87,33 +94,148 @@
             width: 95%;
             margin: 10px auto;
         }
-        #exportCsvButton {
-            font-size: 14px;
-            padding: 8px 16px;
-            position: static;
-            margin: 10px auto;
-            display: block;
-        }
         .button-container {
             position: static;
             text-align: center;
             margin-top: 10px;
         }
-    }
+        .button-container button {
+            font-size: 14px;
+            padding: 8px 16px;
+            margin: 10px auto;
+            display: block;
+            width: 90%;
+        }
+        .tables-container {
+            display: block;
+            width: 95%;
+            margin: 10px auto;
+        }
+        .table-container {
+            width: 100%;
+            margin-bottom: 20px;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            border-radius: 4px;
+            background-color: #232323;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            color: #E0E0E0;
+            margin: 0 auto;
+            overflow-x: auto;
+            display: block;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #444;
+            white-space: nowrap;
+        }
+        th {
+            background-color: #2DD4FF;
+            color: #1E1E1E;
+        }
+        }
+        .latest-update {
+            font-size: 16px; 
+        }
+        .tables-container {
+            display: none;
+            justify-content: space-around;
+            margin-top: 150px; 
+        }
+        .table-container {
+            width: 40%;
+            padding: 5px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            background-color: #232323;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            color: #E0E0E0;
+            margin: 0 auto;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #444;
+        }
+        th {
+            background-color: #2DD4FF;
+            color: #1E1E1E;
+        }
     </style>
 </head>
 <body>
     <div class="button-container">
         <button id="exportCsvButton">Export Data to CSV</button>
+        <button id="viewDailyGainsButton">View Daily Gains</button>
     </div>
-    <h1>MrBeast Studio Subscriber Count</h1>
-    <h2>
-        Note: This graph only includes the previous 5,000 points (around 2.5 hours) worth of data<br>To see all the data, download the CSV with the button above.<br><br>This graph updates in real-time (when you refresh the page) and gets new data every 2 seconds, using MrBeast real studio subscriber count.</h2>
-    <div id="container"></div>
-    <div id="info"></div>
-    <script>
+    <div id="mainContent">
+        <h1>MrBeast Studio Subscriber Count</h1>
+        <h2>
+            Note: This graph only includes the previous 5,000 points (around 2.5 hours) worth of data<br>To see all the data, download the CSV with the button above.<br><br>This graph updates in real-time (when you refresh the page) and gets new data every 2 seconds, using MrBeast real studio subscriber count.</h2>
+        <div id="container"></div>
+        <div id="info"></div>
+    </div>
+    <div id="tableContent" class="tables-container">
+        <div class="table-container">
+            <h1>Hourly Gains</h1>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div></div>
+                <input type="date" id="datePicker" style="background-color: #232323; color: #E0E0E0; border: 1px solid #444; border-radius: 5px; padding: 5px; margin-bottom: 10px; margin-right: 10px;">
+            </div>
+            <table id="hourlyGainsTable">
+                    <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Time (UTC)</th>
+                        <th>Subscribers</th>
+                        <th>Gains</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <div class="table-container">
+            <h1>Daily Gains</h1>
+            <table id="dailyGainsTable">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Time (UTC)</th>
+                        <th>Subscribers</th>
+                        <th>Gains</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+        <script>
         let allMrbeastData = [];
         let filteredMrbeastData = [];
+
+        let lastScrollTop = 0;
+        const buttonContainer = document.querySelector('.button-container');
+        window.addEventListener('scroll', () => {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+            if (scrollTop === 0) {
+                buttonContainer.classList.remove('hidden');
+            } else if (scrollTop > lastScrollTop) {
+                buttonContainer.classList.add('hidden');
+            }
+            lastScrollTop = scrollTop;
+        });
 
         async function fetchDataAndDrawChart() {
             try {
@@ -131,8 +253,10 @@
                     filteredMrbeastData = allMrbeastData;
                 }
 
-                updateInfoSection(filteredData); 
+                updateInfoSection(filteredData);
                 drawChart(filteredMrbeastData);
+                fillHourlyTable(filteredData);
+                fillDailyTable(filteredData);
             } catch (error) {
                 console.error('Failed to fetch data:', error);
             }
@@ -153,8 +277,8 @@
             const infoDiv = document.getElementById('info');
             infoDiv.innerHTML = `<b>First updated count:</b> <span>${firstCount}</span><br>
                                  <b>First updated time:</b> <span>${firstTime}</span><br><br>
-                                 <b>Latest updated count:</b> <span>${latestCount}</span><br>
-                                 <b>Latest updated time:</b> <span>${latestTime}</span><br><br><br>
+                                 <b class="latest-update">Latest updated count:</b> <span class="latest-update">${latestCount}</span><br>
+                                 <b class="latest-update">Latest updated time:</b> <span class="latest-update">${latestTime}</span><br><br>
                                  <b>Total datapoints:</b> <span>${filteredData.length.toLocaleString()}</span><br>
                                  <b>Total subscribers gained:</b> <span>${totalGained.toLocaleString()}</span><br>
                                  <b>Total time:</b> <span>${formatTime(totalTime)}</span><br><br>
@@ -186,31 +310,31 @@
                         }
                     },
                     resetZoomButton: {
-                    theme: {
-                        fill: '#232323',
-                        stroke: '#2DD4FF',
-                        r: 5,
-                        style: {
-                            color: '#2DD4FF',
-                            fontSize: '12px',
-                            fontWeight: 'bold'
-                        },
-                        states: {
-                            hover: {
-                                fill: '#2DD4FF',
-                                style: {
-                                    color: '#232323'
+                        theme: {
+                            fill: '#232323',
+                            stroke: '#2DD4FF',
+                            r: 5,
+                            style: {
+                                color: '#2DD4FF',
+                                fontSize: '12px',
+                                fontWeight: 'bold'
+                            },
+                            states: {
+                                hover: {
+                                    fill: '#2DD4FF',
+                                    style: {
+                                        color: '#232323'
+                                    }
                                 }
                             }
-                        }
-                    },
-                    position: {
-                        align: 'right',
-                        verticalAlign: 'top',
-                        x: -10,
-                        y: 10
-                    },
-                    relativeTo: 'chart'  
+                        },
+                        position: {
+                            align: 'right',
+                            verticalAlign: 'top',
+                            x: -10,
+                            y: 10
+                        },
+                        relativeTo: 'chart'
                     }
                 },
                 title: {
@@ -276,43 +400,213 @@
             });
         }
 
-        function convertDataToCSV(data) {
-            const csvRows = [];
-            const headers = ['Time', 'Subscribers'];
-            csvRows.push(headers.join(','));
-            data.forEach(entry => {
-                const date = new Date(entry[0]);
-                const formattedDate = date.toISOString();
-                const subscribers = entry[1];
-                csvRows.push([formattedDate, subscribers].join(','));
-            });
-            return csvRows.join('\n');
-        }
-
-        function downloadCSVFile(csvText, fileName) {
-            const blob = new Blob([csvText], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            if (link.download !== undefined) {
-                const url = URL.createObjectURL(blob);
-                link.setAttribute('href', url);
-                link.setAttribute('download', fileName);
-                link.style.visibility = 'hidden';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            } else {
-                window.open('data:text/csv;charset=utf-8,' + encodeURIComponent(csvText));
-            }
-        }
-
         document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('exportCsvButton').addEventListener('click', function() {
-                const csvData = convertDataToCSV(allMrbeastData);
-                downloadCSVFile(csvData, 'MrBeast_Subscribers.csv');
-            });
-            fetchDataAndDrawChart();
+    document.getElementById('exportCsvButton').addEventListener('click', function() {
+        const csvData = convertDataToCSV(allMrbeastData);
+        downloadCSVFile(csvData, 'MrBeast_Subscribers.csv');
+    });
+    fetchDataAndDrawChart();
+
+    document.getElementById('viewDailyGainsButton').addEventListener('click', function() {
+        const mainContent = document.getElementById('mainContent');
+        const tableContent = document.getElementById('tableContent');
+        const button = document.getElementById('viewDailyGainsButton');
+        if (mainContent.style.display === 'none') {
+            mainContent.style.display = 'block';
+            tableContent.style.display = 'none';
+            button.textContent = 'View Daily Gains';
+        } else {
+            mainContent.style.display = 'none';
+            tableContent.style.display = 'flex';
+            button.textContent = 'View Graph';
+        }
+    });
+
+    const datePicker = document.getElementById('datePicker');
+    const today = new Date().toISOString().split('T')[0];
+    datePicker.value = today;
+
+    datePicker.addEventListener('change', function() {
+        const selectedDate = this.value;
+        const filteredData = filterDataByDate(selectedDate);
+        fillHourlyTable(filteredData, selectedDate);
+    });
+
+    const initialFilteredData = filterDataByDate(today);
+    fillHourlyTable(initialFilteredData, today);
+});
+
+async function fetchDataAndDrawChart() {
+    try {
+        let response = await fetch('https://api.communitrics.com/mrbeast');
+        const data = await response.json();
+
+        const cutoffTime = new Date("2024-05-16T02:14:04.227Z").getTime();
+        const filteredData = data.filter(entry => new Date(entry.currentTime).getTime() >= cutoffTime);
+
+        allMrbeastData = filteredData.map(entry => [new Date(entry.currentTime).getTime(), entry.count]);
+
+        if (allMrbeastData.length > 4999) {
+            filteredMrbeastData = allMrbeastData.slice(-4999);
+        } else {
+            filteredMrbeastData = allMrbeastData;
+        }
+
+        updateInfoSection(filteredData);
+        drawChart(filteredMrbeastData);
+        const today = new Date().toISOString().split('T')[0];
+        const initialFilteredData = filterDataByDate(today);
+        fillHourlyTable(initialFilteredData, today);
+        fillDailyTable(filteredData);
+    } catch (error) {
+        console.error('Failed to fetch data:', error);
+    }
+}
+
+function filterDataByDate(date) {
+    return allMrbeastData.filter(entry => {
+        const entryDate = new Date(entry[0]).toISOString().split('T')[0];
+        return entryDate === date;
+    }).map(entry => ({ currentTime: new Date(entry[0]), count: entry[1] }));
+}
+
+function fillHourlyTable(data, selectedDate) {
+    const hourlyTable = document.getElementById('hourlyGainsTable').getElementsByTagName('tbody')[0];
+    hourlyTable.innerHTML = '';
+
+    selectedDate = new Date(selectedDate); 
+    let previousCount = getPreviousHourCount(selectedDate, 0);
+
+    for (let hour = 0; hour < 24; hour++) {
+        const startDate = new Date(selectedDate);
+        startDate.setUTCHours(hour, 0, 0, 0);
+        const endDate = new Date(selectedDate);
+        endDate.setUTCHours(hour, 59, 59, 999);
+
+        const startEntry = findClosestEntry(data, startDate);
+        const endEntry = findClosestEntry(data, endDate);
+
+        const row = document.createElement('tr');
+        const dateCell = document.createElement('td');
+        const timeCell = document.createElement('td');
+        const subscriberCell = document.createElement('td');
+        const gainCell = document.createElement('td');
+
+        const estTime = new Date(startDate);
+        const estFormatter = new Intl.DateTimeFormat('en-US', {
+            timeZone: 'America/New_York',
+            hour: '2-digit',
+            minute: '2-digit',
+            timeZoneName: 'short'
         });
 
-    </script>
+        dateCell.textContent = selectedDate.toISOString().split('T')[0];
+        timeCell.innerHTML = `04:00 UTC (${startDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} local)<br>${estFormatter.format(estTime)}`;
+        subscriberCell.textContent = endEntry ? endEntry.count.toLocaleString() : '-';
+        gainCell.textContent = startEntry && endEntry ? (endEntry.count - startEntry.count).toLocaleString() : '-';
+
+        row.appendChild(dateCell);
+        row.appendChild(timeCell);
+        row.appendChild(subscriberCell);
+        row.appendChild(gainCell);
+
+        hourlyTable.appendChild(row);
+
+        if (endEntry) {
+            previousCount = endEntry.count;
+        }
+    }
+}
+
+function fillDailyTable(data) {
+    const dailyTable = document.getElementById('dailyGainsTable').getElementsByTagName('tbody')[0];
+    dailyTable.innerHTML = '';
+
+    let previousCount = null;
+    let currentDate = new Date(data[0].currentTime);
+
+    while (currentDate <= new Date(data[data.length - 1].currentTime)) {
+        const targetDate = new Date(currentDate);
+        targetDate.setUTCHours(4, 0, 0, 0);
+        const closestEntry = findClosestEntry(data, targetDate);
+
+        const row = document.createElement('tr');
+        const dateCell = document.createElement('td');
+        const timeCell = document.createElement('td');
+        const subscriberCell = document.createElement('td');
+        const gainCell = document.createElement('td');
+
+        const estTime = new Date(targetDate);
+        const estFormatter = new Intl.DateTimeFormat('en-US', {
+            timeZone: 'America/New_York',
+            hour: '2-digit',
+            minute: '2-digit',
+            timeZoneName: 'short'
+        });
+
+        dateCell.textContent = targetDate.toISOString().split('T')[0];
+        timeCell.innerHTML = `04:00 UTC (${targetDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} local)<br>${estFormatter.format(estTime)}`;
+        subscriberCell.textContent = closestEntry ? closestEntry.count.toLocaleString() : '-';
+        gainCell.textContent = previousCount !== null && closestEntry ? (closestEntry.count - previousCount).toLocaleString() : '-';
+
+        row.appendChild(dateCell);
+        row.appendChild(timeCell);
+        row.appendChild(subscriberCell);
+        row.appendChild(gainCell);
+
+        dailyTable.appendChild(row);
+
+        if (closestEntry) {
+            previousCount = closestEntry.count;
+        }
+
+        currentDate.setUTCDate(currentDate.getUTCDate() + 1);
+    }
+}
+
+function getPreviousHourCount(selectedDate, hour) {
+    const previousHour = new Date(selectedDate);
+    previousHour.setUTCHours(hour - 1, 59, 59, 999);
+    const closestEntry = findClosestEntry(allMrbeastData, previousHour);
+    return closestEntry ? closestEntry.count : null;
+}
+
+function findClosestEntry(data, targetDate) {
+    return data.reduce((prev, curr) => {
+        const prevDiff = Math.abs(new Date(prev.currentTime).getTime() - targetDate.getTime());
+        const currDiff = Math.abs(new Date(curr.currentTime).getTime() - targetDate.getTime());
+        return (currDiff < prevDiff ? curr : prev);
+    }, data[0]);
+}
+
+function convertDataToCSV(data) {
+    const csvRows = [];
+    const headers = ['Time', 'Subscribers'];
+    csvRows.push(headers.join(','));
+    data.forEach(entry => {
+        const date = new Date(entry[0]);
+        const formattedDate = date.toISOString();
+        const subscribers = entry[1];
+        csvRows.push([formattedDate, subscribers].join(','));
+    });
+    return csvRows.join('\n');
+}
+
+function downloadCSVFile(csvText, fileName) {
+    const blob = new Blob([csvText], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    if (link.download !== undefined) {
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', fileName);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    } else {
+        window.open('data:text/csv;charset=utf-8,' + encodeURIComponent(csvText));
+    }
+}
+</script>
 </body>
 </html>
