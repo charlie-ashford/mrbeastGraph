@@ -474,17 +474,13 @@ function fillHourlyTable(data, selectedDate) {
     const hourlyTable = document.getElementById('hourlyGainsTable').getElementsByTagName('tbody')[0];
     hourlyTable.innerHTML = '';
 
-    selectedDate = new Date(selectedDate); 
-    let previousCount = getPreviousHourCount(selectedDate, 0);
+    let previousCount = getPreviousDayCount(selectedDate);
+    let previousGain = null;
 
     for (let hour = 0; hour < 24; hour++) {
-        const startDate = new Date(selectedDate);
-        startDate.setUTCHours(hour, 0, 0, 0);
-        const endDate = new Date(selectedDate);
-        endDate.setUTCHours(hour, 59, 59, 999);
-
-        const startEntry = findClosestEntry(data, startDate);
-        const endEntry = findClosestEntry(data, endDate);
+        const targetDate = new Date(selectedDate);
+        targetDate.setUTCHours(hour, 0, 0, 0);
+        const closestEntry = findClosestEntry(data, targetDate);
 
         const row = document.createElement('tr');
         const dateCell = document.createElement('td');
@@ -492,7 +488,7 @@ function fillHourlyTable(data, selectedDate) {
         const subscriberCell = document.createElement('td');
         const gainCell = document.createElement('td');
 
-        const estTime = new Date(startDate);
+        const estTime = new Date(targetDate);
         const estFormatter = new Intl.DateTimeFormat('en-US', {
             timeZone: 'America/New_York',
             hour: '2-digit',
@@ -500,10 +496,10 @@ function fillHourlyTable(data, selectedDate) {
             timeZoneName: 'short'
         });
 
-        dateCell.textContent = selectedDate.toISOString().split('T')[0];
-        timeCell.innerHTML = `04:00 UTC (${startDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} local)<br>${estFormatter.format(estTime)}`;
-        subscriberCell.textContent = endEntry ? endEntry.count.toLocaleString() : '-';
-        gainCell.textContent = startEntry && endEntry ? (endEntry.count - startEntry.count).toLocaleString() : '-';
+        dateCell.textContent = targetDate.toISOString().split('T')[0];
+        timeCell.innerHTML = `${hour.toString().padStart(2, '0')}:00 UTC (${targetDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} local)<br>${estFormatter.format(estTime)}`;
+        subscriberCell.textContent = closestEntry ? closestEntry.count.toLocaleString() : '-';
+        gainCell.textContent = previousGain !== null ? previousGain.toLocaleString() : '-';
 
         row.appendChild(dateCell);
         row.appendChild(timeCell);
@@ -512,10 +508,46 @@ function fillHourlyTable(data, selectedDate) {
 
         hourlyTable.appendChild(row);
 
-        if (endEntry) {
-            previousCount = endEntry.count;
+        if (previousCount !== null && closestEntry) {
+            previousGain = closestEntry.count - previousCount;
+            previousCount = closestEntry.count;
+        } else {
+            previousGain = null;
         }
     }
+}
+
+function findClosestEntry(data, targetDate) {
+    return data.reduce((prev, curr) => {
+        const prevDiff = Math.abs(new Date(prev.currentTime).getTime() - targetDate.getTime());
+        const currDiff = Math.abs(new Date(curr.currentTime).getTime() - targetDate.getTime());
+        return (currDiff < prevDiff ? curr : prev);
+    }, data[0]);
+}
+
+function getPreviousDayCount(selectedDate) {
+    const previousDay = new Date(selectedDate);
+    previousDay.setDate(previousDay.getDate() - 1);
+    const previousDayDateString = previousDay.toISOString().split('T')[0];
+
+    const previousDayData = allMrbeastData.filter(entry => {
+        const entryDate = new Date(entry[0]).toISOString().split('T')[0];
+        return entryDate === previousDayDateString;
+    }).map(entry => ({ currentTime: new Date(entry[0]), count: entry[1] }));
+
+    if (previousDayData.length > 0) {
+        const targetTime = new Date(previousDay);
+        targetTime.setUTCHours(23, 0, 0, 0);
+
+        const closestEntry = previousDayData.reduce((prev, curr) => {
+            const prevDiff = Math.abs(new Date(prev.currentTime).getTime() - targetTime.getTime());
+            const currDiff = Math.abs(new Date(curr.currentTime).getTime() - targetTime.getTime());
+            return (currDiff < prevDiff ? curr : prev);
+        });
+
+        return closestEntry.count;
+    }
+    return null;
 }
 
 function fillDailyTable(data) {
@@ -562,21 +594,6 @@ function fillDailyTable(data) {
 
         currentDate.setUTCDate(currentDate.getUTCDate() + 1);
     }
-}
-
-function getPreviousHourCount(selectedDate, hour) {
-    const previousHour = new Date(selectedDate);
-    previousHour.setUTCHours(hour - 1, 59, 59, 999);
-    const closestEntry = findClosestEntry(allMrbeastData, previousHour);
-    return closestEntry ? closestEntry.count : null;
-}
-
-function findClosestEntry(data, targetDate) {
-    return data.reduce((prev, curr) => {
-        const prevDiff = Math.abs(new Date(prev.currentTime).getTime() - targetDate.getTime());
-        const currDiff = Math.abs(new Date(curr.currentTime).getTime() - targetDate.getTime());
-        return (currDiff < prevDiff ? curr : prev);
-    }, data[0]);
 }
 
 function convertDataToCSV(data) {
