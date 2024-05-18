@@ -20,6 +20,9 @@
             color: #E0E0E0;
             line-height: 1.6;
         }
+        .smaller-text {
+        font-size: calc(100% - 2px); 
+        }
         #container {
             width: 90%;
             height: 400px;
@@ -141,9 +144,6 @@
             color: #1E1E1E;
         }
         }
-        .latest-update {
-            font-size: 16px; 
-        }
         .tables-container {
             display: none;
             justify-content: space-around;
@@ -261,29 +261,36 @@
     }
 }
 
-    function updateInfoSection(filteredData) {
-        const firstCount = filteredData[0].count.toLocaleString();
-        const firstTime = new Date(filteredData[0].currentTime).toLocaleTimeString();
-        const latestCount = filteredData[filteredData.length - 1].count.toLocaleString();
-        const latestTime = new Date(filteredData[filteredData.length - 1].currentTime).toLocaleTimeString();
+function updateInfoSection(filteredData) {
+    const firstCount = filteredData[0].count.toLocaleString();
+    const firstTime = new Date(filteredData[0].currentTime).toLocaleTimeString();
+    const latestCount = filteredData[filteredData.length - 1].count.toLocaleString();
+    const latestTime = new Date(filteredData[filteredData.length - 1].currentTime).toLocaleTimeString();
 
-        const totalGained = filteredData[filteredData.length - 1].count - filteredData[0].count;
-        const totalTime = new Date(filteredData[filteredData.length - 1].currentTime).getTime() - new Date(filteredData[0].currentTime).getTime();
-        const daysElapsed = totalTime / (1000 * 3600 * 24);
+    const totalGained = filteredData[filteredData.length - 1].count - filteredData[0].count;
+    const totalTime = new Date(filteredData[filteredData.length - 1].currentTime).getTime() - new Date(filteredData[0].currentTime).getTime();
+    const daysElapsed = totalTime / (1000 * 3600 * 24);
 
-        const averageGainedPerDay = totalGained / daysElapsed;
+    const averageGainedPerDay = totalGained / daysElapsed;
 
-        const infoDiv = document.getElementById('info');
-        infoDiv.innerHTML = `<b>First updated count:</b> <span>${firstCount}</span><br>
-                            <b>First updated time:</b> <span>${firstTime}</span><br><br>
-                            <b class="latest-update">Latest updated count:</b> <span class="latest-update">${latestCount}</span><br>
-                            <b class="latest-update">Latest updated time:</b> <span class="latest-update">${latestTime}</span><br><br>
-                            <b>Total datapoints:</b> <span>${filteredData.length.toLocaleString()}</span><br>
-                            <b>Total subscribers gained:</b> <span>${totalGained.toLocaleString()}</span><br>
-                            <b>Total time:</b> <span>${formatTime(totalTime)}</span><br><br>
-                            <b>Average subscribers gained per day:</b> <span>${Math.floor(averageGainedPerDay).toLocaleString()}</span>`;
-    }
+    const now = new Date();
+    const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const recentData = filteredData.filter(entry => new Date(entry.currentTime) >= oneDayAgo);
+    const recentGained = recentData.length > 1 ? (recentData[recentData.length - 1].count - recentData[0].count) : 0;
 
+    const infoDiv = document.getElementById('info');
+    infoDiv.innerHTML = `<b>First updated count:</b> <span>${firstCount}</span><br>
+                        <b>First updated time:</b> <span>${firstTime}</span><br><br>
+                        <b class="latest-update">Latest updated count:</b> <span class="latest-update">${latestCount}</span><br>
+                        <b class="latest-update">Latest updated time:</b> <span class="latest-update">${latestTime}</span><br><br>
+                        <b>Total datapoints:</b> <span>${filteredData.length.toLocaleString()}</span><br>
+                        <b>Total subscribers gained:</b> <span>${totalGained.toLocaleString()}</span><br>
+                        <b>Total time:</b> <span>${formatTime(totalTime)}</span><br><br>
+                        <b>Average subscribers gained per day:</b> <span>${Math.floor(averageGainedPerDay).toLocaleString()}</span><br>
+                        <b>Subscribers gained in the past 24 hours:</b> <span>${recentGained.toLocaleString()}</span>`;
+
+    infoDiv.classList.add('smaller-text');
+}
     function formatTime(ms) {
         const days = Math.floor(ms / (1000 * 60 * 60 * 24));
         const hours = Math.floor((ms % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
