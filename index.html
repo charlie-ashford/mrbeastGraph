@@ -610,11 +610,16 @@ function fillDailyTable(data) {
 
     let currentDate = new Date(data[0].currentTime);
     currentDate.setUTCHours(currentDate.getUTCHours() - 4);
-    currentDate.setUTCHours(0, 0, 0, 0);
+    currentDate.setHours(0, 0, 0, 0);
 
-    while (currentDate <= new Date()) {
+    let endDate = new Date();
+    endDate.setUTCHours(endDate.getUTCHours() - 4);
+    endDate.setHours(0, 0, 0, 0);
+    endDate.setUTCDate(endDate.getUTCDate() + 2);
+
+    while (currentDate < endDate) {
         const nextDate = new Date(currentDate);
-        nextDate.setUTCDate(currentDate.getUTCDate() + 1);
+        nextDate.setDate(currentDate.getDate() + 1);
         nextDate.setUTCHours(4, 0, 0, 0);
 
         const utcCurrentDate = new Date(currentDate);
@@ -652,7 +657,7 @@ function fillDailyTable(data) {
         const edtTime = new Date(currentDate.getTime() + ((currentDate.getTimezoneOffset() + 240) * 60000)); 
 
         dateCell.textContent = currentDate.toISOString().split('T')[0];
-        timeCell.innerHTML = `${utcTimeFormatter.format(utcTime)} UTC (${localTimeFormatter.format(localTime)} local)<br>${edtTimeFormatter.format(edtTime)} EDT`;
+        timeCell.innerHTML = `${utcTimeFormatter.format(utcTime)} UTC (${localTimeFormatter.format(localTime)} local)<br> 12:00 AM EDT`;
         subscriberCell.textContent = closestEndEntry ? closestEndEntry.count.toLocaleString() : '-';
 
         let gainValue = '-';
@@ -692,7 +697,6 @@ function fillDailyTable(data) {
         currentDate.setUTCDate(currentDate.getUTCDate() + 1);
     }
 }
-
 function downloadCSVFile(csvText, fileName) {
     const blob = new Blob([csvText], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
