@@ -520,7 +520,7 @@ function fillHourlyTable(data, selectedDate) {
         const subscriberCell = document.createElement('td');
         const gainCell = document.createElement('td');
 
-        const estTime = new Date(nextHourDate);
+        const estTime = new Date(targetDate);
         const estFormatter = new Intl.DateTimeFormat('en-US', {
             timeZone: 'America/New_York',
             hour: '2-digit',
@@ -529,7 +529,7 @@ function fillHourlyTable(data, selectedDate) {
         });
 
         dateCell.textContent = targetDate.toISOString().split('T')[0];
-        timeCell.innerHTML = `${hour.toString().padStart(2, '0')}:00 UTC (${targetDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} local)<br>${estFormatter.format(estTime)}`;
+        timeCell.innerHTML = `${hour.toString().padStart(2, '0')}:00 UTC (${targetDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })} local)<br>${estFormatter.format(estTime)}`;
         subscriberCell.textContent = closestEntry ? closestEntry.count.toLocaleString() : '-';
         
         let gainValue = '-';
@@ -663,7 +663,7 @@ function fillDailyTable(data) {
 
             if (gain !== null) {
                 gainValue = gain.toLocaleString();
-                let color = 'white';
+                let color = 'black';
                 if (previousGain !== null && gain < previousGain) {
                     color = 'red';
                 } else if (gain > 0) {
