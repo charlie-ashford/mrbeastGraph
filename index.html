@@ -262,10 +262,15 @@
 }
 
 function updateInfoSection(filteredData) {
+    const formatDateTime = (dateString) => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+    };
+
     const firstCount = filteredData[0].count.toLocaleString();
-    const firstTime = new Date(filteredData[0].currentTime).toLocaleTimeString();
+    const firstTime = formatDateTime(filteredData[0].currentTime);
     const latestCount = filteredData[filteredData.length - 1].count.toLocaleString();
-    const latestTime = new Date(filteredData[filteredData.length - 1].currentTime).toLocaleTimeString();
+    const latestTime = formatDateTime(filteredData[filteredData.length - 1].currentTime);
 
     const totalGained = filteredData[filteredData.length - 1].count - filteredData[0].count;
     const totalTime = new Date(filteredData[filteredData.length - 1].currentTime).getTime() - new Date(filteredData[0].currentTime).getTime();
@@ -288,7 +293,6 @@ function updateInfoSection(filteredData) {
                         <b>Total time:</b> <span>${formatTime(totalTime)}</span><br><br>
                         <b>Average subscribers gained per day:</b> <span>${Math.floor(averageGainedPerDay).toLocaleString()}</span><br>
                         <b>Subscribers gained in the past 24 hours:</b> <span>${recentGained.toLocaleString()}</span>`;
-
     infoDiv.classList.add('smaller-text');
 }
     function formatTime(ms) {
