@@ -23,6 +23,10 @@
         .smaller-text {
             font-size: calc(100% - 1px); 
         }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
         #container {
             width: 90%;
             height: 400px;
@@ -172,14 +176,44 @@
             background-color: #2DD4FF;
             color: #1E1E1E;
         }
+
+        /* Loading Spinner */
+        #loader {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #121212;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 9999;
+        }
+        .spinner {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #2DD4FF;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1.5s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
+    <div id="loader" style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; background-color: #121212; position: absolute; top: 0; left: 0; width: 100%; z-index: 9999;">
+        <div class="spinner" style="border: 12px solid #f3f3f3; border-top: 12px solid #2DD4FF; border-radius: 50%; width: 80px; height: 80px; animation: spin 1s ease infinite;"></div>
+        <p style="color: #E0E0E0; margin-top: 20px; font-family: 'Inter', sans-serif; font-weight: bold; font-size: 1.5rem;">Loading data, please wait...</p>
+    </div>
     <div class="button-container">
         <button id="exportCsvButton">Export Data to CSV</button>
         <button id="viewDailyGainsButton">View Daily Gains</button>
     </div>
-    <div id="mainContent">
+    <div id="mainContent" style="display: none;">
         <h1>MrBeast Studio Subscriber Count</h1>
         <h2>
             Note: This graph only includes the previous 5,000 points (around 6 hours) worth of data<br>To see all the data, download the CSV with the button above.<br><br>This graph is in US Eastern time, and updates in real-time and gets new data every 5 seconds, using MrBeast real studio subscriber count.</h2>
@@ -212,7 +246,7 @@
                 <thead>
                     <tr>
                         <th>Date</th>
-                        <th>Time (UTC)</th>
+                        <th>Time (US Eastern)</th>
                         <th>Subscribers</th>
                         <th>Gains</th>
                     </tr>
@@ -222,7 +256,7 @@
             </table>
         </div>
     </div>
-        <script>
+    <script>
         let allMrbeastData = [];
         let filteredMrbeastData = [];
 
@@ -240,515 +274,522 @@
         });
 
         async function fetchDataAndDrawChart() {
-    try {
-        let response = await fetch('https://api.communitrics.com/mrbeast');
-        const data = await response.json();
+            try {
+                let response = await fetch('https://api.communitrics.com/mrbeast');
+                const data = await response.json();
 
-        allMrbeastData = data.map(entry => [new Date(entry.currentTime).getTime(), entry.count]);
+                allMrbeastData = data.map(entry => [new Date(entry.currentTime).getTime(), entry.count]);
 
-        if (allMrbeastData.length > 4999) {
-            filteredMrbeastData = allMrbeastData.slice(-4999);
-        } else {
-            filteredMrbeastData = allMrbeastData;
+                if (allMrbeastData.length > 4999) {
+                    filteredMrbeastData = allMrbeastData.slice(-4999);
+                } else {
+                    filteredMrbeastData = allMrbeastData;
+                }
+
+                updateInfoSection(data);
+                drawChart(filteredMrbeastData);
+                fillHourlyTable(data);
+                fillDailyTable(data);
+            } catch (error) {
+                console.error('Failed to fetch data:', error);
+            } finally {
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+            }
         }
 
-        updateInfoSection(data);
-        drawChart(filteredMrbeastData);
-        fillHourlyTable(data);
-        fillDailyTable(data);
-    } catch (error) {
-        console.error('Failed to fetch data:', error);
-    }
-}
+        function updateInfoSection(filteredData) {
+            const formatDateTime = (dateString) => {
+                const date = new Date(dateString);
+                return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+            };
 
-function updateInfoSection(filteredData) {
-    const formatDateTime = (dateString) => {
-        const date = new Date(dateString);
-        return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
-    };
+            const firstCount = filteredData[0].count.toLocaleString();
+            const firstTime = formatDateTime(filteredData[0].currentTime);
+            const latestCount = filteredData[filteredData.length - 1].count.toLocaleString();
+            const latestTime = formatDateTime(filteredData[filteredData.length - 1].currentTime);
 
-    const firstCount = filteredData[0].count.toLocaleString();
-    const firstTime = formatDateTime(filteredData[0].currentTime);
-    const latestCount = filteredData[filteredData.length - 1].count.toLocaleString();
-    const latestTime = formatDateTime(filteredData[filteredData.length - 1].currentTime);
+            const totalGained = filteredData[filteredData.length - 1].count - filteredData[0].count;
+            const totalTime = new Date(filteredData[filteredData.length - 1].currentTime).getTime() - new Date(filteredData[0].currentTime).getTime();
+            const daysElapsed = totalTime / (1000 * 3600 * 24);
 
-    const totalGained = filteredData[filteredData.length - 1].count - filteredData[0].count;
-    const totalTime = new Date(filteredData[filteredData.length - 1].currentTime).getTime() - new Date(filteredData[0].currentTime).getTime();
-    const daysElapsed = totalTime / (1000 * 3600 * 24);
+            const averageGainedPerDay = totalGained / daysElapsed;
 
-    const averageGainedPerDay = totalGained / daysElapsed;
+            const now = new Date();
+            const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+            const recentData = filteredData.filter(entry => new Date(entry.currentTime) >= oneDayAgo);
+            const recentGained = recentData.length > 1 ? (recentData[recentData.length - 1].count - recentData[0].count) : 0;
 
-    const now = new Date();
-    const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-    const recentData = filteredData.filter(entry => new Date(entry.currentTime) >= oneDayAgo);
-    const recentGained = recentData.length > 1 ? (recentData[recentData.length - 1].count - recentData[0].count) : 0;
+            const infoDiv = document.getElementById('info');
+            infoDiv.innerHTML = `<b>First updated count:</b> <span>${firstCount}</span><br>
+                                <b>First updated time:</b> <span>${firstTime}</span><br><br>
+                                <b class="latest-update">Latest updated count:</b> <span class="latest-update">${latestCount}</span><br>
+                                <b class="latest-update">Latest updated time:</b> <span class="latest-update">${latestTime}</span><br><br>
+                                <b>Total datapoints:</b> <span>${filteredData.length.toLocaleString()}</span><br>
+                                <b>Total subscribers gained:</b> <span>${totalGained.toLocaleString()}</span><br>
+                                <b>Total time:</b> <span>${formatTime(totalTime)}</span><br><br>
+                                <b>Average subscribers gained per day:</b> <span>${Math.floor(averageGainedPerDay).toLocaleString()}</span><br>
+                                <b>Subscribers gained in the past 24 hours:</b> <span>${recentGained.toLocaleString()}</span>`;
+            infoDiv.classList.add('smaller-text');
+        }
 
-    const infoDiv = document.getElementById('info');
-    infoDiv.innerHTML = `<b>First updated count:</b> <span>${firstCount}</span><br>
-                        <b>First updated time:</b> <span>${firstTime}</span><br><br>
-                        <b class="latest-update">Latest updated count:</b> <span class="latest-update">${latestCount}</span><br>
-                        <b class="latest-update">Latest updated time:</b> <span class="latest-update">${latestTime}</span><br><br>
-                        <b>Total datapoints:</b> <span>${filteredData.length.toLocaleString()}</span><br>
-                        <b>Total subscribers gained:</b> <span>${totalGained.toLocaleString()}</span><br>
-                        <b>Total time:</b> <span>${formatTime(totalTime)}</span><br><br>
-                        <b>Average subscribers gained per day:</b> <span>${Math.floor(averageGainedPerDay).toLocaleString()}</span><br>
-                        <b>Subscribers gained in the past 24 hours:</b> <span>${recentGained.toLocaleString()}</span>`;
-    infoDiv.classList.add('smaller-text');
-}
-    function formatTime(ms) {
-        const days = Math.floor(ms / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((ms % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
-        return `${days} days, ${hours} hours, ${minutes} minutes`;
-    }
+        function formatTime(ms) {
+            const days = Math.floor(ms / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((ms % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
+            return `${days} days, ${hours} hours, ${minutes} minutes`;
+        }
 
-    function drawChart(mrbeastData) {
-        mrbeastData = mrbeastData.map(point => {
-            return [
-                moment.tz(point[0], "America/New_York").valueOf(),
-                point[1]
-            ];
-        });
+        function drawChart(mrbeastData) {
+            mrbeastData = mrbeastData.map(point => {
+                return [
+                    moment.tz(point[0], "America/New_York").valueOf(),
+                    point[1]
+                ];
+            });
 
-        Highcharts.setOptions({
-            time: {
-                timezone: 'America/New_York'
-            }
-        });
-        Highcharts.chart('container', {
-            chart: {
-                type: 'area',
-                zoomType: 'x',
-                panning: true,
-                panKey: 'shift',
-                animation: true,
-                backgroundColor: '#1E1E1E',
-                style: {
-                    color: '#E0E0E0'
-                },
-                events: {
-                    dblclick: function () {
-                        this.zoomOut();
-                    }
-                },
-                resetZoomButton: {
-                    theme: {
-                        fill: '#232323',
-                        stroke: '#2DD4FF',
-                        r: 5,
-                        style: {
-                            color: '#2DD4FF',
-                            fontSize: '12px',
-                            fontWeight: 'bold'
-                        },
-                        states: {
-                            hover: {
-                                fill: '#2DD4FF',
-                                style: {
-                                    color: '#232323'
-                                }
-                            }
+            Highcharts.setOptions({
+                time: {
+                    timezone: 'America/New_York'
+                }
+            });
+            Highcharts.chart('container', {
+                chart: {
+                    type: 'area',
+                    zoomType: 'x',
+                    panning: true,
+                    panKey: 'shift',
+                    animation: true,
+                    backgroundColor: '#1E1E1E',
+                    style: {
+                        color: '#E0E0E0'
+                    },
+                    events: {
+                        dblclick: function () {
+                            this.zoomOut();
                         }
                     },
-                    position: {
-                        align: 'right',
-                        verticalAlign: 'top',
-                        x: -10,
-                        y: 10
-                    },
-                    relativeTo: 'chart'
-                }
-            },
-            title: {
-                text: 'MrBeast Subscriber Count',
-                style: {
-                    color: '#FFFFFF',
-                }
-            },
-            xAxis: {
-                type: 'datetime',
+                    resetZoomButton: {
+                        theme: {
+                            fill: '#232323',
+                            stroke: '#2DD4FF',
+                            r: 5,
+                            style: {
+                                color: '#2DD4FF',
+                                fontSize: '12px',
+                                fontWeight: 'bold'
+                            },
+                            states: {
+                                hover: {
+                                    fill: '#2DD4FF',
+                                    style: {
+                                        color: '#232323'
+                                    }
+                                }
+                            }
+                        },
+                        position: {
+                            align: 'right',
+                            verticalAlign: 'top',
+                            x: -10,
+                            y: 10
+                        },
+                        relativeTo: 'chart'
+                    }
+                },
                 title: {
-                    text: 'Time',
+                    text: 'MrBeast Subscriber Count',
                     style: {
-                        color: '#E0E0E0'
+                        color: '#FFFFFF',
                     }
                 },
-                labels: {
-                    style: {
-                        color: '#E0E0E0'
+                xAxis: {
+                    type: 'datetime',
+                    title: {
+                        text: 'Time',
+                        style: {
+                            color: '#E0E0E0'
+                        }
                     },
-                    format: '{value:%H:%M:%S}' 
+                    labels: {
+                        style: {
+                            color: '#E0E0E0'
+                        },
+                        format: '{value:%H:%M:%S}' 
+                    },
+                    dateTimeLabelFormats: {
+                        millisecond: '%H:%M:%S.%L',
+                        second: '%H:%M:%S',
+                        minute: '%H:%M',
+                        hour: '%H:%M',
+                        day: '%e. %b',
+                        week: '%e. %b',
+                        month: '%b \'%y',
+                        year: '%Y'
+                    },
+                    tickPixelInterval: 150, 
+                    lineColor: '#333333',
+                    tickColor: '#333333'
                 },
-                dateTimeLabelFormats: {
-                    millisecond: '%H:%M:%S.%L',
-                    second: '%H:%M:%S',
-                    minute: '%H:%M',
-                    hour: '%H:%M',
-                    day: '%e. %b',
-                    week: '%e. %b',
-                    month: '%b \'%y',
-                    year: '%Y'
+                yAxis: {
+                    title: {
+                        text: 'Subscribers',
+                        style: {
+                            color: '#E0E0E0'
+                        }
+                    },
+                    labels: {
+                        style: {
+                            color: '#E0E0E0'
+                        }
+                    },
+                    gridLineColor: '#333333'
                 },
-                tickPixelInterval: 150, 
-                lineColor: '#333333',
-                tickColor: '#333333'
-            },
-            yAxis: {
-                title: {
-                    text: 'Subscribers',
-                    style: {
+                legend: {
+                    enabled: false,
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'middle',
+                    itemStyle: {
                         color: '#E0E0E0'
                     }
                 },
-                labels: {
-                    style: {
-                        color: '#E0E0E0'
+                plotOptions: {
+                    series: {
+                        lineWidth: 3,
+                        threshold: null,
+                        connectNulls: true, 
+                        area: {
+                            fillOpacity: 0.1,
+                            fillColor: 'rgba(45, 212, 256, 0.1)'
+                        }
                     }
                 },
-                gridLineColor: '#333333'
-            },
-            legend: {
-                enabled: false,
-                layout: 'vertical',
-                align: 'right',
-                verticalAlign: 'middle',
-                itemStyle: {
-                    color: '#E0E0E0'
+                series: [{
+                    name: 'MrBeast',
+                    data: mrbeastData,
+                    color: '#2DD4FF'
+                }]
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('exportCsvButton').addEventListener('click', function() {
+                const csvData = convertDataToCSV(allMrbeastData);
+                downloadCSVFile(csvData, 'MrBeast_Subscribers.csv');
+            });
+
+            fetchDataAndDrawChart();
+
+            document.getElementById('viewDailyGainsButton').addEventListener('click', function() {
+                const mainContent = document.getElementById('mainContent');
+                const tableContent = document.getElementById('tableContent');
+                const button = document.getElementById('viewDailyGainsButton');
+                if (mainContent.style.display === 'none') {
+                    mainContent.style.display = 'block';
+                    tableContent.style.display = 'none';
+                    button.textContent = 'View Daily Gains';
+                } else {
+                    mainContent.style.display = 'none';
+                    tableContent.style.display = 'flex';
+                    button.textContent = 'View Graph';
                 }
-            },
-            plotOptions: {
-                series: {
-                    lineWidth: 3,
-                    threshold: null,
-                    connectNulls: true, 
-                    area: {
-                        fillOpacity: 0.1,
-                        fillColor: 'rgba(45, 212, 256, 0.1)'
+            });
+
+            const datePicker = document.getElementById('datePicker');
+            const today = new Date().toISOString().split('T')[0];
+            datePicker.value = today;
+
+            datePicker.addEventListener('change', function() {
+                const selectedDate = this.value;
+                const filteredData = filterDataByDate(selectedDate);
+                fillHourlyTable(filteredData, selectedDate);
+            });
+
+            const initialFilteredData = filterDataByDate(today);
+            fillHourlyTable(initialFilteredData, today);
+        });
+
+        async function fetchDataAndDrawChart() {
+            try {
+                let response = await fetch('https://api.communitrics.com/mrbeast');
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const data = await response.json();
+
+                const cutoffTime = new Date("2024-05-16T02:14:04.227Z").getTime();
+                const filteredData = data.filter(entry => new Date(entry.currentTime).getTime() >= cutoffTime);
+
+                allMrbeastData = filteredData.map(entry => [new Date(entry.currentTime).getTime(), Number(entry.count)]);
+
+                if (allMrbeastData.length > 4999) {
+                    filteredMrbeastData = allMrbeastData.slice(-4999);
+                } else {
+                    filteredMrbeastData = allMrbeastData;
+                }
+
+                updateInfoSection(filteredData);
+                drawChart(filteredMrbeastData);
+                const today = new Date().toISOString().split('T')[0];
+                const initialFilteredData = filterDataByDate(today);
+                fillHourlyTable(initialFilteredData, today);
+                fillDailyTable(filteredData);
+            } catch (error) {
+                console.error('Failed to fetch data:', error);
+            } finally {
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+            }
+        }
+
+        function filterDataByDate(date) {
+            return allMrbeastData.filter(entry => {
+                const entryDate = new Date(entry[0]).toISOString().split('T')[0];
+                return entryDate === date;
+            }).map(entry => ({ currentTime: new Date(entry[0]), count: entry[1] }));
+        }
+
+        function fillHourlyTable(data, selectedDate) {
+            const hourlyTable = document.getElementById('hourlyGainsTable').getElementsByTagName('tbody')[0];
+            hourlyTable.innerHTML = '';
+
+            let { previousCount, previousGain } = getPreviousDayLastCount(selectedDate);
+
+            for (let hour = 0; hour < 24; hour++) {
+                const targetDate = new Date(selectedDate);
+                targetDate.setUTCHours(hour, 0, 0, 0);
+                const nextHourDate = new Date(targetDate);
+                nextHourDate.setUTCHours(hour + 1, 0, 0, 0);
+                const closestEntry = findClosestEntry(data, nextHourDate);
+
+                const row = document.createElement('tr');
+                const dateCell = document.createElement('td');
+                const timeCell = document.createElement('td');
+                const subscriberCell = document.createElement('td');
+                const gainCell = document.createElement('td');
+
+                const estTime = new Date(targetDate);
+                const estFormatter = new Intl.DateTimeFormat('en-US', {
+                    timeZone: 'America/New_York',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    timeZoneName: 'short'
+                });
+
+                dateCell.textContent = targetDate.toISOString().split('T')[0];
+                timeCell.innerHTML = `${hour.toString().padStart(2, '0')}:00 UTC (${targetDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })} local)<br>${estFormatter.format(estTime)}`;
+                subscriberCell.textContent = closestEntry ? closestEntry.count.toLocaleString() : '-';
+                
+                let gainValue = '-';
+                let gain = null;
+
+                if (closestEntry) {
+                    gain = previousCount !== null ? closestEntry.count - previousCount : null;
+
+                    if (hour === 0) {
                     }
+
+                    if (gain !== null) {
+                        gainValue = gain.toLocaleString();
+                        let color = 'white';
+                        if (previousGain !== null && gain < previousGain) {
+                            color = 'red';
+                        } else if (gain > 0) {
+                            color = 'lime';
+                        }
+                        gainCell.innerHTML = gain === 0 ? `<span style="font-weight: bold;">-</span>` : `<span style="color: ${color}; font-weight: bold;">${gainValue}</span>`;
+                        if (gain !== 0 && previousGain !== null) {
+                            gainCell.innerHTML += `<br><span style="font-size: smaller;">(${gain > previousGain ? '+' : ''}${(gain - previousGain).toLocaleString()})</span>`;
+                        }                
+                        previousGain = gain;
+                    } else {
+                        gainCell.textContent = '-';
+                    }
+                } else {
+                    gainCell.textContent = '-';
                 }
-            },
-            series: [{
-                name: 'MrBeast',
-                data: mrbeastData,
-                color: '#2DD4FF'
-            }]
-        });
-    }
 
-    document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('exportCsvButton').addEventListener('click', function() {
-        const csvData = convertDataToCSV(allMrbeastData);
-        downloadCSVFile(csvData, 'MrBeast_Subscribers.csv');
-    });
+                row.appendChild(dateCell);
+                row.appendChild(timeCell);
+                row.appendChild(subscriberCell);
+                row.appendChild(gainCell);
 
-    fetchDataAndDrawChart();
+                hourlyTable.appendChild(row);
 
-    document.getElementById('viewDailyGainsButton').addEventListener('click', function() {
-        const mainContent = document.getElementById('mainContent');
-        const tableContent = document.getElementById('tableContent');
-        const button = document.getElementById('viewDailyGainsButton');
-        if (mainContent.style.display === 'none') {
-            mainContent.style.display = 'block';
-            tableContent.style.display = 'none';
-            button.textContent = 'View Daily Gains';
-        } else {
-            mainContent.style.display = 'none';
-            tableContent.style.display = 'flex';
-            button.textContent = 'View Graph';
-        }
-    });
-
-    const datePicker = document.getElementById('datePicker');
-    const today = new Date().toISOString().split('T')[0];
-    datePicker.value = today;
-
-    datePicker.addEventListener('change', function() {
-        const selectedDate = this.value;
-        const filteredData = filterDataByDate(selectedDate);
-        fillHourlyTable(filteredData, selectedDate);
-    });
-
-    const initialFilteredData = filterDataByDate(today);
-    fillHourlyTable(initialFilteredData, today);
-});
-
-async function fetchDataAndDrawChart() {
-    try {
-        let response = await fetch('https://api.communitrics.com/mrbeast');
-
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-
-        const data = await response.json();
-
-        const cutoffTime = new Date("2024-05-16T02:14:04.227Z").getTime();
-        const filteredData = data.filter(entry => new Date(entry.currentTime).getTime() >= cutoffTime);
-
-        allMrbeastData = filteredData.map(entry => [new Date(entry.currentTime).getTime(), Number(entry.count)]);
-
-        if (allMrbeastData.length > 4999) {
-            filteredMrbeastData = allMrbeastData.slice(-4999);
-        } else {
-            filteredMrbeastData = allMrbeastData;
-        }
-
-        updateInfoSection(filteredData);
-        drawChart(filteredMrbeastData);
-        const today = new Date().toISOString().split('T')[0];
-        const initialFilteredData = filterDataByDate(today);
-        fillHourlyTable(initialFilteredData, today);
-        fillDailyTable(filteredData);
-    } catch (error) {
-        console.error('Failed to fetch data:', error);
-    }
-}
-
-function filterDataByDate(date) {
-    return allMrbeastData.filter(entry => {
-        const entryDate = new Date(entry[0]).toISOString().split('T')[0];
-        return entryDate === date;
-    }).map(entry => ({ currentTime: new Date(entry[0]), count: entry[1] }));
-}
-
-function fillHourlyTable(data, selectedDate) {
-    const hourlyTable = document.getElementById('hourlyGainsTable').getElementsByTagName('tbody')[0];
-    hourlyTable.innerHTML = '';
-
-    let { previousCount, previousGain } = getPreviousDayLastCount(selectedDate);
-
-    for (let hour = 0; hour < 24; hour++) {
-        const targetDate = new Date(selectedDate);
-        targetDate.setUTCHours(hour, 0, 0, 0);
-        const nextHourDate = new Date(targetDate);
-        nextHourDate.setUTCHours(hour + 1, 0, 0, 0);
-        const closestEntry = findClosestEntry(data, nextHourDate);
-
-        const row = document.createElement('tr');
-        const dateCell = document.createElement('td');
-        const timeCell = document.createElement('td');
-        const subscriberCell = document.createElement('td');
-        const gainCell = document.createElement('td');
-
-        const estTime = new Date(targetDate);
-        const estFormatter = new Intl.DateTimeFormat('en-US', {
-            timeZone: 'America/New_York',
-            hour: '2-digit',
-            minute: '2-digit',
-            timeZoneName: 'short'
-        });
-
-        dateCell.textContent = targetDate.toISOString().split('T')[0];
-        timeCell.innerHTML = `${hour.toString().padStart(2, '0')}:00 UTC (${targetDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })} local)<br>${estFormatter.format(estTime)}`;
-        subscriberCell.textContent = closestEntry ? closestEntry.count.toLocaleString() : '-';
-        
-        let gainValue = '-';
-        let gain = null;
-
-        if (closestEntry) {
-            gain = previousCount !== null ? closestEntry.count - previousCount : null;
-
-            if (hour === 0) {
+                if (closestEntry) {
+                    previousCount = closestEntry.count;
+                }
             }
+        }
 
-            if (gain !== null) {
-                gainValue = gain.toLocaleString();
-                let color = 'white';
-                if (previousGain !== null && gain < previousGain) {
-                    color = 'red';
-                } else if (gain > 0) {
-                    color = 'lime';
+        function findClosestEntry(data, targetDate) {
+            return data.reduce((prev, curr) => {
+                const prevDiff = Math.abs(new Date(prev.currentTime).getTime() - targetDate.getTime());
+                const currDiff = Math.abs(new Date(curr.currentTime).getTime() - targetDate.getTime());
+                return (currDiff < prevDiff ? curr : prev);
+            }, data[0]);
+        }
+
+        function getPreviousDayLastCount(selectedDate) {
+            const previousDay = new Date(selectedDate);
+            previousDay.setDate(previousDay.getDate() - 1);
+            const previousDayDateString = previousDay.toISOString().split('T')[0];
+
+            const previousDayData = allMrbeastData.filter(entry => {
+                const entryDate = new Date(entry[0]).toISOString().split('T')[0];
+                return entryDate === previousDayDateString;
+            }).map(entry => ({ currentTime: new Date(entry[0]), count: entry[1] }));
+
+            if (previousDayData.length > 0) {
+                const targetTime = new Date(previousDay);
+                targetTime.setUTCHours(23, 59, 59, 999);
+
+                const closestEntry = previousDayData.reduce((prev, curr) => {
+                    const prevDiff = Math.abs(new Date(prev.currentTime).getTime() - targetTime.getTime());
+                    const currDiff = Math.abs(new Date(curr.currentTime).getTime() - targetTime.getTime());
+                    return (currDiff < prevDiff ? curr : prev);
+                });
+
+                const elevenPMCount = closestEntry.count;
+
+                targetTime.setUTCHours(22, 59, 59, 999);
+                const previousHourEntry = previousDayData.reduce((prev, curr) => {
+                    const prevDiff = Math.abs(new Date(prev.currentTime).getTime() - targetTime.getTime());
+                    const currDiff = Math.abs(new Date(curr.currentTime).getTime() - targetTime.getTime());
+                    return (currDiff < prevDiff ? curr : prev);
+                });
+
+                const tenPMCount = previousHourEntry.count;
+                const elevenPMGain = elevenPMCount - tenPMCount;
+
+                return { previousCount: elevenPMCount, previousGain: elevenPMGain };
+            }
+            return { previousCount: null, previousGain: null };
+        }
+
+        function fillDailyTable(data) {
+            const dailyTable = document.getElementById('dailyGainsTable').getElementsByTagName('tbody')[0];
+            dailyTable.innerHTML = '';
+
+            let previousCount = null;
+            let previousGain = null;
+
+            let currentDate = new Date(data[0].currentTime);
+            currentDate.setUTCHours(currentDate.getUTCHours() - 4);
+            currentDate.setHours(0, 0, 0, 0);
+
+            let endDate = new Date();
+            endDate.setUTCHours(endDate.getUTCHours() - 4);
+            endDate.setHours(0, 0, 0, 0);
+            endDate.setUTCDate(endDate.getUTCDate() + 2);
+
+            while (currentDate < endDate) {
+                const nextDate = new Date(currentDate);
+                nextDate.setDate(currentDate.getDate() + 1);
+                nextDate.setUTCHours(4, 0, 0, 0);
+
+                const utcCurrentDate = new Date(currentDate);
+                utcCurrentDate.setUTCHours(4, 0, 0, 0);
+
+                const closestStartEntry = findClosestEntry(data, utcCurrentDate);
+                const closestEndEntry = findClosestEntry(data, nextDate);
+
+                const row = document.createElement('tr');
+                const dateCell = document.createElement('td');
+                const timeCell = document.createElement('td');
+                const subscriberCell = document.createElement('td');
+                const gainCell = document.createElement('td');
+
+                const localTimeFormatter = new Intl.DateTimeFormat('en-US', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+                });
+
+                const utcTimeFormatter = new Intl.DateTimeFormat('en-US', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    timeZone: 'UTC'
+                });
+
+                const edtTimeFormatter = new Intl.DateTimeFormat('en-US', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    timeZone: 'America/New_York'
+                });
+
+                const localTime = new Date(currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000));
+                const utcTime = new Date(utcCurrentDate);
+                const edtTime = new Date(currentDate.getTime() + ((currentDate.getTimezoneOffset() + 240) * 60000)); 
+
+                dateCell.textContent = currentDate.toISOString().split('T')[0];
+                timeCell.innerHTML = `12:00 AM EDT<br>${utcTimeFormatter.format(utcTime)} UTC (${localTimeFormatter.format(localTime)} local)`;
+                subscriberCell.textContent = closestEndEntry ? closestEndEntry.count.toLocaleString() : '-';
+
+                let gainValue = '-';
+                let gain = null;
+
+                if (previousCount !== null && closestEndEntry) {
+                    gain = closestEndEntry.count - closestStartEntry.count;
+
+                    if (gain !== null) {
+                        gainValue = gain.toLocaleString();
+                        let color = 'white';
+                        if (previousGain !== null && gain < previousGain) {
+                            color = 'red';
+                        } else if (gain > 0) {
+                            color = 'lime';
+                        }
+                        gainCell.innerHTML = gain === 0 ? `<span style="font-weight: bold;">-</span>` : `<span style="color: ${color}; font-weight: bold;">${gainValue}</span>`;
+                        if (gain !== 0 && previousGain !== null) {
+                            gainCell.innerHTML += `<br><span style="font-size: smaller;">(${gain > previousGain ? '+' : ''}${(gain - previousGain).toLocaleString()})</span>`;
+                        }
+                        previousGain = gain;
+                    } else {
+                        gainCell.textContent = '-';
+                    }
+                } else if (previousCount === null && closestEndEntry && closestStartEntry) {
+                    gain = closestEndEntry.count - closestStartEntry.count;
+                    gainValue = gain.toLocaleString();
+                    gainCell.innerHTML = `<span style="color: lime; font-weight: bold;">${gainValue}</span><br><span style="font-size: smaller;">(Partial data)</span>`;
+                    previousGain = gain;
+                } else {
+                    gainCell.textContent = '-';
                 }
-                gainCell.innerHTML = gain === 0 ? `<span style="font-weight: bold;">-</span>` : `<span style="color: ${color}; font-weight: bold;">${gainValue}</span>`;
-                if (gain !== 0 && previousGain !== null) {
-                    gainCell.innerHTML += `<br><span style="font-size: smaller;">(${gain > previousGain ? '+' : ''}${(gain - previousGain).toLocaleString()})</span>`;
-                }                
-                previousGain = gain;
+
+                row.appendChild(dateCell);
+                row.appendChild(timeCell);
+                row.appendChild(subscriberCell);
+                row.appendChild(gainCell);
+
+                dailyTable.appendChild(row);
+
+                if (closestEndEntry) {
+                    previousCount = closestEndEntry.count;
+                }
+
+                currentDate.setUTCDate(currentDate.getUTCDate() + 1);
+            }
+        }
+
+        function downloadCSVFile(csvText, fileName) {
+            const blob = new Blob([csvText], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            if (link.download !== undefined) {
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', fileName);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
             } else {
-                gainCell.textContent = '-';
+                window.open('data:text/csv;charset=utf-8,' + encodeURIComponent(csvText));
             }
-        } else {
-            gainCell.textContent = '-';
         }
-
-        row.appendChild(dateCell);
-        row.appendChild(timeCell);
-        row.appendChild(subscriberCell);
-        row.appendChild(gainCell);
-
-        hourlyTable.appendChild(row);
-
-        if (closestEntry) {
-            previousCount = closestEntry.count;
-        }
-    }
-}
-
-function findClosestEntry(data, targetDate) {
-    return data.reduce((prev, curr) => {
-        const prevDiff = Math.abs(new Date(prev.currentTime).getTime() - targetDate.getTime());
-        const currDiff = Math.abs(new Date(curr.currentTime).getTime() - targetDate.getTime());
-        return (currDiff < prevDiff ? curr : prev);
-    }, data[0]);
-}
-
-function getPreviousDayLastCount(selectedDate) {
-    const previousDay = new Date(selectedDate);
-    previousDay.setDate(previousDay.getDate() - 1);
-    const previousDayDateString = previousDay.toISOString().split('T')[0];
-
-    const previousDayData = allMrbeastData.filter(entry => {
-        const entryDate = new Date(entry[0]).toISOString().split('T')[0];
-        return entryDate === previousDayDateString;
-    }).map(entry => ({ currentTime: new Date(entry[0]), count: entry[1] }));
-
-    if (previousDayData.length > 0) {
-        const targetTime = new Date(previousDay);
-        targetTime.setUTCHours(23, 59, 59, 999);
-
-        const closestEntry = previousDayData.reduce((prev, curr) => {
-            const prevDiff = Math.abs(new Date(prev.currentTime).getTime() - targetTime.getTime());
-            const currDiff = Math.abs(new Date(curr.currentTime).getTime() - targetTime.getTime());
-            return (currDiff < prevDiff ? curr : prev);
-        });
-
-        const elevenPMCount = closestEntry.count;
-
-        targetTime.setUTCHours(22, 59, 59, 999);
-        const previousHourEntry = previousDayData.reduce((prev, curr) => {
-            const prevDiff = Math.abs(new Date(prev.currentTime).getTime() - targetTime.getTime());
-            const currDiff = Math.abs(new Date(curr.currentTime).getTime() - targetTime.getTime());
-            return (currDiff < prevDiff ? curr : prev);
-        });
-
-        const tenPMCount = previousHourEntry.count;
-        const elevenPMGain = elevenPMCount - tenPMCount;
-
-        return { previousCount: elevenPMCount, previousGain: elevenPMGain };
-    }
-    return { previousCount: null, previousGain: null };
-}
-
-function fillDailyTable(data) {
-    const dailyTable = document.getElementById('dailyGainsTable').getElementsByTagName('tbody')[0];
-    dailyTable.innerHTML = '';
-
-    let previousCount = null;
-    let previousGain = null;
-
-    let currentDate = new Date(data[0].currentTime);
-    currentDate.setUTCHours(currentDate.getUTCHours() - 4);
-    currentDate.setHours(0, 0, 0, 0);
-
-    let endDate = new Date();
-    endDate.setUTCHours(endDate.getUTCHours() - 4);
-    endDate.setHours(0, 0, 0, 0);
-    endDate.setUTCDate(endDate.getUTCDate() + 2);
-
-    while (currentDate < endDate) {
-        const nextDate = new Date(currentDate);
-        nextDate.setDate(currentDate.getDate() + 1);
-        nextDate.setUTCHours(4, 0, 0, 0);
-
-        const utcCurrentDate = new Date(currentDate);
-        utcCurrentDate.setUTCHours(4, 0, 0, 0);
-
-        const closestStartEntry = findClosestEntry(data, utcCurrentDate);
-        const closestEndEntry = findClosestEntry(data, nextDate);
-
-        const row = document.createElement('tr');
-        const dateCell = document.createElement('td');
-        const timeCell = document.createElement('td');
-        const subscriberCell = document.createElement('td');
-        const gainCell = document.createElement('td');
-
-        const localTimeFormatter = new Intl.DateTimeFormat('en-US', {
-            hour: '2-digit',
-            minute: '2-digit',
-            timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-        });
-
-        const utcTimeFormatter = new Intl.DateTimeFormat('en-US', {
-            hour: '2-digit',
-            minute: '2-digit',
-            timeZone: 'UTC'
-        });
-
-        const edtTimeFormatter = new Intl.DateTimeFormat('en-US', {
-            hour: '2-digit',
-            minute: '2-digit',
-            timeZone: 'America/New_York'
-        });
-
-        const localTime = new Date(currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000));
-        const utcTime = new Date(utcCurrentDate);
-        const edtTime = new Date(currentDate.getTime() + ((currentDate.getTimezoneOffset() + 240) * 60000)); 
-
-        dateCell.textContent = currentDate.toISOString().split('T')[0];
-        timeCell.innerHTML = `${utcTimeFormatter.format(utcTime)} UTC (${localTimeFormatter.format(localTime)} local)<br> 12:00 AM EDT`;
-        subscriberCell.textContent = closestEndEntry ? closestEndEntry.count.toLocaleString() : '-';
-
-        let gainValue = '-';
-        let gain = null;
-
-        if (previousCount !== null && closestEndEntry) {
-            gain = closestEndEntry.count - closestStartEntry.count;
-
-            if (gain !== null) {
-                gainValue = gain.toLocaleString();
-                let color = 'white';
-                if (previousGain !== null && gain < previousGain) {
-                    color = 'red';
-                } else if (gain > 0) {
-                    color = 'lime';
-                }
-                gainCell.innerHTML = gain === 0 ? `<span style="font-weight: bold;">-</span>` : `<span style="color: ${color}; font-weight: bold;">${gainValue}</span>`;
-                if (gain !== 0 && previousGain !== null) {
-                    gainCell.innerHTML += `<br><span style="font-size: smaller;">(${gain > previousGain ? '+' : ''}${(gain - previousGain).toLocaleString()})</span>`;
-                }
-                previousGain = gain;
-            } else {
-                gainCell.textContent = '-';
-            }
-        } else if (previousCount === null && closestEndEntry && closestStartEntry) {
-            gain = closestEndEntry.count - closestStartEntry.count;
-            gainValue = gain.toLocaleString();
-            gainCell.innerHTML = `<span style="color: lime; font-weight: bold;">${gainValue}</span><br><span style="font-size: smaller;">(Partial data)</span>`;
-            previousGain = gain;
-        } else {
-            gainCell.textContent = '-';
-        }
-
-        row.appendChild(dateCell);
-        row.appendChild(timeCell);
-        row.appendChild(subscriberCell);
-        row.appendChild(gainCell);
-
-        dailyTable.appendChild(row);
-
-        if (closestEndEntry) {
-            previousCount = closestEndEntry.count;
-        }
-
-        currentDate.setUTCDate(currentDate.getUTCDate() + 1);
-    }
-}
-
-function downloadCSVFile(csvText, fileName) {
-    const blob = new Blob([csvText], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    if (link.download !== undefined) {
-        const url = URL.createObjectURL(blob);
-        link.setAttribute('href', url);
-        link.setAttribute('download', fileName);
-        link.style.visibility = 'hidden';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    } else {
-        window.open('data:text/csv;charset=utf-8,' + encodeURIComponent(csvText));
-    }
-}
-</script>
+    </script>
 </body>
 </html>
