@@ -511,8 +511,7 @@ function fillHourlyTable(data, selectedDate) {
     const hourlyTable = document.getElementById('hourlyGainsTable').getElementsByTagName('tbody')[0];
     hourlyTable.innerHTML = '';
 
-    let previousCount = getPreviousDayLastCount(selectedDate);
-    let previousGain = null;
+    let { previousCount, previousGain } = getPreviousDayLastCount(selectedDate);
 
     for (let hour = 0; hour < 24; hour++) {
         const targetDate = new Date(selectedDate);
@@ -545,6 +544,9 @@ function fillHourlyTable(data, selectedDate) {
         if (closestEntry) {
             gain = previousCount !== null ? closestEntry.count - previousCount : null;
 
+            if (hour === 0) {
+            }
+
             if (gain !== null) {
                 gainValue = gain.toLocaleString();
                 let color = 'white';
@@ -554,6 +556,9 @@ function fillHourlyTable(data, selectedDate) {
                     color = 'lime';
                 }
                 gainCell.innerHTML = gain === 0 ? `<span style="font-weight: bold;">-</span>` : `<span style="color: ${color}; font-weight: bold;">${gainValue}</span>`;
+                if (gain !== 0 && previousGain !== null) {
+                    gainCell.innerHTML += `<br><span style="font-size: smaller;">(${gain > previousGain ? '+' : ''}${(gain - previousGain).toLocaleString()})</span>`;
+                }                
                 previousGain = gain;
             } else {
                 gainCell.textContent = '-';
@@ -603,9 +608,21 @@ function getPreviousDayLastCount(selectedDate) {
             return (currDiff < prevDiff ? curr : prev);
         });
 
-        return closestEntry.count;
+        const elevenPMCount = closestEntry.count;
+
+        targetTime.setUTCHours(22, 59, 59, 999);
+        const previousHourEntry = previousDayData.reduce((prev, curr) => {
+            const prevDiff = Math.abs(new Date(prev.currentTime).getTime() - targetTime.getTime());
+            const currDiff = Math.abs(new Date(curr.currentTime).getTime() - targetTime.getTime());
+            return (currDiff < prevDiff ? curr : prev);
+        });
+
+        const tenPMCount = previousHourEntry.count;
+        const elevenPMGain = elevenPMCount - tenPMCount;
+
+        return { previousCount: elevenPMCount, previousGain: elevenPMGain };
     }
-    return null;
+    return { previousCount: null, previousGain: null };
 }
 
 function fillDailyTable(data) {
@@ -682,10 +699,18 @@ function fillDailyTable(data) {
                     color = 'lime';
                 }
                 gainCell.innerHTML = gain === 0 ? `<span style="font-weight: bold;">-</span>` : `<span style="color: ${color}; font-weight: bold;">${gainValue}</span>`;
+                if (gain !== 0 && previousGain !== null) {
+                    gainCell.innerHTML += `<br><span style="font-size: smaller;">(${gain > previousGain ? '+' : ''}${(gain - previousGain).toLocaleString()})</span>`;
+                }
                 previousGain = gain;
             } else {
                 gainCell.textContent = '-';
             }
+        } else if (previousCount === null && closestEndEntry && closestStartEntry) {
+            gain = closestEndEntry.count - closestStartEntry.count;
+            gainValue = gain.toLocaleString();
+            gainCell.innerHTML = `<span style="color: lime; font-weight: bold;">${gainValue}</span><br><span style="font-size: smaller;">(Partial data)</span>`;
+            previousGain = gain;
         } else {
             gainCell.textContent = '-';
         }
@@ -704,6 +729,7 @@ function fillDailyTable(data) {
         currentDate.setUTCDate(currentDate.getUTCDate() + 1);
     }
 }
+
 function downloadCSVFile(csvText, fileName) {
     const blob = new Blob([csvText], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
