@@ -535,17 +535,15 @@
 
                 const data = await response.json();
 
-                const cutoffTime = new Date("2024-05-16T02:14:04.227Z").getTime();
-                const filteredData = data.filter(entry => new Date(entry.currentTime).getTime() >= cutoffTime);
+                const allMrbeastData = data.map(entry => [new Date(entry.currentTime).getTime(), Number(entry.count)]);
 
-                allMrbeastData = filteredData.map(entry => [new Date(entry.currentTime).getTime(), Number(entry.count)]);
-
+                let filteredMrbeastData;
                 if (allMrbeastData.length > 4999) {
                     filteredMrbeastData = allMrbeastData.slice(-4999);
                 } else {
                     filteredMrbeastData = allMrbeastData;
                 }
-
+                
                 updateInfoSection(filteredData);
                 drawChart(filteredMrbeastData);
                 const today = new Date().toISOString().split('T')[0];
