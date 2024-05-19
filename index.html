@@ -794,7 +794,7 @@ function filterDataByDate(date) {
         } else if (previousCount === null && closestEndEntry && closestStartEntry) {
             gain = closestEndEntry.count - closestStartEntry.count;
             gainValue = gain.toLocaleString();
-            gainCell.innerHTML = `<span style="color: lime; font-weight: bold;">${gainValue}</span><br><span style="font-size: calc(0.9em - 15%);"> (Data startted May 15th <br>5pm UTC)</span>`;
+            gainCell.innerHTML = `<span style="color: lime; font-weight: bold;">${gainValue}</span><br><span style="font-size: calc(0.9em - 15%);"> (Data started May <br>15th 5pm UTC)</span>`;
             previousGain = gain;
         } else {
             gainCell.textContent = '-';
