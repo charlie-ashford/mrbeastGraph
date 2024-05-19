@@ -557,7 +557,7 @@
         const hourlyTable = document.getElementById('hourlyGainsTable').getElementsByTagName('tbody')[0];
         hourlyTable.innerHTML = '';
 
-        let { previousCount, previousGain } = getPreviousDayLastCount(selectedDate);
+        let { previousCount, previousGain, previousGainChange } = getPreviousDayLastCount(selectedDate);
         let lastHourCount = previousCount; 
 
         let subscriberBuffer = [];
@@ -598,7 +598,7 @@
                 if (previousGain !== null) {
                     let color = previousGain > 0 ? 'lime' : 'red';
                     gainCell.innerHTML = `<span style="color: ${color}; font-weight: bold;">${previousGain.toLocaleString()}</span>`;
-                    let gainChange = previousGain;
+                    let gainChange = previousGainChange;
                     gainCell.innerHTML += `<br><span style="font-size: smaller;">(${gainChange > 0 ? '+' : ''}${gainChange.toLocaleString()})</span>`;
                 } else {
                     gainCell.innerHTML = '-';
@@ -679,12 +679,23 @@
                 return (currDiff < prevDiff ? curr : prev);
             });
 
+            
+            targetTime.setUTCHours(21, 59, 59, 999);
+            const ninePMEntry = previousDayData.reduce((prev, curr) => {
+                const prevDiff = Math.abs(new Date(prev.currentTime).getTime() - targetTime.getTime());
+                const currDiff = Math.abs(new Date(curr.currentTime).getTime() - targetTime.getTime());
+                return (currDiff < prevDiff ? curr : prev);
+            });
+            
             const tenPMCount = previousHourEntry.count;
+            const ninePMCount = ninePMEntry.count;
+            const tenPMGain = tenPMCount - ninePMCount;
             const elevenPMGain = elevenPMCount - tenPMCount;
+            const elevenPMGainChange = elevenPMGain - tenPMGain
 
-            return { previousCount: elevenPMCount, previousGain: elevenPMGain };
+            return { previousCount: elevenPMCount, previousGain: elevenPMGain, previousGainChange: elevenPMGainChange };
         }
-        return { previousCount: null, previousGain: null };
+        return { previousCount: null, previousGain: null, previousGainChange: null };
     }
 
     function fillDailyTable(data) {
