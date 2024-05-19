@@ -776,6 +776,19 @@
             }
         }
 
+        function convertDataToCSV(data) {
+            const csvRows = [];
+            const headers = ['Time', 'Subscribers'];
+            csvRows.push(headers.join(','));
+            data.forEach(entry => {
+                const date = new Date(entry[0]);
+                const formattedDate = date.toISOString();
+                const subscribers = entry[1];
+                csvRows.push([formattedDate, subscribers].join(','));
+            });
+            return csvRows.join('\n');
+        }
+
         function downloadCSVFile(csvText, fileName) {
             const blob = new Blob([csvText], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
@@ -791,6 +804,6 @@
                 window.open('data:text/csv;charset=utf-8,' + encodeURIComponent(csvText));
             }
         }
-    </script>
+</script>
 </body>
 </html>
