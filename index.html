@@ -21,7 +21,7 @@
             line-height: 1.6;
         }
         .smaller-text {
-            font-size: calc(100% - 1px); 
+            font-size: calc(100% - 2px); 
         }
         @keyframes spin {
             0% { transform: rotate(0deg); }
@@ -319,7 +319,12 @@
             const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
             const recentData = filteredData.filter(entry => new Date(entry.currentTime) >= oneDayAgo);
             const recentGained = recentData.length > 1 ? (recentData[recentData.length - 1].count - recentData[0].count) : 0;
-
+            let subs24HoursAgo;
+            if (recentData.length > 0) {
+                subs24HoursAgo = recentData[0].count;
+            } else {
+                subs24HoursAgo = filteredData[filteredData.length - 1].count - recentGained;
+            }
             const infoDiv = document.getElementById('info');
             infoDiv.innerHTML = `<b>First updated count:</b> <span>${firstCount}</span><br>
                                 <b>First updated time:</b> <span>${firstTime}</span><br><br>
@@ -328,8 +333,10 @@
                                 <b>Total datapoints:</b> <span>${filteredData.length.toLocaleString()}</span><br>
                                 <b>Total subscribers gained:</b> <span>${totalGained.toLocaleString()}</span><br>
                                 <b>Total time:</b> <span>${formatTime(totalTime)}</span><br><br>
-                                <b>Average subscribers gained per day:</b> <span>${Math.floor(averageGainedPerDay).toLocaleString()}</span><br>
-                                <b>Subscribers gained in the past 24 hours:</b> <span>${recentGained.toLocaleString()}</span>`;
+                                <b>Subscribers 24 hours ago:</b> <span>${subs24HoursAgo.toLocaleString()}</span><br>
+                                <b>Subscribers gained in the past 24 hours:</b> <span>${recentGained.toLocaleString()}</span><br>
+                                <b>Average subscribers gained per day:</b> <span>${Math.floor(averageGainedPerDay).toLocaleString()}</span>`;
+
             infoDiv.classList.add('smaller-text');
         }
 
