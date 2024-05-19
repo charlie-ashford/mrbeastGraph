@@ -528,28 +528,21 @@
         async function fetchDataAndDrawChart() {
             try {
                 let response = await fetch('https://api.communitrics.com/mrbeast');
-
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
-
                 const data = await response.json();
 
-                const allMrbeastData = data.map(entry => [new Date(entry.currentTime).getTime(), Number(entry.count)]);
+                allMrbeastData = data.map(entry => [new Date(entry.currentTime).getTime(), Number(entry.count)]);
 
-                let filteredMrbeastData;
-                if (allMrbeastData.length > 4999) {
-                    filteredMrbeastData = allMrbeastData.slice(-4999);
-                } else {
-                    filteredMrbeastData = allMrbeastData;
-                }
-                
-                updateInfoSection(filteredData);
+                filteredMrbeastData = allMrbeastData.length > 4999 ? allMrbeastData.slice(-4999) : allMrbeastData;
+
+                updateInfoSection(data);
                 drawChart(filteredMrbeastData);
                 const today = new Date().toISOString().split('T')[0];
                 const initialFilteredData = filterDataByDate(today);
                 fillHourlyTable(initialFilteredData, today);
-                fillDailyTable(filteredData);
+                fillDailyTable(data);
             } catch (error) {
                 console.error('Failed to fetch data:', error);
             } finally {
@@ -558,7 +551,7 @@
             }
         }
 
-        function filterDataByDate(date) {
+function filterDataByDate(date) {
             return allMrbeastData.filter(entry => {
                 const entryDate = new Date(entry[0]).toISOString().split('T')[0];
                 return entryDate === date;
