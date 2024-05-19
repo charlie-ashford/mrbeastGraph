@@ -778,7 +778,7 @@
 
         function convertDataToCSV(data) {
             const csvRows = [];
-            const headers = ['Time', 'Subscribers'];
+            const headers = ['Time (UTC)', 'Subscriber Count'];
             csvRows.push(headers.join(','));
             data.forEach(entry => {
                 const date = new Date(entry[0]);
