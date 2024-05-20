@@ -773,9 +773,7 @@
             const utcTime = new Date(utcCurrentDate);
             const edtTime = new Date(currentDate.getTime() + ((currentDate.getTimezoneOffset() + 240) * 60000));
 
-            let dayBefore = new Date(currentDate);
-            dayBefore.setDate(currentDate.getDate() - 1);
-            dateCell.innerHTML = dayBefore.toLocaleDateString('en-US', { weekday: 'long' }) + '<br>' + currentDate.toISOString().split('T')[0];
+            dateCell.innerHTML = currentDate.toLocaleDateString('en-US', { weekday: 'short', timeZone: 'America/New_York' }) + '<br>' + currentDate.toISOString().split('T')[0];
             timeCell.innerHTML = `12:00 AM EDT<br>${utcTimeFormatter.format(utcTime)} UTC (${localTimeFormatter.format(localTime)} local)`;
             subscriberCell.textContent = closestEndEntry ? closestEndEntry.count.toLocaleString() : '-';
 
