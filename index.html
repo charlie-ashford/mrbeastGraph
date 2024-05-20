@@ -617,7 +617,7 @@
                     hour: '2-digit',
                     minute: '2-digit'
                 });
-                gainCell.innerHTML += `<br><span style="font-size: smaller;">Data as of ${localFormatter.format(localTime)}</span>`;
+                gainCell.innerHTML += `<br><span style="font-size: smaller;">Data as of ${localFormatter.format(localTime)}<br>local time</span>`;
             }
 
             if (closestEntry) {
@@ -824,7 +824,7 @@
 
         if (mostRecentRow) {
             const gainCell = mostRecentRow.getElementsByTagName('td')[3];
-            gainCell.innerHTML += `<br><span style="font-size: smaller;">Data as of ${localTimeFormatter.format(now)}</span>`;
+            gainCell.innerHTML += `<br><span style="font-size: smaller;">Data as of ${localTimeFormatter.format(now)}<br>local time</span>`;
         }
     }
     function convertDataToCSV(data) {
