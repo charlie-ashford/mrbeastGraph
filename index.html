@@ -639,7 +639,7 @@
                     } else if (gain > 0) {
                         color = 'lime';
                     }
-console.log(gain, previousGain, hour > 0 && previousGain !== null && gain < previousGain)
+console.log(gain, previousGain, hour > 0 && previousGain !== null && gain < previousGain, hour > 0)
                     gainBuffer.push(gain === 0 ? `<span style="font-weight: bold;">-</span>` : `<span style="color: ${color}; font-weight: bold;">${gainValue}</span>`);
                     if (gain !== 0 && previousGain !== null) {
                         gainBuffer[gainBuffer.length - 1] += `<br><span style="font-size: smaller;">(${gain > previousGain ? '+' : ''}${(gain - previousGain).toLocaleString()})</span>`;
