@@ -634,7 +634,7 @@
                 if (gain !== null) {
                     gainValue = gain.toLocaleString();
                     let color = 'white';
-                    if (hour > 0 && previousGain !== null && gain < previousGain) {
+                    if (gain < 0) {
                         color = 'red';
                     } else if (gain > 0) {
                         color = 'lime';
