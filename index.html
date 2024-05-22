@@ -52,7 +52,7 @@
         color: #ffffff;
         margin-top: 20px;
         margin-bottom: 10px;
-        font-size: 28px;
+        font-size: 24px;
       }
       h2 {
         text-align: center;
@@ -60,7 +60,7 @@
         color: #bdbdbd;
         margin-top: 10px;
         margin-bottom: 10px;
-        font-size: 14px;
+        font-size: 12px;
       }
       #info {
         text-align: center;
@@ -278,9 +278,11 @@
       <h2>
         Note: This graph only includes the previous 4,000 points (around 3
         hours) worth of data<br />To see all the data, download the CSV with the
-        button above.<br /><br />This graph is in US
-        Eastern time, and updates in real-time and gets new data every 2-5
-        seconds, using MrBeast real studio subscriber count.
+        button above.<br /><br />Note: The CSV has minutely data if it is older than 12
+        hours, but has 5-secondly when newer than 12 hours. <br> To get the full 5-secondly
+        data for all time, message me on Discord or Twitter @charlieashfordd. <br /> 
+        <br />This graph is in US Eastern time, and updates in real-time and gets 
+        new data every 2-5 seconds, using MrBeast real studio subscriber count.
       </h2>
       <div id="container"></div>
       <div id="info"></div>
@@ -1031,35 +1033,38 @@
           )}<br>local time</span>`;
         }
       }
-      function convertDataToCSV(data) {
-        const csvRows = [];
-        const headers = ["Time (UTC)", "Subscriber Count"];
-        csvRows.push(headers.join(","));
-        data.forEach((entry) => {
-          const date = new Date(entry[0]);
-          const formattedDate = date.toISOString();
-          const subscribers = entry[1];
-          csvRows.push([formattedDate, subscribers].join(","));
-        });
-        return csvRows.join("\n");
+      
+      function convertDataToCSV(data, shouldRound) {
+          const csvRows = [];
+          const headers = ["Time (UTC)", "Subscriber Count"];
+          csvRows.push(headers.join(","));
+          data.forEach((entry) => {
+              const date = new Date(entry.currentTime);
+              let formattedDate;
+              if (shouldRound && date <= new Date(new Date().getTime() - (12 * 60 * 60 * 1000))) {
+                  date.setSeconds(0, 0);
+              }
+              formattedDate = date.toISOString();
+              const subscribers = entry.subscriberCount;
+              csvRows.push([formattedDate, subscribers].join(","));
+          });
+          return csvRows.join("\n");
       }
-
+      
       function downloadCSVFile(csvText, fileName) {
-        const blob = new Blob([csvText], { type: "text/csv;charset=utf-8;" });
-        const link = document.createElement("a");
-        if (link.download !== undefined) {
-          const url = URL.createObjectURL(blob);
-          link.setAttribute("href", url);
-          link.setAttribute("download", fileName);
-          link.style.visibility = "hidden";
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-        } else {
-          window.open(
-            "data:text/csv;charset=utf-8," + encodeURIComponent(csvText)
-          );
-        }
+          const blob = new Blob([csvText], { type: "text/csv;charset=utf-8;" });
+          const link = document.createElement("a");
+          if (link.download !== undefined) {
+              const url = URL.createObjectURL(blob);
+              link.setAttribute("href", url);
+              link.setAttribute("download", fileName);
+              link.style.visibility = "hidden";
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+          } else {
+              window.open("data:text/csv;charset=utf-8," + encodeURIComponent(csvText));
+          }
       }
     </script>
   </body>
