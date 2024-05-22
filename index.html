@@ -7,10 +7,7 @@
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/boost.js"></script>
     <script src="https://code.highcharts.com/modules/accessibility.js"></script>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.34/moment-timezone-with-data.min.js"></script>
@@ -109,18 +106,15 @@
           border-radius: 4px;
           background-color: #232323;
         }
-
         #info {
           width: 95%;
           margin: 10px auto;
         }
-
         .button-container {
           position: static;
           text-align: center;
           margin-top: 10px;
         }
-
         .button-container button {
           font-size: 14px;
           padding: 8px 16px;
@@ -128,14 +122,12 @@
           display: block;
           width: 90%;
         }
-
         .tables-container {
           display: flex;
           flex-direction: column;
           width: 200%;
           margin: 10px auto;
         }
-
         .table-container {
           width: 200%;
           margin-bottom: 20px;
@@ -144,7 +136,6 @@
           border-radius: 4px;
           background-color: #232323;
         }
-
         table {
           width: 200%;
           border-collapse: collapse;
@@ -153,7 +144,6 @@
           overflow-x: scroll;
           display: block;
         }
-
         th,
         td {
           padding: 10px;
@@ -161,7 +151,6 @@
           border: 1px solid #444;
           white-space: nowrap;
         }
-
         th {
           background-color: #2dd4ff;
           color: #1e1e1e;
@@ -196,7 +185,6 @@
         background-color: #2dd4ff;
         color: #1e1e1e;
       }
-
       #loader {
         display: flex;
         justify-content: center;
@@ -228,61 +216,27 @@
     </style>
   </head>
   <body>
-    <div
-      id="loader"
-      style="
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        background-color: #121212;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        z-index: 9999;
-      "
-    >
-      <div
-        class="spinner"
-        style="
-          border: 12px solid #f3f3f3;
-          border-top: 12px solid #2dd4ff;
-          border-radius: 50%;
-          width: 80px;
-          height: 80px;
-          animation: spin 0.5s ease-in-out infinite 0.1s;
-        "
-      ></div>
-      <p
-        style="
-          color: #e0e0e0;
-          margin-top: 20px;
-          font-family: 'Inter', sans-serif;
-          font-weight: bold;
-          font-size: 1.5rem;
-          text-align: center;
-        "
-      >
-        Loading data, please wait...<br />If loading takes a while or is stuck,
-        please refresh the page or try again later.
+    <div id="loader" style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; background-color: #121212; position: absolute; top: 0; left: 0; width: 100%; z-index: 9999;">
+      <div class="spinner" style="border: 12px solid #f3f3f3; border-top: 12px solid #2dd4ff; border-radius: 50%; width: 80px; height: 80px; animation: spin 0.5s ease-in-out infinite 0.1s;"></div>
+      <p style="color: #e0e0e0; margin-top: 20px; font-family: 'Inter', sans-serif; font-weight: bold; font-size: 1.5rem; text-align: center;">
+        Loading data, please wait...<br />
+        If loading takes a while or is stuck, please refresh the page or try again later.
       </p>
     </div>
     <div class="button-container">
       <button id="exportCsvButton">Export Data to CSV</button>
       <button id="viewDailyGainsButton">View Daily Gains</button>
     </div>
-    <div id="mainContent" style="display: none">
+    <div id="mainContent" style="display: none;">
       <h1>MrBeast Studio Subscriber Count</h1>
       <h2>
-        Note: This graph only includes the previous 4,000 points (around 3
-        hours) worth of data<br />To see all the data, download the CSV with the
-        button above.<br /><br />Note: The CSV has minutely data if it is older than 12
-        hours, but has 5-secondly when newer than 12 hours. <br> To get the full 5-secondly
-        data for all time, message me on Discord or Twitter @charlieashfordd. <br /> 
-        <br />This graph is in US Eastern time, and updates in real-time and gets 
-        new data every 2-5 seconds, using MrBeast real studio subscriber count.
+        Note: This graph only includes the previous 4,000 points (around 3 hours) worth of data<br />
+        To see all the data, download the CSV with the button above.<br />
+        <br />
+        Note: The CSV has minutely data if it is older than 12 hours, but has 5-secondly when newer than 12 hours. <br />
+        To get the full 5-secondly data for all time, message me on Discord or Twitter @charlieashfordd. <br />
+        <br />
+        This graph is in US Eastern time, and updates in real-time and gets new data every 2-5 seconds, using MrBeast real studio subscriber count.
       </h2>
       <div id="container"></div>
       <div id="info"></div>
@@ -291,30 +245,11 @@
       <div class="table-container">
         <h1>Hourly Gains</h1>
         <h2>
-          Note: If you see blank data for some rows in the past, the API was
-          likely down.
+          Note: If you see blank data for some rows in the past, the API was likely down.
         </h2>
-        <div
-          style="
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-          "
-        >
+        <div style="display: flex; justify-content: space-between; align-items: center;">
           <div></div>
-          <input
-            type="date"
-            id="datePicker"
-            style="
-              background-color: #232323;
-              color: #e0e0e0;
-              border: 1px solid #444;
-              border-radius: 5px;
-              padding: 5px;
-              margin-bottom: 10px;
-              margin-right: 10px;
-            "
-          />
+          <input type="date" id="datePicker" style="background-color: #232323; color: #e0e0e0; border: 1px solid #444; border-radius: 5px; padding: 5px; margin-bottom: 10px; margin-right: 10px;" />
         </div>
         <table id="hourlyGainsTable">
           <thead>
@@ -350,8 +285,7 @@
       let lastScrollTop = 0;
       const buttonContainer = document.querySelector(".button-container");
       window.addEventListener("scroll", () => {
-        const scrollTop =
-          window.pageYOffset || document.documentElement.scrollTop;
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
         if (scrollTop === 0) {
           buttonContainer.classList.remove("hidden");
@@ -366,10 +300,7 @@
           let response = await fetch("https://api.communitrics.com/mrbeast");
           const data = await response.json();
 
-          allMrbeastData = data.map((entry) => [
-            new Date(entry.currentTime).getTime(),
-            entry.count,
-          ]);
+          allMrbeastData = data.map((entry) => [new Date(entry.currentTime).getTime(), entry.count]);
 
           if (allMrbeastData.length > 3999) {
             filteredMrbeastData = allMrbeastData.slice(-3999);
@@ -397,62 +328,43 @@
 
         const firstCount = filteredData[0].count.toLocaleString();
         const firstTime = formatDateTime(filteredData[0].currentTime);
-        const latestCount =
-          filteredData[filteredData.length - 1].count.toLocaleString();
-        const latestTime = formatDateTime(
-          filteredData[filteredData.length - 1].currentTime
-        );
+        const latestCount = filteredData[filteredData.length - 1].count.toLocaleString();
+        const latestTime = formatDateTime(filteredData[filteredData.length - 1].currentTime);
 
-        const totalGained =
-          filteredData[filteredData.length - 1].count - filteredData[0].count;
-        const totalTime =
-          new Date(
-            filteredData[filteredData.length - 1].currentTime
-          ).getTime() - new Date(filteredData[0].currentTime).getTime();
+        const totalGained = filteredData[filteredData.length - 1].count - filteredData[0].count;
+        const totalTime = new Date(filteredData[filteredData.length - 1].currentTime).getTime() - new Date(filteredData[0].currentTime).getTime();
         const daysElapsed = totalTime / (1000 * 3600 * 24);
 
         const averageGainedPerDay = totalGained / daysElapsed;
 
         const now = new Date();
         const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-        const recentData = filteredData.filter(
-          (entry) => new Date(entry.currentTime) >= oneDayAgo
-        );
-        const recentGained =
-          recentData.length > 1
-            ? recentData[recentData.length - 1].count - recentData[0].count
-            : 0;
+        const recentData = filteredData.filter((entry) => new Date(entry.currentTime) >= oneDayAgo);
+        const recentGained = recentData.length > 1 ? recentData[recentData.length - 1].count - recentData[0].count : 0;
         let subs24HoursAgo;
         if (recentData.length > 0) {
           subs24HoursAgo = recentData[0].count;
         } else {
-          subs24HoursAgo =
-            filteredData[filteredData.length - 1].count - recentGained;
+          subs24HoursAgo = filteredData[filteredData.length - 1].count - recentGained;
         }
         const infoDiv = document.getElementById("info");
         infoDiv.innerHTML = `<b>First updated count:</b> <span>${firstCount}</span><br>
-                            <b>First updated time:</b> <span>${firstTime}</span><br><br>
-                            <b class="latest-update">Latest updated count:</b> <span class="latest-update">${latestCount}</span><br>
-                            <b class="latest-update">Latest updated time:</b> <span class="latest-update">${latestTime}</span><br><br>
-                            <b>Total datapoints:</b> <span>${filteredData.length.toLocaleString()}</span><br>
-                            <b>Total subscribers gained:</b> <span>${totalGained.toLocaleString()}</span><br>
-                            <b>Total time:</b> <span>${formatTime(
-                              totalTime
-                            )}</span><br><br>
-                            <b>Subscribers 24 hours ago:</b> <span>${subs24HoursAgo.toLocaleString()}</span><br>
-                            <b>Subscribers gained in the past 24 hours:</b> <span>${recentGained.toLocaleString()}</span><br>
-                            <b>Average subscribers gained per day:</b> <span>${Math.floor(
-                              averageGainedPerDay
-                            ).toLocaleString()}</span>`;
+                               <b>First updated time:</b> <span>${firstTime}</span><br><br>
+                               <b class="latest-update">Latest updated count:</b> <span class="latest-update">${latestCount}</span><br>
+                               <b class="latest-update">Latest updated time:</b> <span class="latest-update">${latestTime}</span><br><br>
+                               <b>Total datapoints:</b> <span>${filteredData.length.toLocaleString()}</span><br>
+                               <b>Total subscribers gained:</b> <span>${totalGained.toLocaleString()}</span><br>
+                               <b>Total time:</b> <span>${formatTime(totalTime)}</span><br><br>
+                               <b>Subscribers 24 hours ago:</b> <span>${subs24HoursAgo.toLocaleString()}</span><br>
+                               <b>Subscribers gained in the past 24 hours:</b> <span>${recentGained.toLocaleString()}</span><br>
+                               <b>Average subscribers gained per day:</b> <span>${Math.floor(averageGainedPerDay).toLocaleString()}</span>`;
 
         infoDiv.classList.add("smaller-text");
       }
 
       function formatTime(ms) {
         const days = Math.floor(ms / (1000 * 60 * 60 * 24));
-        const hours = Math.floor(
-          (ms % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-        );
+        const hours = Math.floor((ms % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         const minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
         return `${days} days, ${hours} hours, ${minutes} minutes`;
       }
@@ -598,31 +510,27 @@
       }
 
       document.addEventListener("DOMContentLoaded", function () {
-        document
-          .getElementById("exportCsvButton")
-          .addEventListener("click", function () {
-            const csvData = convertDataToCSV(allMrbeastData);
-            downloadCSVFile(csvData, "MrBeast_Subscribers.csv");
-          });
+        document.getElementById("exportCsvButton").addEventListener("click", function () {
+          const csvData = convertDataToCSV(allMrbeastData);
+          downloadCSVFile(csvData, "MrBeast_Subscribers.csv");
+        });
 
         fetchDataAndDrawChart();
 
-        document
-          .getElementById("viewDailyGainsButton")
-          .addEventListener("click", function () {
-            const mainContent = document.getElementById("mainContent");
-            const tableContent = document.getElementById("tableContent");
-            const button = document.getElementById("viewDailyGainsButton");
-            if (mainContent.style.display === "none") {
-              mainContent.style.display = "block";
-              tableContent.style.display = "none";
-              button.textContent = "View Daily Gains";
-            } else {
-              mainContent.style.display = "none";
-              tableContent.style.display = "flex";
-              button.textContent = "View Graph";
-            }
-          });
+        document.getElementById("viewDailyGainsButton").addEventListener("click", function () {
+          const mainContent = document.getElementById("mainContent");
+          const tableContent = document.getElementById("tableContent");
+          const button = document.getElementById("viewDailyGainsButton");
+          if (mainContent.style.display === "none") {
+            mainContent.style.display = "block";
+            tableContent.style.display = "none";
+            button.textContent = "View Daily Gains";
+          } else {
+            mainContent.style.display = "none";
+            tableContent.style.display = "flex";
+            button.textContent = "View Graph";
+          }
+        });
 
         const datePicker = document.getElementById("datePicker");
         const today = new Date().toISOString().split("T")[0];
@@ -646,15 +554,9 @@
           }
           const data = await response.json();
 
-          allMrbeastData = data.map((entry) => [
-            new Date(entry.currentTime).getTime(),
-            Number(entry.count),
-          ]);
+          allMrbeastData = data.map((entry) => [new Date(entry.currentTime).getTime(), Number(entry.count)]);
 
-          filteredMrbeastData =
-            allMrbeastData.length > 3999
-              ? allMrbeastData.slice(-3999)
-              : allMrbeastData;
+          filteredMrbeastData = allMrbeastData.length > 3999 ? allMrbeastData.slice(-3999) : allMrbeastData;
 
           updateInfoSection(data);
           drawChart(filteredMrbeastData);
@@ -682,25 +584,43 @@
           }));
       }
 
+      function findClosestEntry(data, targetDate) {
+        return data.reduce((prev, curr) => {
+          const prevDiff = Math.abs(new Date(prev.currentTime).getTime() - targetDate.getTime());
+          const currDiff = Math.abs(new Date(curr.currentTime).getTime() - targetDate.getTime());
+          return currDiff < prevDiff ? curr : prev;
+        }, data[0]);
+      }
+
       function fillHourlyTable(data, selectedDate) {
-        const hourlyTable = document
-          .getElementById("hourlyGainsTable")
-          .getElementsByTagName("tbody")[0];
+        const hourlyTable = document.getElementById("hourlyGainsTable").getElementsByTagName("tbody")[0];
         hourlyTable.innerHTML = "";
 
-        let { previousCount, previousGain, previousGainChange } =
-          getPreviousDayLastCount(selectedDate);
+        if (data.length === 0) {
+          console.error("No data available to process.");
+          return;
+        }
+
+        let { previousCount, previousGain, previousGainChange } = getPreviousDayLastCount(selectedDate);
         let lastHourCount = previousCount;
 
         let subscriberBuffer = [];
         let gainBuffer = [];
+
+        console.log("fillHourlyTable data length:", data.length);
+        console.log("fillHourlyTable data sample:", data.slice(0, 5));
+
+        const currentUTCDate = new Date().toISOString().split("T")[0];
+        const currentUTCHour = new Date().getUTCHours();
 
         for (let hour = 0; hour < 24; hour++) {
           const targetDate = new Date(selectedDate);
           targetDate.setUTCHours(hour, 0, 0, 0);
           const nextHourDate = new Date(targetDate);
           nextHourDate.setUTCHours(hour + 1, 0, 0, 0);
+
           const closestEntry = findClosestEntry(data, nextHourDate);
+          console.log(`Hour: ${hour}, Target Date: ${targetDate.toISOString()}, Closest Entry:`, closestEntry);
 
           const row = document.createElement("tr");
           const dateCell = document.createElement("td");
@@ -717,12 +637,7 @@
           });
 
           dateCell.textContent = targetDate.toISOString().split("T")[0];
-          timeCell.innerHTML = `${hour
-            .toString()
-            .padStart(2, "0")}:00 UTC (${targetDate.toLocaleTimeString(
-            "en-US",
-            { hour: "2-digit", minute: "2-digit" }
-          )} local)<br>${estFormatter.format(estTime)}`;
+          timeCell.innerHTML = `${hour.toString().padStart(2, "0")}:00 UTC (${targetDate.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })} local)<br>${estFormatter.format(estTime)}`;
 
           let gainValue = "-";
           let gain = null;
@@ -731,67 +646,53 @@
             subscriberCell.textContent = subscriberBuffer.shift();
             gainCell.innerHTML = gainBuffer.shift();
           } else {
-            subscriberCell.textContent =
-              previousCount !== null ? previousCount.toLocaleString() : "-";
+            subscriberCell.textContent = previousCount !== null ? previousCount.toLocaleString() : "-";
             if (previousGain !== null) {
               let color = previousGain > 0 ? "lime" : "red";
               gainCell.innerHTML = `<span style="color: ${color}; font-weight: bold;">${previousGain.toLocaleString()}</span>`;
               let gainChange = previousGainChange;
-              gainCell.innerHTML += `<br><span style="font-size: smaller;">(${
-                gainChange > 0 ? "+" : ""
-              }${gainChange.toLocaleString()})</span>`;
+              gainCell.innerHTML += `<br><span style="font-size: smaller;">(${gainChange > 0 ? "+" : ""}${gainChange.toLocaleString()})</span>`;
             } else {
               gainCell.innerHTML = "-";
             }
           }
 
-          if (
-            hour === new Date().getUTCHours() + 1 &&
-            selectedDate ===
-              new Date(allMrbeastData[allMrbeastData.length - 1][0])
-                .toISOString()
-                .split("T")[0]
-          ) {
+          if (targetDate.toISOString().split("T")[0] === currentUTCDate && hour === (currentUTCHour + 1) % 24) {
             const localTime = new Date();
             const localFormatter = new Intl.DateTimeFormat("en-US", {
               hour: "2-digit",
               minute: "2-digit",
             });
-            gainCell.innerHTML += `<br><span style="font-size: smaller;">Data as of ${localFormatter.format(
-              localTime
-            )}<br>local time</span>`;
+            gainCell.innerHTML += `<br><span style="font-size: smaller;">Data as of ${localFormatter.format(localTime)}<br>local time</span>`;
           }
 
           if (closestEntry) {
             const currentCount = closestEntry.count;
-            gain = lastHourCount !== null ? currentCount - lastHourCount : null;
-            if (gain !== null) {
-              gainValue = gain.toLocaleString();
-              let color = "white";
-              if (previousGain !== null && gain < previousGain) {
-                color = "red";
-              } else if (gain > 0) {
-                color = "lime";
+            if (currentCount !== undefined) {
+              gain = lastHourCount !== null ? currentCount - lastHourCount : null;
+              if (gain !== null) {
+                gainValue = gain.toLocaleString();
+                let color = "white";
+                if (previousGain !== null && gain < previousGain) {
+                  color = "red";
+                } else if (gain > 0) {
+                  color = "lime";
+                }
+                gainBuffer.push(gain === 0 ? `<span style="font-weight: bold;">-</span>` : `<span style="color: ${color}; font-weight: bold;">${gainValue}</span>`);
+                if (gain !== 0 && previousGain !== null) {
+                  gainBuffer[gainBuffer.length - 1] += `<br><span style="font-size: smaller;">(${gain > previousGain ? "+" : ""}${(gain - previousGain).toLocaleString()})</span>`;
+                }
+                previousGain = gain;
+              } else {
+                gainBuffer.push("-");
               }
-              gainBuffer.push(
-                gain === 0
-                  ? `<span style="font-weight: bold;">-</span>`
-                  : `<span style="color: ${color}; font-weight: bold;">${gainValue}</span>`
-              );
-              if (gain !== 0 && previousGain !== null) {
-                gainBuffer[
-                  gainBuffer.length - 1
-                ] += `<br><span style="font-size: smaller;">(${
-                  gain > previousGain ? "+" : ""
-                }${(gain - previousGain).toLocaleString()})</span>`;
-              }
-              previousGain = gain;
+              subscriberBuffer.push(currentCount.toLocaleString());
+              lastHourCount = currentCount;
             } else {
+              console.error(`currentCount is undefined for entry: ${JSON.stringify(closestEntry)}`);
+              subscriberBuffer.push("-");
               gainBuffer.push("-");
             }
-
-            subscriberBuffer.push(currentCount.toLocaleString());
-            lastHourCount = currentCount;
           } else {
             subscriberBuffer.push("-");
             gainBuffer.push("-");
@@ -804,18 +705,6 @@
 
           hourlyTable.appendChild(row);
         }
-      }
-
-      function findClosestEntry(data, targetDate) {
-        return data.reduce((prev, curr) => {
-          const prevDiff = Math.abs(
-            new Date(prev.currentTime).getTime() - targetDate.getTime()
-          );
-          const currDiff = Math.abs(
-            new Date(curr.currentTime).getTime() - targetDate.getTime()
-          );
-          return currDiff < prevDiff ? curr : prev;
-        }, data[0]);
       }
 
       function getPreviousDayLastCount(selectedDate) {
@@ -837,34 +726,22 @@
           const targetTime = new Date(previousDay);
           targetTime.setUTCHours(23, 59, 59, 999);
           const closestEntry = previousDayData.reduce((prev, curr) => {
-            const prevDiff = Math.abs(
-              new Date(prev.currentTime).getTime() - targetTime.getTime()
-            );
-            const currDiff = Math.abs(
-              new Date(curr.currentTime).getTime() - targetTime.getTime()
-            );
+            const prevDiff = Math.abs(new Date(prev.currentTime).getTime() - targetTime.getTime());
+            const currDiff = Math.abs(new Date(curr.currentTime).getTime() - targetTime.getTime());
             return currDiff < prevDiff ? curr : prev;
           });
           const elevenPMCount = closestEntry.count;
           targetTime.setUTCHours(22, 59, 59, 999);
           const previousHourEntry = previousDayData.reduce((prev, curr) => {
-            const prevDiff = Math.abs(
-              new Date(prev.currentTime).getTime() - targetTime.getTime()
-            );
-            const currDiff = Math.abs(
-              new Date(curr.currentTime).getTime() - targetTime.getTime()
-            );
+            const prevDiff = Math.abs(new Date(prev.currentTime).getTime() - targetTime.getTime());
+            const currDiff = Math.abs(new Date(curr.currentTime).getTime() - targetTime.getTime());
             return currDiff < prevDiff ? curr : prev;
           });
 
           targetTime.setUTCHours(21, 59, 59, 999);
           const ninePMEntry = previousDayData.reduce((prev, curr) => {
-            const prevDiff = Math.abs(
-              new Date(prev.currentTime).getTime() - targetTime.getTime()
-            );
-            const currDiff = Math.abs(
-              new Date(curr.currentTime).getTime() - targetTime.getTime()
-            );
+            const prevDiff = Math.abs(new Date(prev.currentTime).getTime() - targetTime.getTime());
+            const currDiff = Math.abs(new Date(curr.currentTime).getTime() - targetTime.getTime());
             return currDiff < prevDiff ? curr : prev;
           });
 
@@ -888,9 +765,7 @@
       }
 
       function fillDailyTable(data) {
-        const dailyTable = document
-          .getElementById("dailyGainsTable")
-          .getElementsByTagName("tbody")[0];
+        const dailyTable = document.getElementById("dailyGainsTable").getElementsByTagName("tbody")[0];
         dailyTable.innerHTML = "";
 
         let previousCount = null;
@@ -941,14 +816,9 @@
             timeZone: "America/New_York",
           });
 
-          const localTime = new Date(
-            currentDate.getTime() + currentDate.getTimezoneOffset() * 60000
-          );
+          const localTime = new Date(currentDate.getTime() + currentDate.getTimezoneOffset() * 60000);
           const utcTime = new Date(utcCurrentDate);
-          const edtTime = new Date(
-            currentDate.getTime() +
-              (currentDate.getTimezoneOffset() + 240) * 60000
-          );
+          const edtTime = new Date(currentDate.getTime() + (currentDate.getTimezoneOffset() + 240) * 60000);
 
           dateCell.innerHTML =
             currentDate.toLocaleDateString("en-US", {
@@ -957,12 +827,8 @@
             }) +
             "<br>" +
             currentDate.toISOString().split("T")[0];
-          timeCell.innerHTML = `12:00 AM EDT<br>${utcTimeFormatter.format(
-            utcTime
-          )} UTC (${localTimeFormatter.format(localTime)} local)`;
-          subscriberCell.textContent = closestEndEntry
-            ? closestEndEntry.count.toLocaleString()
-            : "-";
+          timeCell.innerHTML = `12:00 AM EDT<br>${utcTimeFormatter.format(utcTime)} UTC (${localTimeFormatter.format(localTime)} local)`;
+          subscriberCell.textContent = closestEndEntry ? closestEndEntry.count.toLocaleString() : "-";
 
           let gainValue = "-";
           let gain = null;
@@ -978,24 +844,15 @@
               } else if (gain > 0) {
                 color = "lime";
               }
-              gainCell.innerHTML =
-                gain === 0
-                  ? `<span style="font-weight: bold;">-</span>`
-                  : `<span style="color: ${color}; font-weight: bold;">${gainValue}</span>`;
+              gainCell.innerHTML = gain === 0 ? `<span style="font-weight: bold;">-</span>` : `<span style="color: ${color}; font-weight: bold;">${gainValue}</span>`;
               if (gain !== 0 && previousGain !== null) {
-                gainCell.innerHTML += `<br><span style="font-size: smaller;">(${
-                  gain > previousGain ? "+" : ""
-                }${(gain - previousGain).toLocaleString()})</span>`;
+                gainCell.innerHTML += `<br><span style="font-size: smaller;">(${gain > previousGain ? "+" : ""}${(gain - previousGain).toLocaleString()})</span>`;
               }
               previousGain = gain;
             } else {
               gainCell.textContent = "-";
             }
-          } else if (
-            previousCount === null &&
-            closestEndEntry &&
-            closestStartEntry
-          ) {
+          } else if (previousCount === null && closestEndEntry && closestStartEntry) {
             gain = closestEndEntry.count - closestStartEntry.count;
             gainValue = gain.toLocaleString();
             gainCell.innerHTML = `<span style="color: lime; font-weight: bold;">${gainValue}</span><br><span style="font-size: calc(0.9em - 15%);"> (Data started May <br>15th, at 5pm UTC)</span>`;
@@ -1028,43 +885,62 @@
 
         if (mostRecentRow) {
           const gainCell = mostRecentRow.getElementsByTagName("td")[3];
-          gainCell.innerHTML += `<br><span style="font-size: smaller;">Data as of ${localTimeFormatter.format(
-            now
-          )}<br>local time</span>`;
+          gainCell.innerHTML += `<br><span style="font-size: smaller;">Data as of ${localTimeFormatter.format(now)}<br>local time</span>`;
         }
       }
-      
+
       function convertDataToCSV(data, shouldRound) {
-          const csvRows = [];
-          const headers = ["Time (UTC)", "Subscriber Count"];
-          csvRows.push(headers.join(","));
-          data.forEach((entry) => {
-              const date = new Date(entry.currentTime);
-              let formattedDate;
-              if (shouldRound && date <= new Date(new Date().getTime() - (12 * 60 * 60 * 1000))) {
-                  date.setSeconds(0, 0);
-              }
-              formattedDate = date.toISOString();
-              const subscribers = entry.subscriberCount;
-              csvRows.push([formattedDate, subscribers].join(","));
-          });
-          return csvRows.join("\n");
-      }
-      
-      function downloadCSVFile(csvText, fileName) {
-          const blob = new Blob([csvText], { type: "text/csv;charset=utf-8;" });
-          const link = document.createElement("a");
-          if (link.download !== undefined) {
-              const url = URL.createObjectURL(blob);
-              link.setAttribute("href", url);
-              link.setAttribute("download", fileName);
-              link.style.visibility = "hidden";
-              document.body.appendChild(link);
-              link.click();
-              document.body.removeChild(link);
-          } else {
-              window.open("data:text/csv;charset=utf-8," + encodeURIComponent(csvText));
+        const csvRows = [];
+        const headers = ["Time (UTC)", "Subscriber Count"];
+        csvRows.push(headers.join(","));
+
+        console.log("First few rows of data being processed:", data.slice(0, 5));
+
+        data.forEach((entry) => {
+          if (entry.length < 2) {
+            console.error(`Invalid entry format: ${JSON.stringify(entry)}`);
+            return;
           }
+
+          const timestamp = entry[0];
+          const subscribers = entry[1];
+
+          let date;
+          if (typeof timestamp === "number") {
+            date = new Date(timestamp);
+          } else {
+            date = new Date(timestamp);
+          }
+
+          if (isNaN(date.getTime())) {
+            console.error(`Invalid date value: ${timestamp}`);
+            return;
+          }
+
+          if (shouldRound && date <= new Date(new Date().getTime() - 12 * 60 * 60 * 1000)) {
+            date.setSeconds(0, 0);
+          }
+
+          const formattedDate = date.toISOString();
+          csvRows.push([formattedDate, subscribers].join(","));
+        });
+        return csvRows.join("\n");
+      }
+
+      function downloadCSVFile(csvText, fileName) {
+        const blob = new Blob([csvText], { type: "text/csv;charset=utf-8;" });
+        const link = document.createElement("a");
+        if (link.download !== undefined) {
+          const url = URL.createObjectURL(blob);
+          link.setAttribute("href", url);
+          link.setAttribute("download", fileName);
+          link.style.visibility = "hidden";
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        } else {
+          window.open("data:text/csv;charset=utf-8," + encodeURIComponent(csvText));
+        }
       }
     </script>
   </body>
