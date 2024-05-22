@@ -644,9 +644,9 @@
           } else {
             subscriberCell.textContent = previousCount !== null ? previousCount.toLocaleString() : "-";
             if (previousGain !== null) {
-              let color = previousGain > 0 ? "lime" : "red";
-              gainCell.innerHTML = `<span style="color: ${color}; font-weight: bold;">${previousGain.toLocaleString()}</span>`;
               let gainChange = previousGainChange;
+              let color = previousGainChange > 0 ? "lime" : "red";
+              gainCell.innerHTML = `<span style="color: ${color}; font-weight: bold;">${previousGain.toLocaleString()}</span>`;
               gainCell.innerHTML += `<br><span style="font-size: smaller;">(${gainChange > 0 ? "+" : ""}${gainChange.toLocaleString()})</span>`;
             } else {
               gainCell.innerHTML = "-";
