@@ -942,15 +942,24 @@
       }
     }
 
-    function convertDataToCSV(data, shouldRound) {
+    function convertDataToCSV(data) {
       const csvRows = [];
-      const headers = ["Time (UTC)", "Subscriber Count", "Minutely Gains", "Average Daily Gains"];
+      const headers = [
+        "Time (UTC)",
+        "Subscriber Count",
+        "Minutely Gains",
+        "Average Daily Gains",
+      ];
       csvRows.push(headers.join(","));
 
       let lastSelectedTime = null;
       let lastSelectedSubscribers = null;
       let totalGains = 0;
       let totalMinutes = 0;
+
+      data.sort((a, b) => new Date(a[0]) - new Date(b[0]));
+
+      let rowsToSkip = 2;
 
       data.forEach((entry) => {
         if (entry.length < 2) {
@@ -960,39 +969,50 @@
 
         const timestamp = entry[0];
         const subscribers = entry[1];
+        let date = new Date(timestamp);
 
-        let date;
-        if (typeof timestamp === "number") {
-          date = new Date(timestamp);
-        } else {
-          date = new Date(timestamp);
-        }
         if (isNaN(date.getTime())) {
           console.error(`Invalid date value: ${timestamp}`);
           return;
         }
-        if (shouldRound && lastSelectedTime !== null) {
-          const timeDiff = date.getTime() - lastSelectedTime.getTime();
-          if (timeDiff < 60 * 1000) {
+
+        date.setSeconds(0, 0);
+
+        if (
+          lastSelectedTime === null ||
+          date.getTime() - lastSelectedTime.getTime() >= 60 * 1000
+        ) {
+          let gainsInPastMinute = 0;
+          if (lastSelectedSubscribers !== null) {
+            gainsInPastMinute = subscribers - lastSelectedSubscribers;
+          }
+
+          if (rowsToSkip > 0) {
+            rowsToSkip--;
+            lastSelectedTime = date;
+            lastSelectedSubscribers = subscribers;
             return;
           }
+
+          totalGains += gainsInPastMinute;
+          totalMinutes += 1;
+          let averageDailyGains = (totalGains / totalMinutes) * 1440;
+
+          const formattedDate = date.toISOString();
+          csvRows.push(
+            [
+              formattedDate,
+              subscribers,
+              gainsInPastMinute,
+              averageDailyGains.toFixed(2),
+            ].join(",")
+          );
+
+          lastSelectedTime = date;
+          lastSelectedSubscribers = subscribers;
         }
-
-        let gainsInPastMinute = 0;
-        if (lastSelectedSubscribers !== null) {
-          gainsInPastMinute = subscribers - lastSelectedSubscribers;
-        }
-
-        totalGains += gainsInPastMinute;
-        totalMinutes += 1;
-        let averageDailyGains = (totalGains / totalMinutes) * 1440;
-
-        lastSelectedTime = date;
-        lastSelectedSubscribers = subscribers;
-
-        const formattedDate = date.toISOString();
-        csvRows.push([formattedDate, subscribers, gainsInPastMinute, averageDailyGains.toFixed(2)].join(","));
       });
+
       return csvRows.join("\n");
     }
 
