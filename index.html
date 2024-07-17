@@ -386,12 +386,10 @@
         hours) worth of data<br />
         To see all the data, download the CSV with the button above.<br />
         <br />
-        Note: The CSV has minutely data. <br />
-        To get the full 5-secondly data for all time, message me on Discord
-        @charlieashfordd. <br />
+        Note: The CSV has options of minutely, hourly or daily data. <br />
         <br />
         This graph is in US Eastern time, updates in real-time and gets new data
-        every 5 seconds, using MrBeast real studio subscriber count.
+        every 5 seconds using MrBeast's real studio subscriber count.
       </h2>
       <div id="container"></div>
       <div id="info"></div>
@@ -521,7 +519,6 @@
         const daysElapsed = totalTime / (1000 * 3600 * 24);
 
         const averageGainedPerDay = totalGained / daysElapsed;
-
         const now = new Date();
         const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
         const recentData = filteredData.filter(
@@ -877,7 +874,6 @@
         let { previousCount, previousGain, previousGainChange } =
           getPreviousDayLastCount(selectedDate);
         let lastHourCount = previousCount;
-
         let subscriberBuffer = [];
         let gainBuffer = [];
 
@@ -891,7 +887,6 @@
           nextHourDate.setUTCHours(hour + 1, 0, 0, 0);
 
           const closestEntry = findClosestEntry(data, nextHourDate);
-
           const row = document.createElement("tr");
           const dateCell = document.createElement("td");
           const timeCell = document.createElement("td");
@@ -1081,7 +1076,6 @@
         let previousCount = null;
         let previousGain = null;
         let mostRecentRow = null;
-
         let currentDate = new Date(data[0].currentTime);
         currentDate = new Date(
           currentDate.toLocaleString("en-US", { timeZone: "America/New_York" })
@@ -1254,7 +1248,6 @@
         data.sort((a, b) => new Date(a.currentTime) - new Date(b.currentTime));
 
         let rowsToSkip = 1;
-
         data.forEach((entry) => {
           const timestamp = new Date(entry.currentTime);
           const subscribers = entry.count;
