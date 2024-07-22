@@ -410,7 +410,7 @@
         <a href="https://www.mrbeastgraph.com" style="text-decoration: underline; font-weight: 400; color: inherit;">https://www.mrbeastgraph.com</a>
       </h3>
               <h2>
-        Note: This graph only includes the previous 4,000 points (around 5.5
+        Note: This graph only includes the previous 3,000 points (around 6
         hours) worth of data<br />
         To see all the data, download the CSV with the button above.<br />
         <br />
@@ -506,8 +506,8 @@
             entry.count,
           ]);
 
-          if (allMrbeastData.length > 3999) {
-            filteredMrbeastData = allMrbeastData.slice(-3999);
+          if (allMrbeastData.length > 2999) {
+            filteredMrbeastData = allMrbeastData.slice(-2999);
           } else {
             filteredMrbeastData = allMrbeastData;
           }
@@ -834,8 +834,8 @@
           ]);
 
           filteredMrbeastData =
-            allMrbeastData.length > 3999
-              ? allMrbeastData.slice(-3999)
+            allMrbeastData.length > 2999
+              ? allMrbeastData.slice(-2999)
               : allMrbeastData;
 
           updateInfoSection(data);
