@@ -758,7 +758,9 @@
           .getElementById("downloadMinutelyData")
           .addEventListener("click", async function () {
             const csvData = convertDataToCSV(
-              await fetchData("https://api.communitrics.com/mrbeast")
+              await fetchData(
+                "https://api.communitrics.com/mrbeast?minutely=true"
+            )
             );
             downloadCSVFile(csvData, "MrBeast_Minutely_Subscribers.csv");
           });
