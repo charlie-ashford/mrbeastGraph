@@ -11,22 +11,37 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="icon" href="image.png" type="image/png">
-    <link rel="apple-touch-icon" href="image.png">
-    <link rel="canonical" href="https://www.mrbeastgraph.com">
-    <meta name="description" content="See MrBeast's real studio subscriber count, updated in real-time with full historical data available for download.">
-    <meta name="theme-color" content="#60a5fa">
-    <meta property="og:title" content="MrBeast Subscriber Count Graph">
-    <meta property="og:description" content="See MrBeast's real studio subscriber count, updated in real-time with full historical data available for download.">
-    <meta property="og:image" content="https://www.mrbeastgraph.com/embed.png">
-    <meta property="og:url" content="https://www.mrbeastgraph.com">
-    <meta property="og:type" content="website">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="MrBeast Subscriber Count Graph">
-    <meta name="twitter:description" content="See MrBeast's real studio subscriber count, updated in real-time with full historical data available for download.">
-    <meta name="twitter:image" content="https://www.mrbeastgraph.com/embed.png">
-    <meta name="twitter:url" content="https://www.mrbeastgraph.com">
-    
+    <link rel="icon" href="image.png" type="image/png" />
+    <link rel="apple-touch-icon" href="image.png" />
+    <link rel="canonical" href="https://www.mrbeastgraph.com" />
+    <meta
+      name="description"
+      content="See MrBeast's real studio subscriber count, updated in real-time with full historical data available for download."
+    />
+    <meta name="theme-color" content="#60a5fa" />
+    <meta property="og:title" content="MrBeast Subscriber Count Graph" />
+    <meta
+      property="og:description"
+      content="See MrBeast's real studio subscriber count, updated in real-time with full historical data available for download."
+    />
+    <meta
+      property="og:image"
+      content="https://www.mrbeastgraph.com/embed.png"
+    />
+    <meta property="og:url" content="https://www.mrbeastgraph.com" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="MrBeast Subscriber Count Graph" />
+    <meta
+      name="twitter:description"
+      content="See MrBeast's real studio subscriber count, updated in real-time with full historical data available for download."
+    />
+    <meta
+      name="twitter:image"
+      content="https://www.mrbeastgraph.com/embed.png"
+    />
+    <meta name="twitter:url" content="https://www.mrbeastgraph.com" />
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.34/moment-timezone-with-data.min.js"></script>
@@ -390,7 +405,14 @@
       >
         Loading data, please wait...<br />
         If loading takes a while or is stuck, please refresh the page or try
-        again later.<br /> <br /> This page is now also at <a href="https://www.mrbeastgraph.com" style="text-decoration: underline; font-weight: 400; color: inherit;">https://www.mrbeastgraph.com</a>
+        again later.<br />
+        <br />
+        This page is now also at
+        <a
+          href="https://www.mrbeastgraph.com"
+          style="text-decoration: underline; font-weight: 400; color: inherit"
+          >https://www.mrbeastgraph.com</a
+        >
       </p>
     </div>
     <div class="button-container">
@@ -406,17 +428,23 @@
     </div>
     <div id="mainContent" style="display: none">
       <h1>MrBeast Studio Subscriber Count</h1>
-      <h3>This page is now also at 
-        <a href="https://www.mrbeastgraph.com" style="text-decoration: underline; font-weight: 400; color: inherit;">https://www.mrbeastgraph.com</a>
+      <h3>
+        This page is now also at
+        <a
+          href="https://www.mrbeastgraph.com"
+          style="text-decoration: underline; font-weight: 400; color: inherit"
+          >https://www.mrbeastgraph.com</a
+        >
       </h3>
-              <h2>
+      <h2>
         Note: This graph only includes the previous 3,600 points (around 6
         hours) worth of data<br />
         To see all the data, download the CSV with the button above.<br />
         <br />
         Note: The CSV has options of minutely, hourly or daily data. <br />
         <br />
-        This graph is in US Eastern time, updates in real-time and gets new data <br />
+        This graph is in US Eastern time, updates in real-time and gets new data
+        <br />
         every 5 seconds using MrBeast's real studio subscriber count.
       </h2>
       <div id="container"></div>
@@ -737,7 +765,7 @@
         });
       }
 
-      document.addEventListener("DOMContentLoaded", function () {
+      document.addEventListener("DOMContentLoaded", async function () {
         const dropdownButton = document.getElementById("exportCsvButton");
         const dropdownContent = document.querySelector(".dropdown-content");
 
@@ -754,39 +782,75 @@
           }
         });
 
+        async function handleCsvDownload(url, filename, type) {
+          const buttons = document.querySelectorAll(".dropdown-content button");
+          buttons.forEach((button) => {
+            button.disabled = true;
+            button.style.cursor = "not-allowed";
+          });
+
+          const popup = document.createElement("div");
+          popup.style.position = "fixed";
+          popup.style.top = "50%";
+          popup.style.left = "50%";
+          popup.style.transform = "translate(-50%, -50%)";
+          popup.style.backgroundColor = "#333";
+          popup.style.color = "#e0e0e0";
+          popup.style.padding = "50px";
+          popup.style.borderRadius = "12px";
+          popup.style.boxShadow = "0 8px 16px rgba(0, 0, 0, 0.3)";
+          popup.style.zIndex = "10000";
+          popup.style.textAlign = "center";
+          popup.style.width = "600px";
+          popup.innerHTML = `
+      <p style="font-size: 2rem; font-weight: bold; margin-bottom: 10px; color: #2dd4ff;">Download in progress...</p>
+      <p style="font-size: 1.5rem;">This might take a few seconds, as it is processing 100k+ datapoints</p>
+        `;
+          document.body.appendChild(popup);
+
+          try {
+            const csvData = convertDataToCSV(await fetchData(url), type);
+            downloadCSVFile(csvData, filename);
+          } catch (error) {
+            console.error("Failed to download CSV:", error);
+          } finally {
+            buttons.forEach((button) => {
+              button.disabled = false;
+              button.style.backgroundColor = "";
+              button.style.cursor = "";
+            });
+            document.body.removeChild(popup);
+          }
+        }
+
         document
           .getElementById("downloadMinutelyData")
-          .addEventListener("click", async function () {
-            const csvData = convertDataToCSV(
-              await fetchData(
-                "https://api.communitrics.com/mrbeast?minutely=true"
-            )
+          .addEventListener("click", function () {
+            handleCsvDownload(
+              "https://api.communitrics.com/mrbeast?minutely=true",
+              "MrBeast_Minutely_Subscribers.csv",
+              "minutely"
             );
-            downloadCSVFile(csvData, "MrBeast_Minutely_Subscribers.csv");
           });
 
         document
           .getElementById("downloadHourlyData")
-          .addEventListener("click", async function () {
-            const csvData = convertDataToCSV(
-              await fetchData(
-                "https://api.communitrics.com/mrbeast?hourly=true"
-              ),
+          .addEventListener("click", function () {
+            handleCsvDownload(
+              "https://api.communitrics.com/mrbeast?hourly=true",
+              "MrBeast_Hourly_Subscribers.csv",
               "hourly"
             );
-            downloadCSVFile(csvData, "MrBeast_Hourly_Subscribers.csv");
           });
 
         document
           .getElementById("downloadDailyData")
-          .addEventListener("click", async function () {
-            const csvData = convertDataToCSV(
-              await fetchData(
-                "https://api.communitrics.com/mrbeast?daily=true"
-              ),
+          .addEventListener("click", function () {
+            handleCsvDownload(
+              "https://api.communitrics.com/mrbeast?daily=true",
+              "MrBeast_Daily_Subscribers.csv",
               "daily"
             );
-            downloadCSVFile(csvData, "MrBeast_Daily_Subscribers.csv");
           });
 
         fetchDataAndDrawChart();
