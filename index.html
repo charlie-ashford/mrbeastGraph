@@ -8,7 +8,7 @@
     <script src="https://code.highcharts.com/modules/boost.js"></script>
     <script src="https://code.highcharts.com/modules/accessibility.js"></script>
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
       rel="stylesheet"
     />
     <link rel="icon" href="image.png" type="image/png" />
@@ -49,7 +49,7 @@
       body {
         margin: 0;
         padding: 0;
-        font-family: "Inter", sans-serif;
+        font-family: "Poppins", sans-serif;
         background-color: #121212;
         color: #e0e0e0;
         line-height: 1.6;
@@ -94,20 +94,11 @@
 
       h2 {
         text-align: center;
-        font-weight: 400;
+        font-weight: 500;
         color: #bdbdbd;
         margin-top: 10px;
         margin-bottom: 10px;
         font-size: 12px;
-      }
-
-      h3 {
-        text-align: center;
-        font-weight: 700;
-        color: #ffffff;
-        margin-top: 10px;
-        margin-bottom: 10px;
-        font-size: 18px;
       }
 
       #info {
@@ -475,8 +466,8 @@
         style="
           color: #e0e0e0;
           margin-top: 20px;
-          font-family: 'Inter', sans-serif;
-          font-weight: bold;
+          font-family: 'Poppins', sans-serif;
+          font-weight: 700;
           font-size: 1.5rem;
           text-align: center;
         "
@@ -668,39 +659,43 @@
 
         const infoDiv = document.getElementById("info");
         infoDiv.innerHTML = `
-      <div class="info-tile">
-        <div class="info-tile-header">Current Subscriber Count</div>
-        <div class="info-tile-value">${formatNumber(lastEntry.count)}</div>
-        <div class="info-tile-change">Latest update: ${formatDateTime(
-          lastEntry.currentTime
-        )}</div>
-      </div>
-      <div class="info-tile">
-        <div class="info-tile-header">24 Hour Gain</div>
-        <div class="info-tile-value">${formatNumber(recentGained)}</div>
-        <div class="info-tile-change">
-          Subscribers 24h ago: ${formatNumber(subs24HoursAgo)}
-        </div>
-      </div>
-      <div class="info-tile">
-        <div class="info-tile-header">Average Daily Gain</div>
-        <div class="info-tile-value">${formatNumber(
-          Math.floor(averageGainedPerDay)
-        )}</div>
-        <div class="info-tile-change">Since live-count release at ${formatDateTime(
-          firstEntry.currentTime,
-          false
-        )}</div>
-      </div>
-      <div class="info-tile">
-        <div class="info-tile-header">Total Gain</div>
-        <div class="info-tile-value">${formatNumber(totalGained)}</div>
-        <div class="info-tile-change">Over the last ${formatTime(totalTime)}</div>
-        <div class="info-tile-change">Starting count: ${formatNumber(
-          firstEntry.count
-        )}</div>
-      </div>
-    `;
+          <div class="info-tile">
+            <div class="info-tile-header">Current Subscriber Count</div>
+            <div class="info-tile-value">${formatNumber(lastEntry.count)}</div>
+            <div class="info-tile-change"><strong>Latest update:</strong> ${formatDateTime(
+              lastEntry.currentTime
+            )}</div>
+          </div>
+          <div class="info-tile">
+            <div class="info-tile-header">24 Hour Gain</div>
+            <div class="info-tile-value">${formatNumber(recentGained)}</div>
+            <div class="info-tile-change">
+              <strong>Subscribers 24h ago:</strong> ${formatNumber(
+                subs24HoursAgo
+              )}
+            </div>
+          </div>
+          <div class="info-tile">
+            <div class="info-tile-header">Average Daily Gain</div>
+            <div class="info-tile-value">${formatNumber(
+              Math.floor(averageGainedPerDay)
+            )}</div>
+            <div class="info-tile-change"><strong>Since live-count release at</strong> ${formatDateTime(
+              firstEntry.currentTime,
+              false
+            )}</div>
+          </div>
+          <div class="info-tile">
+            <div class="info-tile-header">Total Gain</div>
+            <div class="info-tile-value">${formatNumber(totalGained)}</div>
+            <div class="info-tile-change"><strong>Over the last</strong> ${formatTime(
+              totalTime
+            )}</div>
+            <div class="info-tile-change"><strong>Starting count:</strong> ${formatNumber(
+              firstEntry.count
+            )}</div>
+          </div>
+        `;
       }
 
       function formatTime(ms) {
@@ -896,7 +891,7 @@
           popup.style.textAlign = "center";
           popup.style.width = "600px";
           popup.innerHTML = `
-        <p style="font-size: 2rem; font-weight: bold; margin-bottom: 10px; color: #2dd4ff;">Download in progress...</p>
+        <p style="font-size: 2rem; font-weight: 700; margin-bottom: 10px; color: #2dd4ff;">Download in progress...</p>
         <p style="font-size: 1.5rem;">This might take a few seconds, as it is processing 100k+ datapoints</p>
           `;
           document.body.appendChild(popup);
