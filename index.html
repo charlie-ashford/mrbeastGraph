@@ -663,7 +663,7 @@
           );
           const minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
           const seconds = Math.floor((ms % (1000 * 60)) / 1000);
-          return `${days}d ${hours}h ${minutes}m ${seconds}s`;
+          return `${days}d, ${hours}h, ${minutes}m, ${seconds}s`;
         };
 
         const infoDiv = document.getElementById("info");
@@ -671,7 +671,7 @@
       <div class="info-tile">
         <div class="info-tile-header">Current Subscriber Count</div>
         <div class="info-tile-value">${formatNumber(lastEntry.count)}</div>
-        <div class="info-tile-change">Last updated: ${formatDateTime(
+        <div class="info-tile-change">Latest update: ${formatDateTime(
           lastEntry.currentTime
         )}</div>
       </div>
