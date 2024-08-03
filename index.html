@@ -687,7 +687,7 @@
         <div class="info-tile-value">${formatNumber(
           Math.floor(averageGainedPerDay)
         )}</div>
-        <div class="info-tile-change">Since ${formatDateTime(
+        <div class="info-tile-change">Since live-count release at ${formatDateTime(
           firstEntry.currentTime,
           false
         )}</div>
@@ -695,7 +695,7 @@
       <div class="info-tile">
         <div class="info-tile-header">Total Gain</div>
         <div class="info-tile-value">${formatNumber(totalGained)}</div>
-        <div class="info-tile-change">Over ${formatTime(totalTime)}</div>
+        <div class="info-tile-change">Over the last ${formatTime(totalTime)}</div>
         <div class="info-tile-change">Starting count: ${formatNumber(
           firstEntry.count
         )}</div>
