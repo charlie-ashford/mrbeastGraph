@@ -56,7 +56,7 @@
       }
 
       * {
-        font-family: 'Poppins', sans-serif !important;
+        font-family: "Poppins", sans-serif !important;
       }
 
       .smaller-text {
@@ -730,7 +730,7 @@
             animation: true,
             backgroundColor: "#1E1E1E",
             style: {
-              fontFamily: 'Poppins, sans-serif',
+              fontFamily: "Poppins, sans-serif",
               color: "#E0E0E0",
             },
             events: {
@@ -787,7 +787,6 @@
               format: "{value:%H:%M:%S}",
             },
             dateTimeLabelFormats: {
-              millisecond: "%H:%M:%S.%L",
               second: "%H:%M:%S",
               minute: "%H:%M",
               hour: "%H:%M",
@@ -839,6 +838,17 @@
             animation: false,
             shared: true,
             crosshairs: false,
+            backgroundColor: "#333333",
+            borderColor: "#2DD4FF",
+            style: {
+              color: "#E0E0E0",
+            },
+            formatter: function () {
+              return `<span style="font-size: 12px;">${Highcharts.dateFormat(
+                "%A, %b %e, %Y, %H:%M:%S",
+                this.x
+              )}</span><br/><b style="font-size: 14px;">Subscribers: ${this.points[0].y.toLocaleString()}</b>`;
+            },
           },
           series: [
             {
