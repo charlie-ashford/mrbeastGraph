@@ -486,6 +486,7 @@
         <button id="exportCsvButton">Export Data to CSV</button>
         <div class="dropdown-content">
           <button id="downloadMinutelyData">Minutely Data</button>
+          <button id="downloadTenMinutelyData">10 Minutely Data</button>
           <button id="downloadHourlyData">Hourly Data</button>
           <button id="downloadDailyData">Daily Data</button>
         </div>
@@ -935,6 +936,16 @@
               "minutely"
             );
           });
+
+        document
+        .getElementById("downloadTenMinutelyData")
+        .addEventListener("click", function () {
+          handleCsvDownload(
+            "https://api.communitrics.com/mrbeast?tenminutely=true",
+            "MrBeast_10Minutely_Subscribers.csv",
+            "tenminutely"
+          );
+        });
 
         document
           .getElementById("downloadHourlyData")
@@ -1433,6 +1444,8 @@
           "Subscriber Count",
           type === "minutely"
             ? "Minutely Gains"
+            : type === "tenminutely"
+            ? "10 Minutely Gains"
             : type === "hourly"
             ? "Hourly Gains"
             : "Daily Gains",
@@ -1461,6 +1474,8 @@
             timestamp.getTime() - lastSelectedTime.getTime() >=
               (type === "minutely"
                 ? 60 * 1000
+                : type === "tenminutely"
+                ? 60 * 10 * 1000
                 : type === "hourly"
                 ? 60 * 60 * 1000
                 : 24 * 60 * 60 * 1000)
