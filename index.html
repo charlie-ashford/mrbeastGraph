@@ -892,26 +892,29 @@
             button.disabled = true;
             button.style.cursor = "not-allowed";
           });
-
-          const popup = document.createElement("div");
-          popup.style.position = "fixed";
-          popup.style.top = "50%";
-          popup.style.left = "50%";
-          popup.style.transform = "translate(-50%, -50%)";
-          popup.style.backgroundColor = "#333";
-          popup.style.color = "#e0e0e0";
-          popup.style.padding = "50px";
-          popup.style.borderRadius = "12px";
-          popup.style.boxShadow = "0 8px 16px rgba(0, 0, 0, 0.3)";
-          popup.style.zIndex = "10000";
-          popup.style.textAlign = "center";
-          popup.style.width = "600px";
-          popup.innerHTML = `
-        <p style="font-size: 2rem; font-weight: 700; margin-bottom: 10px; color: #2dd4ff;">Download in progress...</p>
-        <p style="font-size: 1.5rem;">This might take a few seconds, as it is processing 100k+ datapoints</p>
-          `;
-          document.body.appendChild(popup);
-
+        
+          let popup;
+          if (window.innerWidth > 768) {
+            popup = document.createElement("div");
+            popup.style.position = "fixed";
+            popup.style.top = "50%";
+            popup.style.left = "50%";
+            popup.style.transform = "translate(-50%, -50%)";
+            popup.style.backgroundColor = "#333";
+            popup.style.color = "#e0e0e0";
+            popup.style.padding = "50px";
+            popup.style.borderRadius = "12px";
+            popup.style.boxShadow = "0 8px 16px rgba(0, 0, 0, 0.3)";
+            popup.style.zIndex = "10000";
+            popup.style.textAlign = "center";
+            popup.style.width = "600px";
+            popup.innerHTML = `
+              <p style="font-size: 2rem; font-weight: 700; margin-bottom: 10px; color: #2dd4ff;">Download in progress...</p>
+              <p style="font-size: 1.5rem;">This might take a few seconds, as it is processing 100k+ datapoints</p>
+            `;
+            document.body.appendChild(popup);
+          }
+        
           try {
             const csvData = convertDataToCSV(await fetchData(url), type);
             downloadCSVFile(csvData, filename);
@@ -920,10 +923,11 @@
           } finally {
             buttons.forEach((button) => {
               button.disabled = false;
-              button.style.backgroundColor = "";
               button.style.cursor = "";
             });
-            document.body.removeChild(popup);
+            if (popup) {
+              document.body.removeChild(popup);
+            }
           }
         }
 
