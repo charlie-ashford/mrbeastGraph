@@ -7,9 +7,6 @@
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/boost.js"></script>
     <script src="https://code.highcharts.com/modules/accessibility.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.34/moment-timezone-with-data.min.js"></script>
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
       rel="stylesheet"
@@ -44,6 +41,10 @@
       content="https://www.mrbeastgraph.com/embed.png"
     />
     <meta name="twitter:url" content="https://www.mrbeastgraph.com" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.34/moment-timezone-with-data.min.js"></script>
     <style>
       body {
         margin: 0;
@@ -106,7 +107,7 @@
 
       #info {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         gap: 25px;
         margin: 40px auto;
         width: 95%;
@@ -198,10 +199,6 @@
         display: inline-block;
       }
 
-      .desktop-break {
-        display: inline;
-      }
-
       .dropdown-content {
         display: none;
         position: absolute;
@@ -239,40 +236,6 @@
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
       }
 
-      .tables-container {
-        display: none;
-        justify-content: space-around;
-        margin-top: 150px;
-      }
-
-      .table-container {
-        width: 45%;
-        padding: 5px;
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-        border-radius: 8px;
-        background-color: #232323;
-        text-align: center;
-      }
-
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        color: #e0e0e0;
-        margin: 0 auto;
-      }
-
-      th,
-      td {
-        padding: 10px;
-        text-align: left;
-        border: 1px solid #444;
-      }
-
-      th {
-        background-color: #2dd4ff;
-        color: #1e1e1e;
-      }
-
       a {
         color: inherit;
         font-weight: bold;
@@ -284,51 +247,9 @@
         color: #2dd4ff;
       }
 
-      #loader {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        background-color: #121212;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        z-index: 9999;
-      }
-
-      .spinner {
-        border: 8px solid #f3f3f3;
-        border-top: 8px solid #2dd4ff;
-        border-radius: 50%;
-        width: 60px;
-        height: 60px;
-        animation: spin 1.5s linear infinite;
-      }
-
-      @keyframes spin {
-        0% {
-          transform: rotate(0deg);
-        }
-
-        100% {
-          transform: rotate(360deg);
-        }
-      }
-
-      @media (min-width: 769px) {
-        .desktop-break {
-          display: inline;
-        }
-      }
-
       @media (max-width: 768px) {
         body {
           overflow-x: hidden;
-        }
-
-        .desktop-break {
-          display: none;
         }
 
         .button-container {
@@ -459,6 +380,72 @@
           color: #1e1e1e;
         }
       }
+
+      .tables-container {
+        display: none;
+        justify-content: space-around;
+        margin-top: 150px;
+      }
+
+      .table-container {
+        width: 45%;
+        padding: 5px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        border-radius: 8px;
+        background-color: #232323;
+        text-align: center;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        color: #e0e0e0;
+        margin: 0 auto;
+      }
+
+      th,
+      td {
+        padding: 10px;
+        text-align: left;
+        border: 1px solid #444;
+      }
+
+      th {
+        background-color: #2dd4ff;
+        color: #1e1e1e;
+      }
+
+      #loader {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #121212;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 9999;
+      }
+
+      .spinner {
+        border: 8px solid #f3f3f3;
+        border-top: 8px solid #2dd4ff;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        animation: spin 1.5s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+
+        100% {
+          transform: rotate(360deg);
+        }
+      }
     </style>
   </head>
 
@@ -518,22 +505,19 @@
       <button id="viewDailyGainsButton">View Data Tables</button>
     </div>
     <div id="mainContent" style="display: none">
-      <div id="textContent" class="text-container">
-        <h1>MrBeast Studio Subscriber Count</h1>
-        <h2>
-          This graph is in US Eastern time and updates in real-time every 5
-          seconds <br class="desktop-break" />
-          with MrBeast's studio subscriber count, powered by
-          <a href="https://viewstats.com/" target="_blank">Viewstats</a>.
-          <br class="desktop-break" />
-          <br class="desktop-break" />
-          It includes the previous 3,600 points, around 5 hours worth of data.
-          <br /><br />
-          To see all the data, download the CSV (options of minutely, hourly, or
-          daily data) <br class="desktop-break" />or view the tables with the
-          buttons above.
-        </h2>
-      </div>
+      <h1>MrBeast Studio Subscriber Count</h1>
+      <h2>
+        This graph is in US Eastern time and updates in real-time every 5
+        seconds <br />
+        with MrBeast's studio subscriber count, powered by
+        <a href="https://viewstats.com/" target="_blank">Viewstats</a>.
+        <br />
+        <br />
+        It includes the previous 3,600 points, around 5 hours worth of data.
+        <br /><br />
+        To see all the data, download the CSV (options of minutely, hourly, or
+        daily data) <br />or view the tables with the buttons above.
+      </h2>
       <div id="container"></div>
       <div id="info"></div>
     </div>
