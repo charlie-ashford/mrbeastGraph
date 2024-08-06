@@ -491,7 +491,7 @@
           <button id="downloadDailyData">Daily Data</button>
         </div>
       </div>
-      <button id="viewDailyGainsButton">View Daily Gains</button>
+      <button id="viewDailyGainsButton">View Data Tables</button>
     </div>
     <div id="mainContent" style="display: none">
       <h1>MrBeast Studio Subscriber Count</h1>
@@ -499,8 +499,8 @@
         This graph is in US Eastern time, updates in real-time and gets new data
         every 5 seconds using MrBeast's real studio subscriber count.<br />
         <br />
-        The graph includes the previous 3,600 points (around 5 hours) worth
-        of data.<br />
+        The graph includes the previous 3,600 points (around 5 hours) worth of
+        data.<br />
         <br />
         To see all the data, download the CSV (options of minutely, hourly or
         daily data) or view the tables with the buttons above.
@@ -512,8 +512,8 @@
       <div class="table-container">
         <h1>Hourly Gains</h1>
         <h2>
-          Note: If you see blank data for some rows in the past, the API was
-          likely down.
+          If there is missing data for rows in the past, the API was likely
+          down.
         </h2>
         <div
           style="
@@ -982,7 +982,7 @@
             if (mainContent.style.display === "none") {
               mainContent.style.display = "block";
               tableContent.style.display = "none";
-              button.textContent = "View Daily Gains";
+              button.textContent = "View Data Tables";
             } else {
               mainContent.style.display = "none";
               tableContent.style.display = "flex";
