@@ -1189,7 +1189,7 @@
                 lastHourCount !== null ? currentCount - lastHourCount : null;
               if (gain !== null) {
                 gainValue = gain.toLocaleString();
-                let color = "white";
+                let color = "red";
                 if (previousGain !== null && gain < previousGain) {
                   color = "red";
                 } else if (gain > 0) {
@@ -1395,7 +1395,7 @@
 
             if (gain !== null) {
               gainValue = gain.toLocaleString();
-              let color = "white";
+              let color = "red";
               if (previousGain !== null && gain < previousGain) {
                 color = "red";
               } else if (gain > 0) {
