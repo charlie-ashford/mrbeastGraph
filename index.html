@@ -541,19 +541,15 @@
     </div>
     <div id="tableContent" class="tables-container">
       <div class="table-container">
-        <h1>Hourly Gains</h1>
-        <h2>
-          If there is missing data for rows in the past, the API was likely
-          down.
-        </h2>
         <div
           style="
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
+            position: relative;
           "
         >
-          <div></div>
+          <h1 style="flex-grow: 1; text-align: center">Hourly Gains</h1>
           <input
             type="date"
             id="datePicker"
@@ -563,11 +559,16 @@
               border: 1px solid #444;
               border-radius: 5px;
               padding: 5px;
-              margin-bottom: 10px;
               margin-right: 10px;
+              position: absolute;
+              right: 0;
             "
           />
         </div>
+        <h2>
+          If there is missing data for rows in the past, the API was likely
+          down.
+        </h2>
         <table id="hourlyGainsTable">
           <thead>
             <tr>
@@ -582,6 +583,10 @@
       </div>
       <div class="table-container">
         <h1>Daily Gains</h1>
+        <h2>
+          Data from August 09 - September 02, 2024 is estimated <br />
+          based on views, as the Viewstats count was down.
+        </h2>
         <table id="dailyGainsTable">
           <thead>
             <tr>
