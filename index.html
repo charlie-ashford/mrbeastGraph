@@ -572,7 +572,6 @@
         <table id="hourlyGainsTable">
           <thead>
             <tr>
-              <th>Date</th>
               <th>Time (UTC)</th>
               <th>Subscribers</th>
               <th>Gains</th>
@@ -592,7 +591,6 @@
           <thead>
             <tr>
               <th>Date</th>
-              <th>Time (US Eastern)</th>
               <th>Subscribers</th>
               <th>Gains</th>
             </tr>
@@ -1139,7 +1137,6 @@
 
           const closestEntry = findClosestEntry(data, nextHourDate);
           const row = document.createElement("tr");
-          const dateCell = document.createElement("td");
           const timeCell = document.createElement("td");
           const subscriberCell = document.createElement("td");
           const gainCell = document.createElement("td");
@@ -1152,7 +1149,6 @@
             timeZoneName: "short",
           });
 
-          dateCell.textContent = targetDate.toISOString().split("T")[0];
           timeCell.innerHTML = `${hour
             .toString()
             .padStart(2, "0")}:00 UTC (${targetDate.toLocaleTimeString(
@@ -1240,7 +1236,6 @@
             gainBuffer.push("-");
           }
 
-          row.appendChild(dateCell);
           row.appendChild(timeCell);
           row.appendChild(subscriberCell);
           row.appendChild(gainCell);
@@ -1353,7 +1348,6 @@
 
           const row = document.createElement("tr");
           const dateCell = document.createElement("td");
-          const timeCell = document.createElement("td");
           const subscriberCell = document.createElement("td");
           const gainCell = document.createElement("td");
 
@@ -1393,9 +1387,6 @@
           const edtISODateString = edtTime.toISOString().split("T")[0];
 
           dateCell.innerHTML = `${edtDateString}<br>${edtISODateString}`;
-          timeCell.innerHTML = `12:00 AM EDT<br>${utcTimeFormatter.format(
-            utcTime
-          )} UTC (${localTimeFormatter.format(localTime)} local)`;
           subscriberCell.textContent = closestEndEntry
             ? closestEndEntry.count.toLocaleString()
             : "-";
@@ -1441,7 +1432,6 @@
           }
 
           row.appendChild(dateCell);
-          row.appendChild(timeCell);
           row.appendChild(subscriberCell);
           row.appendChild(gainCell);
 
