@@ -386,6 +386,14 @@
         margin-top: 150px;
       }
 
+      .scrollable-table-container {
+        max-height: 1835px;
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: #2dd4ff #232323;
+        overscroll-behavior: contain;
+      }
+
       .table-container {
         width: 45%;
         padding: 5px;
@@ -402,6 +410,20 @@
         margin: 0 auto;
       }
 
+      .scrollable-table-container::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      .scrollable-table-container::-webkit-scrollbar-track {
+        background: #232323;
+      }
+
+      .scrollable-table-container::-webkit-scrollbar-thumb {
+        background-color: #2dd4ff;
+        border-radius: 10px;
+        border: 2px solid #232323;
+      }
+
       th,
       td {
         padding: 10px;
@@ -412,6 +434,9 @@
       th {
         background-color: #2dd4ff;
         color: #1e1e1e;
+        position: sticky;
+        top: 0;
+        z-index: 1;
       }
 
       #loader {
@@ -566,7 +591,14 @@
           />
         </div>
         <h2>
-          <span style="font-weight: 600; color: #d4d0d0">
+          <span
+            style="
+              font-weight: 600;
+              color: #d4d0d0;
+              padding-bottom: 12px;
+              display: inline-block;
+            "
+          >
             If there is missing data for any row, the API or count was likely
             down.
           </span>
@@ -598,16 +630,18 @@
             the Viewstats count was down.
           </span>
         </h2>
-        <table id="dailyGainsTable">
-          <thead>
-            <tr>
-              <th>Date (US Eastern)</th>
-              <th>Subscribers</th>
-              <th>Gains</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
+        <div class="scrollable-table-container">
+          <table id="dailyGainsTable">
+            <thead>
+              <tr>
+                <th>Date (US Eastern)</th>
+                <th>Subscribers</th>
+                <th>Gains</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
       </div>
     </div>
     <script>
@@ -1566,6 +1600,15 @@
           );
         }
       }
+
+      const tableContainer = document.getElementById("scrollableTable");
+
+      tableContainer.addEventListener("wheel", function (e) {
+        if (tableContainer.scrollHeight > tableContainer.clientHeight) {
+          e.preventDefault();
+          tableContainer.scrollTop += e.deltaY;
+        }
+      });
     </script>
   </body>
 </html>
