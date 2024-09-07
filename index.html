@@ -213,7 +213,7 @@
         color: #ffffff;
         font-weight: 700;
       }
-      
+
       .button-container {
         position: fixed;
         right: 70px;
@@ -578,7 +578,7 @@
           <button id="downloadMinutelyData">Minutely Data</button>
           <button id="downloadTenMinutelyData">10 Minutely Data</button>
           <button id="downloadHourlyData">Hourly Data</button>
-          <button id="downloadDailyData">Daily Data</button>
+          <button id="downloadDailyData">Daily Data (UTC)</button>
         </div>
       </div>
       <button id="viewDailyGainsButton">View Data Tables</button>
@@ -1047,7 +1047,7 @@
             popup.style.width = "600px";
             popup.innerHTML = `
               <p style="font-size: 2rem; font-weight: 700; margin-bottom: 10px; color: #2dd4ff;">Download in progress...</p>
-              <p style="font-size: 1.5rem;">This might take a while, as it is processing and filtering 100k+ datapoints</p>
+              <p style="font-size: 1.5rem;">This might take a while, as it is processing and filtering 100k+ datapoints. <br> <br> All CSVs are in UTC unless otherwise stated.</p>
             `;
             document.body.appendChild(popup);
           }
