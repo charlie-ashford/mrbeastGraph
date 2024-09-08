@@ -56,6 +56,7 @@
 
       * {
         font-family: "Poppins", sans-serif !important;
+        box-sizing: border-box;
       }
 
       .smaller-text {
@@ -66,11 +67,9 @@
         0% {
           transform: rotate(0deg);
         }
-
         50% {
           transform: rotate(180deg);
         }
-
         100% {
           transform: rotate(360deg);
         }
@@ -126,7 +125,7 @@
       }
 
       .info-tile:hover {
-        transform: scale(1.05);
+        transform: scale(1.08);
         box-shadow: 0 18px 37px rgba(0, 0, 0, 0.4),
           0 0 0 1px rgba(255, 255, 255, 0.2);
       }
@@ -214,6 +213,22 @@
         font-weight: 700;
       }
 
+      @keyframes pulse {
+        0% {
+          box-shadow: 0 0 0 0 rgba(58, 219, 255, 0.4);
+        }
+        70% {
+          box-shadow: 0 0 0 10px rgba(58, 219, 255, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(58, 219, 255, 0);
+        }
+      }
+
+      .info-tile:hover {
+        animation: pulse 1.5s infinite;
+      }
+
       .button-container {
         position: fixed;
         right: 70px;
@@ -237,15 +252,17 @@
         border: none;
         border-radius: 8px;
         cursor: pointer;
-        transition: background-color 0.3s;
+        transition: all 0.3s ease;
         margin-bottom: 10px;
         width: 200px;
         text-align: center;
+        box-shadow: none !important;
       }
 
       .button-container button:hover,
       .dropdown-content button:hover {
         background-color: #1bc6e8;
+        box-shadow: none !important;
       }
 
       .dropdown {
@@ -258,7 +275,7 @@
         position: absolute;
         background-color: #2d2d2d;
         min-width: 200px;
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        box-shadow: none !important;
         z-index: 1;
         border-radius: 8px;
         overflow: hidden;
@@ -283,6 +300,18 @@
 
       .dropdown-content.show {
         display: block;
+        animation: fadeIn 0.3s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
       }
 
       .highcharts-reset-zoom {
@@ -294,145 +323,12 @@
         color: inherit;
         font-weight: 700;
         text-decoration: none;
+        transition: color 0.3s ease;
       }
 
       a:hover {
-        text-decoration: underline;
+        text-decoration: none;
         color: #2dd4ff;
-      }
-
-      @media (max-width: 768px) {
-        body {
-          overflow-x: hidden;
-        }
-
-        .button-container {
-          position: static;
-          text-align: center;
-          margin-top: 10px;
-          width: 100%;
-        }
-
-        .button-container button {
-          font-size: 14px;
-          padding: 12px;
-          margin: 10px auto;
-          display: block;
-          width: 100%;
-        }
-
-        .dropdown {
-          width: 100%;
-        }
-
-        .dropdown-content {
-          width: 90%;
-          position: absolute;
-          left: 50%;
-          transform: translateX(-50%);
-          box-shadow: none;
-          border-radius: 0;
-        }
-
-        .dropdown-content button {
-          padding: 12px;
-          width: 100%;
-          text-align: center;
-          font-size: 14px;
-        }
-
-        #container {
-          width: 95%;
-          height: auto;
-          margin: 10px auto;
-          padding: 5px;
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-          border-radius: 4px;
-          background-color: #232323;
-        }
-
-        #info {
-          flex-direction: column;
-          gap: 15px;
-          width: calc(100% - 10px);
-          padding: 0 5px;
-          overflow: hidden;
-        }
-
-        .info-tile {
-          width: 100%;
-          padding: 20px;
-          box-shadow: none;
-          border-radius: 20px;
-        }
-
-        .info-tile::before {
-          display: none;
-        }
-
-        .info-tile-header {
-          font-size: 16px;
-        }
-
-        .info-tile-value {
-          font-size: 28px;
-        }
-
-        .info-tile-change {
-          font-size: 14px;
-        }
-
-        .button-container {
-          position: static;
-          text-align: center;
-          margin-top: 10px;
-        }
-
-        .button-container button {
-          font-size: 14px;
-          padding: 8px 16px;
-          margin: 10px auto;
-          display: block;
-          width: 90%;
-        }
-
-        .tables-container {
-          display: flex;
-          flex-direction: column;
-          width: 200%;
-          margin: 10px auto;
-        }
-
-        .table-container {
-          width: 200%;
-          margin-bottom: 20px;
-          padding: 10px;
-          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-          border-radius: 4px;
-          background-color: #232323;
-        }
-
-        table {
-          width: 200%;
-          border-collapse: collapse;
-          color: #e0e0e0;
-          margin: 0 auto;
-          overflow-x: scroll;
-          display: block;
-        }
-
-        th,
-        td {
-          padding: 10px;
-          text-align: left;
-          border: 1px solid #444;
-          white-space: nowrap;
-        }
-
-        th {
-          background-color: #2dd4ff;
-          color: #1e1e1e;
-        }
       }
 
       .tables-container {
@@ -460,7 +356,8 @@
 
       table {
         width: 100%;
-        border-collapse: collapse;
+        border-collapse: separate;
+        border-spacing: 0;
         color: #e0e0e0;
         margin: 0 auto;
       }
@@ -471,11 +368,12 @@
 
       .scrollable-table-container::-webkit-scrollbar-track {
         background: #232323;
+        border-radius: 3px;
       }
 
       .scrollable-table-container::-webkit-scrollbar-thumb {
         background-color: #2dd4ff;
-        border-radius: 10px;
+        border-radius: 3px;
         border: 2px solid #232323;
       }
 
@@ -483,7 +381,7 @@
       td {
         padding: 10px;
         text-align: left;
-        border: 1px solid #444;
+        border-bottom: 1px solid #444;
       }
 
       th {
@@ -492,6 +390,10 @@
         position: sticky;
         top: 0;
         z-index: 1;
+      }
+
+      tr:last-child td {
+        border-bottom: none;
       }
 
       #loader {
@@ -523,6 +425,99 @@
 
         100% {
           transform: rotate(360deg);
+        }
+      }
+
+      @media (max-width: 768px) {
+        body {
+          overflow-x: hidden;
+        }
+
+        #container {
+          width: 95%;
+          margin: 15px auto;
+          padding: 15px;
+        }
+
+        h1 {
+          font-size: 28px;
+        }
+
+        h2 {
+          font-size: 16px;
+        }
+
+        #info {
+          grid-template-columns: 1fr;
+          gap: 20px;
+        }
+
+        .info-tile {
+          box-shadow: none;
+          transform: scale(1.01);
+          animation: none;
+          padding: 25px;
+        }
+
+        .info-tile-header {
+          font-size: 14px;
+        }
+
+        .info-tile-value {
+          font-size: 32px;
+        }
+
+        .info-tile-change {
+          font-size: 14px;
+        }
+
+        .info-tile::before {
+          background: none;
+          transform: none;
+        }
+
+        .button-container {
+          position: static;
+          text-align: center;
+          margin-top: 20px;
+          width: 100%;
+        }
+
+        .button-container button,
+        .dropdown-content button {
+          font-size: 14px;
+          padding: 10px 20px;
+          margin: 10px auto;
+          display: block;
+          width: 90%;
+        }
+
+        .dropdown {
+          width: 100%;
+        }
+
+        .dropdown-content {
+          width: 90%;
+          left: 5%;
+          right: 5%;
+          transform: none;
+        }
+
+        .tables-container {
+          flex-direction: column;
+          width: 100%;
+          margin: 20px auto;
+        }
+
+        .table-container {
+          width: 100%;
+          margin-bottom: 20px;
+          overflow-x: auto;
+        }
+
+        table {
+          width: 100%;
+          min-width: 500px;
         }
       }
     </style>
@@ -1044,7 +1039,7 @@
             popup.style.boxShadow = "0 8px 16px rgba(0, 0, 0, 0.3)";
             popup.style.zIndex = "10000";
             popup.style.textAlign = "center";
-            popup.style.width = "600px";
+            popup.style.width = "800px";
             popup.innerHTML = `
               <p style="font-size: 2rem; font-weight: 700; margin-bottom: 10px; color: #2dd4ff;">Download in progress...</p>
               <p style="font-size: 1.5rem;">This might take a while, as it is processing and filtering 100k+ datapoints. <br> <br> All CSVs are in UTC unless otherwise stated.</p>
@@ -1658,12 +1653,17 @@
 
       const tableContainer = document.getElementById("scrollableTable");
 
-      tableContainer.addEventListener("wheel", function (e) {
-        if (tableContainer.scrollHeight > tableContainer.clientHeight) {
-          e.preventDefault();
-          tableContainer.scrollTop += e.deltaY;
-        }
-      });
+      const isTouchDevice =
+        "ontouchstart" in window || navigator.maxTouchPoints > 0;
+
+      if (!isTouchDevice) {
+        tableContainer.addEventListener("wheel", function (e) {
+          if (tableContainer.scrollHeight > tableContainer.clientHeight) {
+            e.preventDefault();
+            tableContainer.scrollTop += e.deltaY;
+          }
+        });
+      }
     </script>
   </body>
 </html>
