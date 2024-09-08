@@ -772,10 +772,12 @@
         const recentData = filteredData.filter(
           (entry) => new Date(entry.currentTime) >= oneDayAgo
         );
+
         const recentGained =
           recentData.length > 1
             ? recentData[recentData.length - 1].count - recentData[0].count
             : 0;
+
         const subs24HoursAgo =
           recentData.length > 0
             ? recentData[0].count
@@ -1652,7 +1654,6 @@
       }
 
       const tableContainer = document.getElementById("scrollableTable");
-
       const isTouchDevice =
         "ontouchstart" in window || navigator.maxTouchPoints > 0;
 
