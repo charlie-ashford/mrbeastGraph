@@ -35,14 +35,14 @@
     body {
       margin: 0;
       padding: 0;
-      font-family: 'Poppins', sans-serif;
+      font-family: "Poppins", sans-serif;
       background-color: #0f0f0f;
       color: #e0e0e0;
       line-height: 1.6;
     }
 
     * {
-      font-family: 'Poppins', sans-serif !important;
+      font-family: "Poppins", sans-serif !important;
       box-sizing: border-box;
     }
 
@@ -120,7 +120,7 @@
     }
 
     .info-tile::before {
-      content: '';
+      content: "";
       position: absolute;
       top: -50%;
       left: -50%;
@@ -152,7 +152,7 @@
     }
 
     .info-tile-header::after {
-      content: '';
+      content: "";
       position: absolute;
       bottom: -6px;
       left: 0;
@@ -679,25 +679,25 @@
     let filteredMrbeastData = [];
 
     let lastScrollTop = 0;
-    const buttonContainer = document.querySelector('.button-container');
-    window.addEventListener('scroll', () => {
+    const buttonContainer = document.querySelector(".button-container");
+    window.addEventListener("scroll", () => {
       const scrollTop =
         window.pageYOffset || document.documentElement.scrollTop;
 
       if (scrollTop === 0) {
-        buttonContainer.classList.remove('hidden');
+        buttonContainer.classList.remove("hidden");
       } else if (scrollTop > lastScrollTop) {
-        buttonContainer.classList.add('hidden');
+        buttonContainer.classList.add("hidden");
       }
       lastScrollTop = scrollTop;
     });
 
     async function fetchDataAndDrawChart() {
       try {
-        let response = await fetch('https://api.communitrics.com/mrbeast');
+        let response = await fetch("https://api.communitrics.com/mrbeast");
         const data = await response.json();
 
-        allMrbeastData = data.map(entry => [
+        allMrbeastData = data.map((entry) => [
           new Date(entry.currentTime).getTime(),
           entry.count,
         ]);
@@ -713,26 +713,26 @@
         fillHourlyTable(data);
         fillDailyTable(data);
       } catch (error) {
-        console.error('Failed to fetch data:', error);
+        console.error("Failed to fetch data:", error);
       } finally {
-        document.getElementById('loader').style.display = 'none';
-        document.getElementById('mainContent').style.display = 'block';
+        document.getElementById("loader").style.display = "none";
+        document.getElementById("mainContent").style.display = "block";
       }
     }
 
     function updateInfoSection(filteredData) {
-      const formatNumber = num => num.toLocaleString();
+      const formatNumber = (num) => num.toLocaleString();
       const formatDateTime = (dateString, includeSeconds = true) => {
         const date = new Date(dateString);
         if (includeSeconds) {
-          return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+          return date.toLocaleDateString() + " " + date.toLocaleTimeString();
         } else {
           return (
             date.toLocaleDateString() +
-            ' ' +
+            " " +
             date.toLocaleTimeString([], {
-              hour: '2-digit',
-              minute: '2-digit',
+              hour: "2-digit",
+              minute: "2-digit",
             })
           );
         }
@@ -750,7 +750,7 @@
       const now = new Date();
       const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
       const recentData = filteredData.filter(
-        entry => new Date(entry.currentTime) >= oneDayAgo
+        (entry) => new Date(entry.currentTime) >= oneDayAgo
       );
 
       const recentGained =
@@ -763,7 +763,7 @@
           ? recentData[0].count
           : lastEntry.count - recentGained;
 
-      const formatTime = ms => {
+      const formatTime = (ms) => {
         const days = Math.floor(ms / (1000 * 60 * 60 * 24));
         const hours = Math.floor(
           (ms % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
@@ -773,7 +773,7 @@
         return `${days}d, ${hours}h, ${minutes}m, ${seconds}s`;
       };
 
-      const infoDiv = document.getElementById('info');
+      const infoDiv = document.getElementById("info");
       infoDiv.innerHTML = `
           <div class="info-tile">
             <div class="info-tile-header">Current Subscriber Count</div>
@@ -824,26 +824,26 @@
     }
 
     function drawChart(mrbeastData) {
-      mrbeastData = mrbeastData.map(point => {
-        return [moment.tz(point[0], 'America/New_York').valueOf(), point[1]];
+      mrbeastData = mrbeastData.map((point) => {
+        return [moment.tz(point[0], "America/New_York").valueOf(), point[1]];
       });
 
       Highcharts.setOptions({
         time: {
-          timezone: 'America/New_York',
+          timezone: "America/New_York",
         },
       });
-      Highcharts.chart('container', {
+      Highcharts.chart("container", {
         chart: {
-          type: 'area',
-          zoomType: 'x',
+          type: "area",
+          zoomType: "x",
           panning: true,
-          panKey: 'shift',
+          panKey: "shift",
           animation: true,
-          backgroundColor: '#1E1E1E',
+          backgroundColor: "#1E1E1E",
           style: {
-            fontFamily: 'Poppins, sans-serif',
-            color: '#E0E0E0',
+            fontFamily: "Poppins, sans-serif",
+            color: "#E0E0E0",
           },
           events: {
             dblclick: function () {
@@ -852,88 +852,88 @@
           },
           resetZoomButton: {
             theme: {
-              fill: '#232323',
-              stroke: '#2DD4FF',
+              fill: "#232323",
+              stroke: "#2DD4FF",
               r: 5,
               style: {
-                color: '#2DD4FF',
-                fontSize: '12px',
-                fontWeight: 'bold',
+                color: "#2DD4FF",
+                fontSize: "12px",
+                fontWeight: "bold",
               },
               states: {
                 hover: {
-                  fill: '#2DD4FF',
+                  fill: "#2DD4FF",
                   style: {
-                    color: '#232323',
+                    color: "#232323",
                   },
                 },
               },
             },
             position: {
-              align: 'right',
-              verticalAlign: 'top',
+              align: "right",
+              verticalAlign: "top",
               x: -10,
               y: 10,
             },
-            relativeTo: 'chart',
+            relativeTo: "chart",
           },
         },
         title: {
-          text: 'MrBeast Subscriber Count',
+          text: "MrBeast Subscriber Count",
           style: {
-            color: '#FFFFFF',
+            color: "#FFFFFF",
           },
         },
         xAxis: {
-          type: 'datetime',
+          type: "datetime",
           title: {
-            text: 'Time',
+            text: "Time",
             style: {
-              color: '#E0E0E0',
-              fontWeight: 'bold',
+              color: "#E0E0E0",
+              fontWeight: "bold",
             },
           },
           labels: {
             style: {
-              color: '#E0E0E0',
+              color: "#E0E0E0",
             },
-            format: '{value:%H:%M:%S}',
+            format: "{value:%H:%M:%S}",
           },
           dateTimeLabelFormats: {
-            second: '%H:%M:%S',
-            minute: '%H:%M',
-            hour: '%H:%M',
-            day: '%e. %b',
-            week: '%e. %b',
+            second: "%H:%M:%S",
+            minute: "%H:%M",
+            hour: "%H:%M",
+            day: "%e. %b",
+            week: "%e. %b",
             month: "%b '%y",
-            year: '%Y',
+            year: "%Y",
           },
           tickPixelInterval: 150,
-          lineColor: '#333333',
-          tickColor: '#333333',
+          lineColor: "#333333",
+          tickColor: "#333333",
         },
         yAxis: {
           title: {
-            text: 'Subscribers',
+            text: "Subscribers",
             style: {
-              color: '#E0E0E0',
-              fontWeight: 'bold',
+              color: "#E0E0E0",
+              fontWeight: "bold",
             },
           },
           labels: {
             style: {
-              color: '#E0E0E0',
+              color: "#E0E0E0",
             },
           },
-          gridLineColor: '#333333',
+          gridLineColor: "#333333",
         },
         legend: {
           enabled: false,
-          layout: 'vertical',
-          align: 'right',
-          verticalAlign: 'middle',
+          layout: "vertical",
+          align: "right",
+          verticalAlign: "middle",
           itemStyle: {
-            color: '#E0E0E0',
+            color: "#E0E0E0",
           },
         },
         plotOptions: {
@@ -943,7 +943,7 @@
             connectNulls: true,
             area: {
               fillOpacity: 0.1,
-              fillColor: 'rgba(45, 212, 256, 0.1)',
+              fillColor: "rgba(45, 212, 256, 0.1)",
             },
           },
         },
@@ -952,76 +952,76 @@
           animation: false,
           shared: true,
           crosshairs: false,
-          backgroundColor: '#333333',
-          borderColor: '#2DD4FF',
+          backgroundColor: "#333333",
+          borderColor: "#2DD4FF",
           style: {
-            color: '#E0E0E0',
+            color: "#E0E0E0",
           },
           formatter: function () {
             return `<span style="font-size: 12px;">${Highcharts.dateFormat(
-              '%A, %b %e, %Y, %H:%M:%S',
+              "%A, %b %e, %Y, %H:%M:%S",
               this.x
             )}</span><br/><b style="font-size: 14px;">Subscribers: ${this.points[0].y.toLocaleString()}</b>`;
           },
         },
         series: [
           {
-            name: 'MrBeast',
+            name: "MrBeast",
             data: mrbeastData,
-            color: '#2DD4FF',
+            color: "#2DD4FF",
           },
         ],
         credits: {
           enabled: true,
-          text: 'Communitrics',
-          href: 'https://communitrics.com/invite',
+          text: "Communitrics",
+          href: "https://communitrics.com/invite",
           style: {
-            color: '#E0E0E0',
+            color: "#E0E0E0",
           },
         },
       });
     }
 
-    document.addEventListener('DOMContentLoaded', async function () {
-      const dropdownButton = document.getElementById('exportCsvButton');
-      const dropdownContent = document.querySelector('.dropdown-content');
+    document.addEventListener("DOMContentLoaded", async function () {
+      const dropdownButton = document.getElementById("exportCsvButton");
+      const dropdownContent = document.querySelector(".dropdown-content");
 
-      dropdownButton.addEventListener('click', function () {
-        dropdownContent.classList.toggle('show');
+      dropdownButton.addEventListener("click", function () {
+        dropdownContent.classList.toggle("show");
       });
 
-      window.addEventListener('click', function (e) {
+      window.addEventListener("click", function (e) {
         if (
           !dropdownButton.contains(e.target) &&
           !dropdownContent.contains(e.target)
         ) {
-          dropdownContent.classList.remove('show');
+          dropdownContent.classList.remove("show");
         }
       });
 
       async function handleCsvDownload(url, filename, type) {
-        const buttons = document.querySelectorAll('.dropdown-content button');
-        buttons.forEach(button => {
+        const buttons = document.querySelectorAll(".dropdown-content button");
+        buttons.forEach((button) => {
           button.disabled = true;
-          button.style.cursor = 'not-allowed';
+          button.style.cursor = "not-allowed";
         });
 
         let popup;
         const isMobile = window.innerWidth <= 768;
         if (!isMobile) {
-          popup = document.createElement('div');
-          popup.style.position = 'fixed';
-          popup.style.top = '50%';
-          popup.style.left = '50%';
-          popup.style.transform = 'translate(-50%, -50%)';
-          popup.style.backgroundColor = '#333';
-          popup.style.color = '#e0e0e0';
-          popup.style.padding = '50px';
-          popup.style.borderRadius = '12px';
-          popup.style.boxShadow = '0 8px 16px rgba(0, 0, 0, 0.3)';
-          popup.style.zIndex = '10000';
-          popup.style.textAlign = 'center';
-          popup.style.width = '800px';
+          popup = document.createElement("div");
+          popup.style.position = "fixed";
+          popup.style.top = "50%";
+          popup.style.left = "50%";
+          popup.style.transform = "translate(-50%, -50%)";
+          popup.style.backgroundColor = "#333";
+          popup.style.color = "#e0e0e0";
+          popup.style.padding = "50px";
+          popup.style.borderRadius = "12px";
+          popup.style.boxShadow = "0 8px 16px rgba(0, 0, 0, 0.3)";
+          popup.style.zIndex = "10000";
+          popup.style.textAlign = "center";
+          popup.style.width = "800px";
           popup.innerHTML = `
               <p style="font-size: 2rem; font-weight: 700; margin-bottom: 10px; color: #2dd4ff;">Download in progress...</p>
               <p style="font-size: 1.5rem;">This might take a while, as it is processing and filtering 100k+ datapoints. <br> <br> All CSVs are in UTC unless otherwise stated.</p>
@@ -1033,11 +1033,11 @@
           const csvData = convertDataToCSV(await fetchData(url), type);
           downloadCSVFile(csvData, filename);
         } catch (error) {
-          console.error('Failed to download CSV:', error);
+          console.error("Failed to download CSV:", error);
         } finally {
-          buttons.forEach(button => {
+          buttons.forEach((button) => {
             button.disabled = false;
-            button.style.cursor = '';
+            button.style.cursor = "";
           });
           if (popup) {
             document.body.removeChild(popup);
@@ -1046,69 +1046,69 @@
       }
 
       document
-        .getElementById('downloadMinutelyData')
-        .addEventListener('click', function () {
+        .getElementById("downloadMinutelyData")
+        .addEventListener("click", function () {
           handleCsvDownload(
-            'https://api.communitrics.com/mrbeast?minutely=true',
-            'MrBeast_Minutely_Subscribers.csv',
-            'minutely'
+            "https://api.communitrics.com/mrbeast?minutely=true",
+            "MrBeast_Minutely_Subscribers.csv",
+            "minutely"
           );
         });
 
       document
-        .getElementById('downloadTenMinutelyData')
-        .addEventListener('click', function () {
+        .getElementById("downloadTenMinutelyData")
+        .addEventListener("click", function () {
           handleCsvDownload(
-            'https://api.communitrics.com/mrbeast?tenminutely=true',
-            'MrBeast_10Minutely_Subscribers.csv',
-            'tenminutely'
+            "https://api.communitrics.com/mrbeast?tenminutely=true",
+            "MrBeast_10Minutely_Subscribers.csv",
+            "tenminutely"
           );
         });
 
       document
-        .getElementById('downloadHourlyData')
-        .addEventListener('click', function () {
+        .getElementById("downloadHourlyData")
+        .addEventListener("click", function () {
           handleCsvDownload(
-            'https://api.communitrics.com/mrbeast?hourly=true',
-            'MrBeast_Hourly_Subscribers.csv',
-            'hourly'
+            "https://api.communitrics.com/mrbeast?hourly=true",
+            "MrBeast_Hourly_Subscribers.csv",
+            "hourly"
           );
         });
 
       document
-        .getElementById('downloadDailyData')
-        .addEventListener('click', function () {
+        .getElementById("downloadDailyData")
+        .addEventListener("click", function () {
           handleCsvDownload(
-            'https://api.communitrics.com/mrbeast?daily=true',
-            'MrBeast_Daily_Subscribers.csv',
-            'daily'
+            "https://api.communitrics.com/mrbeast?daily=true",
+            "MrBeast_Daily_Subscribers.csv",
+            "daily"
           );
         });
 
       fetchDataAndDrawChart();
 
       document
-        .getElementById('viewDailyGainsButton')
-        .addEventListener('click', function () {
-          const mainContent = document.getElementById('mainContent');
-          const tableContent = document.getElementById('tableContent');
-          const button = document.getElementById('viewDailyGainsButton');
-          if (mainContent.style.display === 'none') {
-            mainContent.style.display = 'block';
-            tableContent.style.display = 'none';
-            button.textContent = 'View Data Tables';
+        .getElementById("viewDailyGainsButton")
+        .addEventListener("click", function () {
+          const mainContent = document.getElementById("mainContent");
+          const tableContent = document.getElementById("tableContent");
+          const button = document.getElementById("viewDailyGainsButton");
+          if (mainContent.style.display === "none") {
+            mainContent.style.display = "block";
+            tableContent.style.display = "none";
+            button.textContent = "View Data Tables";
           } else {
-            mainContent.style.display = 'none';
-            tableContent.style.display = 'flex';
-            button.textContent = 'View Graph';
+            mainContent.style.display = "none";
+            tableContent.style.display = "flex";
+            button.textContent = "View Graph";
           }
         });
 
-      const datePicker = document.getElementById('datePicker');
-      const today = new Date().toISOString().split('T')[0];
+      const datePicker = document.getElementById("datePicker");
+      const today = new Date().toISOString().split("T")[0];
       datePicker.value = today;
 
-      datePicker.addEventListener('change', function () {
+      datePicker.addEventListener("change", function () {
         const selectedDate = this.value;
         const filteredData = filterDataByDate(selectedDate);
         fillHourlyTable(filteredData, selectedDate);
@@ -1120,13 +1120,13 @@
 
     async function fetchDataAndDrawChart() {
       try {
-        let response = await fetch('https://api.communitrics.com/mrbeast');
+        let response = await fetch("https://api.communitrics.com/mrbeast");
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error("Network response was not ok");
         }
         const data = await response.json();
 
-        allMrbeastData = data.map(entry => [
+        allMrbeastData = data.map((entry) => [
           new Date(entry.currentTime).getTime(),
           Number(entry.count),
         ]);
@@ -1138,25 +1138,25 @@
 
         updateInfoSection(data);
         drawChart(filteredMrbeastData);
-        const today = new Date().toISOString().split('T')[0];
+        const today = new Date().toISOString().split("T")[0];
         const initialFilteredData = filterDataByDate(today);
         fillHourlyTable(initialFilteredData, today);
         fillDailyTable(data);
       } catch (error) {
-        console.error('Failed to fetch data:', error);
+        console.error("Failed to fetch data:", error);
       } finally {
-        document.getElementById('loader').style.display = 'none';
-        document.getElementById('mainContent').style.display = 'block';
+        document.getElementById("loader").style.display = "none";
+        document.getElementById("mainContent").style.display = "block";
       }
     }
 
     function filterDataByDate(date) {
       return allMrbeastData
-        .filter(entry => {
-          const entryDate = new Date(entry[0]).toISOString().split('T')[0];
+        .filter((entry) => {
+          const entryDate = new Date(entry[0]).toISOString().split("T")[0];
           return entryDate === date;
         })
-        .map(entry => ({
+        .map((entry) => ({
           currentTime: new Date(entry[0]),
           count: entry[1],
         }));
@@ -1166,11 +1166,11 @@
       try {
         let response = await fetch(url);
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error("Network response was not ok");
         }
         return await response.json();
       } catch (error) {
-        console.error('Failed to fetch data:', error);
+        console.error("Failed to fetch data:", error);
       }
     }
 
@@ -1188,12 +1188,12 @@
 
     function fillHourlyTable(data, selectedDate) {
       const hourlyTable = document
-        .getElementById('hourlyGainsTable')
-        .getElementsByTagName('tbody')[0];
-      hourlyTable.innerHTML = '';
+        .getElementById("hourlyGainsTable")
+        .getElementsByTagName("tbody")[0];
+      hourlyTable.innerHTML = "";
 
       if (data.length === 0) {
-        console.error('No data available to process.');
+        console.error("No data available to process.");
         return;
       }
 
@@ -1203,7 +1203,7 @@
       let subscriberBuffer = [];
       let gainBuffer = [];
 
-      const currentUTCDate = new Date().toISOString().split('T')[0];
+      const currentUTCDate = new Date().toISOString().split("T")[0];
       const currentUTCHour = new Date().getUTCHours();
 
       for (let hour = 0; hour < 24; hour++) {
@@ -1213,27 +1213,27 @@
         nextHourDate.setUTCHours(hour + 1, 0, 0, 0);
 
         const closestEntry = findClosestEntry(data, nextHourDate);
-        const row = document.createElement('tr');
-        const timeCell = document.createElement('td');
-        const subscriberCell = document.createElement('td');
-        const gainCell = document.createElement('td');
+        const row = document.createElement("tr");
+        const timeCell = document.createElement("td");
+        const subscriberCell = document.createElement("td");
+        const gainCell = document.createElement("td");
 
         const estTime = new Date(targetDate);
-        const estFormatter = new Intl.DateTimeFormat('en-US', {
-          timeZone: 'America/New_York',
-          hour: '2-digit',
-          minute: '2-digit',
-          timeZoneName: 'short',
+        const estFormatter = new Intl.DateTimeFormat("en-US", {
+          timeZone: "America/New_York",
+          hour: "2-digit",
+          minute: "2-digit",
+          timeZoneName: "short",
         });
 
         timeCell.innerHTML = `${hour
           .toString()
-          .padStart(2, '0')}:00 UTC (${targetDate.toLocaleTimeString(
-            'en-US',
-            { hour: '2-digit', minute: '2-digit' }
+          .padStart(2, "0")}:00 UTC (${targetDate.toLocaleTimeString(
+            "en-US",
+            { hour: "2-digit", minute: "2-digit" }
           )} local)<br>${estFormatter.format(estTime)}`;
 
-        let gainValue = '-';
+        let gainValue = "-";
         let gain = null;
 
         if (hour > 0) {
@@ -1241,26 +1241,26 @@
           gainCell.innerHTML = gainBuffer.shift();
         } else {
           subscriberCell.textContent =
-            previousCount !== null ? previousCount.toLocaleString() : '-';
+            previousCount !== null ? previousCount.toLocaleString() : "-";
           if (previousGain !== null) {
             let gainChange = previousGainChange;
-            let color = previousGainChange > 0 ? 'lime' : 'red';
+            let color = previousGainChange > 0 ? "lime" : "red";
             gainCell.innerHTML = `<span style="color: ${color}; font-weight: bold;">${previousGain.toLocaleString()}</span>`;
-            gainCell.innerHTML += `<br><span style="font-size: smaller;">(${gainChange > 0 ? '+' : ''
+            gainCell.innerHTML += `<br><span style="font-size: smaller;">(${gainChange > 0 ? "+" : ""
               }${gainChange.toLocaleString()})</span>`;
           } else {
-            gainCell.innerHTML = '-';
+            gainCell.innerHTML = "-";
           }
         }
 
         if (
-          targetDate.toISOString().split('T')[0] === currentUTCDate &&
+          targetDate.toISOString().split("T")[0] === currentUTCDate &&
           hour === (currentUTCHour + 1) % 24
         ) {
           const localTime = new Date();
-          const localFormatter = new Intl.DateTimeFormat('en-US', {
-            hour: '2-digit',
-            minute: '2-digit',
+          const localFormatter = new Intl.DateTimeFormat("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
           });
           gainCell.innerHTML += `<br><span style="font-size: smaller;">Data as of ${localFormatter.format(
             localTime
@@ -1274,11 +1274,11 @@
               lastHourCount !== null ? currentCount - lastHourCount : null;
             if (gain !== null) {
               gainValue = gain.toLocaleString();
-              let color = 'red';
+              let color = "red";
               if (previousGain !== null && gain < previousGain) {
-                color = 'red';
+                color = "red";
               } else if (gain > 0) {
-                color = 'lime';
+                color = "lime";
               }
               gainBuffer.push(
                 gain === 0
@@ -1288,12 +1288,12 @@
               if (gain !== 0 && previousGain !== null) {
                 gainBuffer[
                   gainBuffer.length - 1
-                ] += `<br><span style="font-size: smaller;">(${gain > previousGain ? '+' : ''
-                  }${(gain - previousGain).toLocaleString()})</span>`;
+                ] += `<br><span style="font-size: smaller;">(${gain > previousGain ? "+" : ""
+                }${(gain - previousGain).toLocaleString()})</span>`;
               }
               previousGain = gain;
             } else {
-              gainBuffer.push('-');
+              gainBuffer.push("-");
             }
             subscriberBuffer.push(currentCount.toLocaleString());
             lastHourCount = currentCount;
@@ -1303,12 +1303,12 @@
                 closestEntry
               )}`
             );
-            subscriberBuffer.push('-');
-            gainBuffer.push('-');
+            subscriberBuffer.push("-");
+            gainBuffer.push("-");
           }
         } else {
-          subscriberBuffer.push('-');
-          gainBuffer.push('-');
+          subscriberBuffer.push("-");
+          gainBuffer.push("-");
         }
 
         row.appendChild(timeCell);
@@ -1322,14 +1322,14 @@
     function getPreviousDayLastCount(selectedDate) {
       const previousDay = new Date(selectedDate);
       previousDay.setDate(previousDay.getDate() - 1);
-      const previousDayDateString = previousDay.toISOString().split('T')[0];
+      const previousDayDateString = previousDay.toISOString().split("T")[0];
 
       const previousDayData = allMrbeastData
-        .filter(entry => {
-          const entryDate = new Date(entry[0]).toISOString().split('T')[0];
+        .filter((entry) => {
+          const entryDate = new Date(entry[0]).toISOString().split("T")[0];
           return entryDate === previousDayDateString;
         })
-        .map(entry => ({
+        .map((entry) => ({
           currentTime: new Date(entry[0]),
           count: entry[1],
         }));
@@ -1390,29 +1390,27 @@
 
     function fillDailyTable(data) {
       const dailyTable = document
-        .getElementById('dailyGainsTable')
-        .getElementsByTagName('tbody')[0];
-      dailyTable.innerHTML = '';
+        .getElementById("dailyGainsTable")
+        .getElementsByTagName("tbody")[0];
+      dailyTable.innerHTML = "";
 
       let previousCount = null;
       let previousGain = null;
       let mostRecentRow = null;
-
-      let currentDateET = new Date(
-        new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })
+      let currentDate = new Date(data[0].currentTime);
+      currentDate = new Date(
+        currentDate.toLocaleString("en-US", { timeZone: "America/New_York" })
       );
-      currentDateET.setHours(0, 0, 0, 0);
-      let endDateET = new Date(currentDateET);
+      currentDate.setHours(0, 0, 0, 0);
 
-      let earliestDate = new Date(data[0].currentTime);
-      earliestDate = new Date(
-        earliestDate.toLocaleString('en-US', { timeZone: 'America/New_York' })
+      let endDate = new Date();
+      endDate = new Date(
+        endDate.toLocaleString("en-US", { timeZone: "America/New_York" })
       );
-      earliestDate.setHours(0, 0, 0, 0);
+      endDate.setHours(0, 0, 0, 0);
+      endDate.setDate(endDate.getDate() + 2);
 
-      let currentDate = new Date(earliestDate);
-
-      while (currentDate <= endDateET) {
+      while (currentDate < endDate) {
         const nextDate = new Date(currentDate);
         nextDate.setDate(currentDate.getDate() + 1);
         nextDate.setUTCHours(4, 0, 0, 0);
@@ -1423,37 +1421,52 @@
         const closestStartEntry = findClosestEntry(data, utcCurrentDate);
         const closestEndEntry = findClosestEntry(data, nextDate);
 
-        const row = document.createElement('tr');
-        const dateCell = document.createElement('td');
-        const subscriberCell = document.createElement('td');
-        const gainCell = document.createElement('td');
+        const row = document.createElement("tr");
+        const dateCell = document.createElement("td");
+        const subscriberCell = document.createElement("td");
+        const gainCell = document.createElement("td");
 
-        const edtTimeFormatter = new Intl.DateTimeFormat('en-US', {
-          hour: '2-digit',
-          minute: '2-digit',
-          timeZone: 'America/New_York',
+        const localTimeFormatter = new Intl.DateTimeFormat("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         });
 
+        const utcTimeFormatter = new Intl.DateTimeFormat("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          timeZone: "UTC",
+        });
+
+        const edtTimeFormatter = new Intl.DateTimeFormat("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          timeZone: "America/New_York",
+        });
+
+        const localTime = new Date(
+          currentDate.getTime() + currentDate.getTimezoneOffset() * 60000
+        );
+        const utcTime = new Date(utcCurrentDate);
         const edtTime = new Date(
-          currentDate.toLocaleString('en-US', {
-            timeZone: 'America/New_York',
-          })
+          currentDate.getTime() +
+          (currentDate.getTimezoneOffset() + 240) * 60000
         );
 
-        const edtDateString = edtTime.toLocaleDateString('en-US', {
-          weekday: 'short',
-          month: 'short',
-          day: 'numeric',
-          timeZone: 'America/New_York',
+        const edtDateString = edtTime.toLocaleDateString("en-US", {
+          weekday: "short",
+          month: "short",
+          day: "numeric",
+          timeZone: "America/New_York",
         });
-        const edtISODateString = edtTime.toISOString().split('T')[0];
+        const edtISODateString = edtTime.toISOString().split("T")[0];
 
         dateCell.innerHTML = `${edtDateString}<br>${edtISODateString}`;
         subscriberCell.textContent = closestEndEntry
           ? closestEndEntry.count.toLocaleString()
-          : '-';
+          : "-";
 
-        let gainValue = '-';
+        let gainValue = "-";
         let gain = null;
 
         if (previousCount !== null && closestEndEntry) {
@@ -1461,23 +1474,23 @@
 
           if (gain !== null) {
             gainValue = gain.toLocaleString();
-            let color = 'red';
+            let color = "red";
             if (previousGain !== null && gain < previousGain) {
-              color = 'red';
+              color = "red";
             } else if (gain > 0) {
-              color = 'lime';
+              color = "lime";
             }
             gainCell.innerHTML =
               gain === 0
                 ? `<span style="font-weight: bold;">-</span>`
                 : `<span style="color: ${color}; font-weight: bold;">${gainValue}</span>`;
             if (gain !== 0 && previousGain !== null) {
-              gainCell.innerHTML += `<br><span style="font-size: smaller;">(${gain > previousGain ? '+' : ''
+              gainCell.innerHTML += `<br><span style="font-size: smaller;">(${gain > previousGain ? "+" : ""
                 }${(gain - previousGain).toLocaleString()})</span>`;
             }
             previousGain = gain;
           } else {
-            gainCell.textContent = '-';
+            gainCell.textContent = "-";
           }
         } else if (
           previousCount === null &&
@@ -1489,7 +1502,7 @@
           gainCell.innerHTML = `<span style="color: lime; font-weight: bold;">${gainValue}</span><br><span style="font-size: calc(0.9em - 15%);"> (Data started May <br>15th, at 1pm EDT)</span>`;
           previousGain = gain;
         } else {
-          gainCell.textContent = '-';
+          gainCell.textContent = "-";
         }
 
         row.appendChild(dateCell);
@@ -1506,32 +1519,45 @@
         currentDate.setDate(currentDate.getDate() + 1);
       }
 
-      const nowET = new Date(
-        new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })
-      );
+      const now = new Date();
+      now.toLocaleString("en-US", { timeZone: "America/New_York" });
+      const edtTimeFormatter = new Intl.DateTimeFormat("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        timeZone: "America/New_York",
+      });
+
+      const edtNowDateString = now.toLocaleString("en-US", {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        timeZone: "America/New_York",
+      });
 
       if (mostRecentRow) {
-        const gainCell = mostRecentRow.getElementsByTagName('td')[2];
+        const gainCell = mostRecentRow.getElementsByTagName("td")[2];
         gainCell.innerHTML += `<br><span style="font-size: smaller;">Data as of ${edtTimeFormatter.format(
-          nowET
+          now
         )}<br>EDT</span>`;
       }
     }
 
-    function convertDataToCSV(data, type = 'minutely') {
+    function convertDataToCSV(data, type = "minutely") {
       const csvRows = [];
       const headers = [
-        'Time (UTC)',
-        'Subscriber Count',
-        type === 'minutely'
-          ? 'Minutely Gains'
-          : type === 'tenminutely'
-            ? '10 Minutely Gains'
-            : type === 'hourly'
-              ? 'Hourly Gains'
-              : 'Daily Gains',
+        "Time (UTC)",
+        "Subscriber Count",
+        type === "minutely"
+          ? "Minutely Gains"
+          : type === "tenminutely"
+            ? "10 Minutely Gains"
+            : type === "hourly"
+              ? "Hourly Gains"
+              : "Daily Gains",
       ];
-      csvRows.push(headers.join(','));
+      csvRows.push(headers.join(","));
 
       let lastSelectedTime = null;
       let lastSelectedSubscribers = null;
@@ -1539,7 +1565,7 @@
       data.sort((a, b) => new Date(a.currentTime) - new Date(b.currentTime));
 
       let rowsToSkip = 1;
-      data.forEach(entry => {
+      data.forEach((entry) => {
         const timestamp = new Date(entry.currentTime);
         const subscribers = entry.count;
 
@@ -1553,11 +1579,11 @@
         if (
           lastSelectedTime === null ||
           timestamp.getTime() - lastSelectedTime.getTime() >=
-          (type === 'minutely'
+          (type === "minutely"
             ? 60 * 1000
-            : type === 'tenminutely'
+            : type === "tenminutely"
               ? 60 * 10 * 1000
-              : type === 'hourly'
+              : type === "hourly"
                 ? 60 * 60 * 1000
                 : 24 * 60 * 60 * 1000)
         ) {
@@ -1575,7 +1601,7 @@
 
           const formattedDate = timestamp.toISOString();
           csvRows.push(
-            [formattedDate, subscribers, gainsInPastPeriod].join(',')
+            [formattedDate, subscribers, gainsInPastPeriod].join(",")
           );
 
           lastSelectedTime = timestamp;
@@ -1583,33 +1609,33 @@
         }
       });
 
-      return csvRows.join('\n');
+      return csvRows.join("\n");
     }
 
     function downloadCSVFile(csvText, fileName) {
-      const blob = new Blob([csvText], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement('a');
+      const blob = new Blob([csvText], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
       if (link.download !== undefined) {
         const url = URL.createObjectURL(blob);
-        link.setAttribute('href', url);
-        link.setAttribute('download', fileName);
-        link.style.visibility = 'hidden';
+        link.setAttribute("href", url);
+        link.setAttribute("download", fileName);
+        link.style.visibility = "hidden";
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
       } else {
         window.open(
-          'data:text/csv;charset=utf-8,' + encodeURIComponent(csvText)
+          "data:text/csv;charset=utf-8," + encodeURIComponent(csvText)
         );
       }
     }
 
-    const tableContainer = document.getElementById('scrollableTable');
+    const tableContainer = document.getElementById("scrollableTable");
     const isTouchDevice =
-      'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      "ontouchstart" in window || navigator.maxTouchPoints > 0;
 
     if (!isTouchDevice) {
-      tableContainer.addEventListener('wheel', function (e) {
+      tableContainer.addEventListener("wheel", function (e) {
         if (tableContainer.scrollHeight > tableContainer.clientHeight) {
           e.preventDefault();
           tableContainer.scrollTop += e.deltaY;
