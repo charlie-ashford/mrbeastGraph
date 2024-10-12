@@ -1397,12 +1397,12 @@
       let previousCount = null;
       let previousGain = null;
       let mostRecentRow = null;
+
       let currentDate = new Date(data[0].currentTime);
       currentDate = new Date(
         currentDate.toLocaleString("en-US", { timeZone: "America/New_York" })
       );
       currentDate.setHours(0, 0, 0, 0);
-
       let endDate = new Date();
       endDate = new Date(
         endDate.toLocaleString("en-US", { timeZone: "America/New_York" })
