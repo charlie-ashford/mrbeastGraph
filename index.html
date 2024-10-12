@@ -628,7 +628,7 @@
             ">
           If there is missing data for any row, the API or count was likely
           down. <br /><br />However if the Viewstats count was down for a day
-          or more, <br />
+          or more,
           there is estimated data based on views and likes.
         </span>
       </h2>
@@ -655,7 +655,7 @@
         <span style="font-weight: 600; color: #d4d0d0">
           <span style="font-weight: 800">estimated based on views</span>, as
           the Viewstats count was down. <br /><br />There are also estimates
-          based on views and likes during other periods when the count <br />
+          based on views and likes during other periods when the count
           was down, however these periods are typically one day at most at a
           time.
         </span>
@@ -1262,9 +1262,9 @@
             hour: "2-digit",
             minute: "2-digit",
           });
-          gainCell.innerHTML += `<br><span style="font-size: smaller;">Data as of ${localFormatter.format(
+          gainCell.innerHTML += `<br><span style="font-size: calc(0.9em - 15%);">Data as of ${localFormatter.format(
             localTime
-          )}<br>local time</span>`;
+          )} local time</span>`;
         }
 
         if (closestEntry) {
@@ -1538,9 +1538,9 @@
 
       if (mostRecentRow) {
         const gainCell = mostRecentRow.getElementsByTagName("td")[2];
-        gainCell.innerHTML += `<br><span style="font-size: smaller;">Data as of ${edtTimeFormatter.format(
+        gainCell.innerHTML += `<br><span style="font-size: calc(0.9em - 15%);">Data as of ${edtTimeFormatter.format(
           now
-        )}<br>EDT</span>`;
+        )} EDT</span>`;
       }
     }
 
