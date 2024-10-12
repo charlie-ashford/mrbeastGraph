@@ -1397,20 +1397,22 @@
       let previousCount = null;
       let previousGain = null;
       let mostRecentRow = null;
-      let currentDate = new Date(data[0].currentTime);
-      currentDate = new Date(
-        currentDate.toLocaleString('en-US', { timeZone: 'America/New_York' })
-      );
-      currentDate.setHours(0, 0, 0, 0);
 
-      let endDate = new Date();
-      endDate = new Date(
-        endDate.toLocaleString('en-US', { timeZone: 'America/New_York' })
+      let currentDateET = new Date(
+        new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })
       );
-      endDate.setHours(0, 0, 0, 0);
-      endDate.setDate(endDate.getDate() + 1);
+      currentDateET.setHours(0, 0, 0, 0);
+      let endDateET = new Date(currentDateET);
 
-      while (currentDate < endDate) {
+      let earliestDate = new Date(data[0].currentTime);
+      earliestDate = new Date(
+        earliestDate.toLocaleString('en-US', { timeZone: 'America/New_York' })
+      );
+      earliestDate.setHours(0, 0, 0, 0);
+
+      let currentDate = new Date(earliestDate);
+
+      while (currentDate <= endDateET) {
         const nextDate = new Date(currentDate);
         nextDate.setDate(currentDate.getDate() + 1);
         nextDate.setUTCHours(4, 0, 0, 0);
@@ -1426,31 +1428,16 @@
         const subscriberCell = document.createElement('td');
         const gainCell = document.createElement('td');
 
-        const localTimeFormatter = new Intl.DateTimeFormat('en-US', {
-          hour: '2-digit',
-          minute: '2-digit',
-          timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        });
-
-        const utcTimeFormatter = new Intl.DateTimeFormat('en-US', {
-          hour: '2-digit',
-          minute: '2-digit',
-          timeZone: 'UTC',
-        });
-
         const edtTimeFormatter = new Intl.DateTimeFormat('en-US', {
           hour: '2-digit',
           minute: '2-digit',
           timeZone: 'America/New_York',
         });
 
-        const localTime = new Date(
-          currentDate.getTime() + currentDate.getTimezoneOffset() * 60000
-        );
-        const utcTime = new Date(utcCurrentDate);
         const edtTime = new Date(
-          currentDate.getTime() +
-          (currentDate.getTimezoneOffset() + 240) * 60000
+          currentDate.toLocaleString('en-US', {
+            timeZone: 'America/New_York',
+          })
         );
 
         const edtDateString = edtTime.toLocaleDateString('en-US', {
@@ -1519,27 +1506,14 @@
         currentDate.setDate(currentDate.getDate() + 1);
       }
 
-      const now = new Date();
-      now.toLocaleString('en-US', { timeZone: 'America/New_York' });
-      const edtTimeFormatter = new Intl.DateTimeFormat('en-US', {
-        hour: '2-digit',
-        minute: '2-digit',
-        timeZone: 'America/New_York',
-      });
-
-      const edtNowDateString = now.toLocaleString('en-US', {
-        weekday: 'short',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        timeZone: 'America/New_York',
-      });
+      const nowET = new Date(
+        new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })
+      );
 
       if (mostRecentRow) {
         const gainCell = mostRecentRow.getElementsByTagName('td')[2];
         gainCell.innerHTML += `<br><span style="font-size: smaller;">Data as of ${edtTimeFormatter.format(
-          now
+          nowET
         )}<br>EDT</span>`;
       }
     }
