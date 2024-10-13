@@ -1262,7 +1262,7 @@
             hour: "2-digit",
             minute: "2-digit",
           });
-          gainCell.innerHTML += `<br><span style="font-size: calc(0.9em - 15%);">Data as of ${localFormatter.format(
+          gainCell.innerHTML += `<br><span style="font-size: calc(0.9em - 15%);">As of ${localFormatter.format(
             localTime
           )} local time</span>`;
         }
@@ -1538,7 +1538,7 @@
 
       if (mostRecentRow) {
         const gainCell = mostRecentRow.getElementsByTagName("td")[2];
-        gainCell.innerHTML += `<br><span style="font-size: calc(0.9em - 15%);">Data as of ${edtTimeFormatter.format(
+        gainCell.innerHTML += `<br><span style="font-size: calc(0.9em - 15%);">As of ${edtTimeFormatter.format(
           now
         )} EDT</span>`;
       }
