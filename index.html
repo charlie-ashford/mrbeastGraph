@@ -564,6 +564,7 @@
       <button id="exportCsvButton">Export Data to CSV</button>
       <div class="dropdown-content">
         <button id="downloadMinutelyData">Minutely Data</button>
+        <button id="downloadMinutelyWeekData">Minutely Data (Past Week)</button>
         <button id="downloadTenMinutelyData">10 Minutely Data</button>
         <button id="downloadHourlyData">Hourly Data</button>
         <button id="downloadDailyData">Daily Data (UTC)</button>
@@ -1057,6 +1058,16 @@
             "https://api.communitrics.com/mrbeast?minutely=true",
             "MrBeast_Minutely_Subscribers.csv",
             "minutely"
+          );
+        });
+
+      document
+        .getElementById("downloadMinutelyWeekData")
+        .addEventListener("click", function () {
+          handleCsvDownload(
+            "https://api.communitrics.com/mrbeast?minutelyPastWeek=true",
+            "MrBeast_Minutely_Subscribers_(Past_Week).csv",
+            "minutely_past_week"
           );
         });
 
