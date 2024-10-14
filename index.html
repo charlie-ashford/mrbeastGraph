@@ -1067,7 +1067,7 @@
           handleCsvDownload(
             "https://api.communitrics.com/mrbeast?minutelyPastWeek=true",
             "MrBeast_Minutely_Subscribers_(Past_Week).csv",
-            "minutely_past_week"
+            "minutelyPastWeek"
           );
         });
 
@@ -1567,11 +1567,13 @@
         "Subscriber Count",
         type === "minutely"
           ? "Minutely Gains"
-          : type === "tenminutely"
-            ? "10 Minutely Gains"
-            : type === "hourly"
-              ? "Hourly Gains"
-              : "Daily Gains",
+          : type === "minutelyPastWeek"
+            ? "Minutely Gains"
+            : type === "tenminutely"
+              ? "10 Minutely Gains"
+              : type === "hourly"
+                ? "Hourly Gains"
+                : "Daily Gains",
       ];
       csvRows.push(headers.join(","));
 
@@ -1597,11 +1599,13 @@
           timestamp.getTime() - lastSelectedTime.getTime() >=
           (type === "minutely"
             ? 60 * 1000
-            : type === "tenminutely"
-              ? 60 * 10 * 1000
-              : type === "hourly"
-                ? 60 * 60 * 1000
-                : 24 * 60 * 60 * 1000)
+            : type === "minutelyPastWeek"
+              ? 60 * 1000
+              : type === "tenminutely"
+                ? 60 * 10 * 1000
+                : type === "hourly"
+                  ? 60 * 60 * 1000
+                  : 24 * 60 * 60 * 1000)
         ) {
           let gainsInPastPeriod = 0;
           if (lastSelectedSubscribers !== null) {
