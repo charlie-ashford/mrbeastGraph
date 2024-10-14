@@ -719,8 +719,12 @@
       }
     }
 
-    function updateInfoSection(filteredData) {
-      const formatNumber = (num) => num.toLocaleString();
+    async function updateInfoSection(filteredData) {
+      const formatNumber = (num, decimalPlaces = 0) =>
+        num.toLocaleString(undefined, {
+          minimumFractionDigits: decimalPlaces,
+          maximumFractionDigits: decimalPlaces
+        });
       const formatDateTime = (dateString, includeSeconds = true) => {
         const date = new Date(dateString);
         if (includeSeconds) {
@@ -744,7 +748,6 @@
         new Date(lastEntry.currentTime).getTime() -
         new Date(firstEntry.currentTime).getTime();
       const daysElapsed = totalTime / (1000 * 3600 * 24);
-      const averageGainedPerDay = totalGained / daysElapsed;
 
       const now = new Date();
       const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
@@ -772,45 +775,48 @@
         return `${days}d, ${hours}h, ${minutes}m, ${seconds}s`;
       };
 
+      const response = await fetch('https://api.communitrics.com/mrbeaststats');
+      const apiData = await response.json();
+      const totalSubscribersGained30Days = apiData.monthlyStats.totalSubscribersGained;
+
       const infoDiv = document.getElementById("info");
       infoDiv.innerHTML = `
-          <div class="info-tile">
-            <div class="info-tile-header">Current Subscriber Count</div>
-            <div class="info-tile-value">${formatNumber(lastEntry.count)}</div>
-            <div class="info-tile-change"><strong>Latest update:</strong> ${formatDateTime(
+        <div class="info-tile">
+          <div class="info-tile-header">Current Subscriber Count</div>
+          <div class="info-tile-value">${formatNumber(lastEntry.count)}</div>
+          <div class="info-tile-change"><strong>Latest update:</strong> ${formatDateTime(
         lastEntry.currentTime
       )}</div>
-          </div>
-          <div class="info-tile">
-            <div class="info-tile-header">24 Hour Gain</div>
-            <div class="info-tile-value">${formatNumber(recentGained)}</div>
-            <div class="info-tile-change">
-              <strong>Subscribers 24h ago:</strong> ${formatNumber(
+        </div>
+        <div class="info-tile">
+          <div class="info-tile-header">24 Hour Gain</div>
+          <div class="info-tile-value">${formatNumber(recentGained)}</div>
+          <div class="info-tile-change">
+            <strong>Subscribers 24h ago:</strong> ${formatNumber(
         subs24HoursAgo
       )}
-            </div>
           </div>
-          <div class="info-tile">
-            <div class="info-tile-header">Average Daily Gain</div>
-            <div class="info-tile-value">${formatNumber(
-        Math.floor(averageGainedPerDay)
+        </div>
+        <div class="info-tile">
+          <div class="info-tile-header">Past 30-Day Gains</div>
+          <div class="info-tile-value">${formatNumber(totalSubscribersGained30Days)}</div>
+          <div class="info-tile-change"><strong>Subscribers 30d ago:</strong> ${formatNumber(
+        apiData.monthlyStats.firstUpdatedCount
       )}</div>
-            <div class="info-tile-change"><strong>Since live-count release at</strong> ${formatDateTime(
-        firstEntry.currentTime,
-        false
-      )}</div>
-          </div>
-          <div class="info-tile">
-            <div class="info-tile-header">Total Gain</div>
-            <div class="info-tile-value">${formatNumber(totalGained)}</div>
-            <div class="info-tile-change"><strong>Over the last</strong> ${formatTime(
+    <strong>Average daily gain:</strong> ${formatNumber(totalSubscribersGained30Days / 30, 0)}
+      </div>
+        </div>
+        <div class="info-tile">
+          <div class="info-tile-header">Total Gain</div>
+          <div class="info-tile-value">${formatNumber(totalGained)}</div>
+          <div class="info-tile-change"><strong>Over the last</strong> ${formatTime(
         totalTime
       )}</div>
-            <div class="info-tile-change"><strong>Starting count:</strong> ${formatNumber(
+          <div class="info-tile-change"><strong>Starting count:</strong> ${formatNumber(
         firstEntry.count
       )}</div>
-          </div>
-        `;
+        </div>
+      `;
     }
 
     function formatTime(ms) {
