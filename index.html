@@ -730,6 +730,7 @@
           minimumFractionDigits: decimalPlaces,
           maximumFractionDigits: decimalPlaces,
         });
+
       const formatDateTime = (dateString, includeSeconds = true) => {
         const date = new Date(dateString);
         if (includeSeconds) {
@@ -789,47 +790,75 @@
 
       const infoDiv = document.getElementById('info');
       infoDiv.innerHTML = `
-        <div class="info-tile">
-          <div class="info-tile-header">Current Subscriber Count</div>
-          <div class="info-tile-value">${formatNumber(lastEntry.count)}</div>
-          <div class="info-tile-change"><strong>Latest update:</strong> ${formatDateTime(
+    <div class="info-tile">
+      <div class="info-tile-header">Current Subscriber Count</div>
+      <div class="info-tile-value">${formatNumber(lastEntry.count)}</div>
+      <div class="info-tile-change"><strong>Latest update:</strong> ${formatDateTime(
         lastEntry.currentTime
       )}</div>
-        </div>
-        <div class="info-tile">
-          <div class="info-tile-header">24 Hour Gain</div>
-          <div class="info-tile-value">${formatNumber(recentGained)}</div>
-          <div class="info-tile-change">
-            <strong>Subscribers 24h ago:</strong> ${formatNumber(
+    </div>
+    <div class="info-tile">
+      <div class="info-tile-header">24 Hour Gain</div>
+      <div class="info-tile-value">${formatNumber(recentGained)}</div>
+      <div class="info-tile-change">
+        <strong>Subscribers 24h ago:</strong> ${formatNumber(
         subs24HoursAgo
       )}
-          </div>
-        </div>
-        <div class="info-tile">
-          <div class="info-tile-header">30 Day Gain</div>
-          <div class="info-tile-value">${formatNumber(
+      </div>
+    </div>
+    <div class="info-tile">
+      <div class="info-tile-header">30 Day Gain</div>
+      <div class="info-tile-value">${formatNumber(
         totalSubscribersGained30Days
       )}</div>
-          <div class="info-tile-change"><strong>Subscribers 30d ago:</strong> ${formatNumber(
+      <div class="info-tile-change"><strong>Subscribers 30d ago:</strong> ${formatNumber(
         apiData.monthlyStats.firstUpdatedCount
       )}</div>
-          <div class="info-tile-change"><strong>Average daily gain:</strong> ${formatNumber(
+      <div class="info-tile-change"><strong>Average daily gain:</strong> ${formatNumber(
         totalSubscribersGained30Days / 30,
         0
       )}
       </div>
-        </div>
-        <div class="info-tile">
-          <div class="info-tile-header">Total Gain</div>
-          <div class="info-tile-value">${formatNumber(totalGained)}</div>
-          <div class="info-tile-change"><strong>Over the last</strong> ${formatTime(
+    </div>
+    <div class="info-tile">
+      <div class="info-tile-header">Total Gain</div>
+      <div class="info-tile-value">${formatNumber(totalGained)}</div>
+      <div class="info-tile-change"><strong>Over the last</strong> ${formatTime(
         totalTime
       )}</div>
-          <div class="info-tile-change"><strong>Starting count:</strong> ${formatNumber(
+      <div class="info-tile-change"><strong>Starting count:</strong> ${formatNumber(
         firstEntry.count
       )}</div>
-        </div>
-      `;
+    </div>
+  `;
+
+      const statsData = {
+        timestamp: new Date().toISOString(),
+        stats: {
+          subscriberCount: lastEntry.count,
+          gain24Hours: recentGained,
+          gain30Days: totalSubscribersGained30Days,
+          totalGain: totalGained,
+        }
+      };
+
+      try {
+        const saveResponse = await fetch('https://api.communitrics.com/statistics', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(statsData),
+        });
+
+        if (!saveResponse.ok) {
+          throw new Error(`Error: ${saveResponse.statusText}`);
+        }
+
+        console.log('Statistics saved successfully:', await saveResponse.json());
+      } catch (error) {
+        console.error('Error saving statistics:', error);
+      }
     }
 
     function formatTime(ms) {
