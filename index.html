@@ -542,8 +542,8 @@
           border: 12px solid #f3f3f3;
           border-top: 12px solid #2dd4ff;
           border-radius: 50%;
-          width: 80px;
-          height: 80px;
+          width: 70px;
+          height: 70px;
           animation: spin 0.5s ease-in-out infinite 0.1s;
         "></div>
     <p style="
@@ -596,7 +596,7 @@
       <a href="https://www.viewstats.com/mrbeast-live-count/" target="_blank">ViewStats</a>
       or
       <a href="https://www.youtube.com/@mrbeast/" target="_blank">MrBeast</a>,
-      it is a website made by a fan.<br />
+      it is an independently owned site.<br />
       If you would like 5-secondly data for any time period, contact me
       through
       <a href="https://twitter.com/charlieashfordd" target="_blank">Twitter</a>
@@ -886,11 +886,21 @@
           zoomType: 'x',
           panning: true,
           panKey: 'shift',
-          animation: true,
-          backgroundColor: '#1E1E1E',
+          animation: {
+            duration: 800,
+            easing: 'easeOutBounce',
+          },
+          backgroundColor: {
+            linearGradient: { x1: 0, y1: 0, x2: 1, y2: 1 },
+            stops: [
+              [0, '#1E1E1E'],
+              [1, '#1E1E1E'],
+            ],
+          },
+          borderRadius: 10,
           style: {
             fontFamily: 'Poppins, sans-serif',
-            color: '#E0E0E0',
+            color: '#1E1E1E',
           },
           events: {
             dblclick: function () {
@@ -899,10 +909,11 @@
           },
           resetZoomButton: {
             theme: {
-              fill: '#232323',
+              fill: '#2A2A2A',
               stroke: '#2DD4FF',
               r: 5,
               style: {
+                fontFamily: 'Poppins, sans-serif',
                 color: '#2DD4FF',
                 fontSize: '12px',
                 fontWeight: 'bold',
@@ -928,7 +939,10 @@
         title: {
           text: 'MrBeast Subscriber Count',
           style: {
+            fontFamily: 'Poppins, sans-serif',
             color: '#FFFFFF',
+            fontSize: '20px',
+            fontWeight: '600',
           },
         },
         xAxis: {
@@ -936,13 +950,16 @@
           title: {
             text: 'Time',
             style: {
+              fontFamily: 'Poppins, sans-serif',
               color: '#E0E0E0',
               fontWeight: 'bold',
             },
           },
           labels: {
             style: {
+              fontFamily: 'Poppins, sans-serif',
               color: '#E0E0E0',
+              fontSize: '12px',
             },
             format: '{value:%H:%M:%S}',
           },
@@ -956,32 +973,30 @@
             year: '%Y',
           },
           tickPixelInterval: 150,
-          lineColor: '#333333',
-          tickColor: '#333333',
+          lineColor: '#444444',
+          tickColor: '#444444',
         },
         yAxis: {
           title: {
             text: 'Subscribers',
             style: {
+              fontFamily: 'Poppins, sans-serif',
               color: '#E0E0E0',
               fontWeight: 'bold',
             },
           },
           labels: {
             style: {
+              fontFamily: 'Poppins, sans-serif',
               color: '#E0E0E0',
+              fontSize: '12px',
             },
           },
-          gridLineColor: '#333333',
+          gridLineColor: '#444444',
+          tickColor: '#444444',
         },
         legend: {
           enabled: false,
-          layout: 'vertical',
-          align: 'right',
-          verticalAlign: 'middle',
-          itemStyle: {
-            color: '#E0E0E0',
-          },
         },
         plotOptions: {
           series: {
@@ -989,8 +1004,19 @@
             threshold: null,
             connectNulls: true,
             area: {
-              fillOpacity: 0.1,
-              fillColor: 'rgba(45, 212, 256, 0.1)',
+              fillOpacity: 0.15,
+              fillColor: {
+                linearGradient: {
+                  x1: 0,
+                  x2: 0,
+                  y1: 0,
+                  y2: 1,
+                },
+                stops: [
+                  [0, '#2DD4FF'],
+                  [1, 'rgba(45, 212, 255, 0.15)'],
+                ],
+              },
             },
           },
         },
@@ -999,10 +1025,13 @@
           animation: false,
           shared: true,
           crosshairs: false,
-          backgroundColor: '#333333',
+          backgroundColor: 'rgba(0, 0, 0, 0.85)',
           borderColor: '#2DD4FF',
+          borderRadius: 8,
           style: {
+            fontFamily: 'Poppins, sans-serif',
             color: '#E0E0E0',
+            fontSize: '14px',
           },
           formatter: function () {
             return `<span style="font-size: 12px;">${Highcharts.dateFormat(
@@ -1016,6 +1045,18 @@
             name: 'MrBeast',
             data: mrbeastData,
             color: '#2DD4FF',
+            fillColor: {
+              linearGradient: {
+                x1: 0,
+                x2: 0,
+                y1: 0,
+                y2: 1,
+              },
+              stops: [
+                [0, '#2DD4FF'],
+                [1, 'rgba(45, 212, 255, 0.15)'],
+              ],
+            },
           },
         ],
         credits: {
@@ -1023,6 +1064,7 @@
           text: 'Communitrics',
           href: 'https://communitrics.com/invite',
           style: {
+            fontFamily: 'Poppins, sans-serif',
             color: '#E0E0E0',
           },
         },
