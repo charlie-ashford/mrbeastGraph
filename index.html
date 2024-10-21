@@ -747,7 +747,7 @@
         }
       };
 
-      const firstEntry = filteredData[0];
+      const firstEntry = { currentTime: '2024-01-01T05:00:00.000Z', count: 224698814 };
       const lastEntry = filteredData[filteredData.length - 1];
       const totalGained = lastEntry.count - firstEntry.count;
       const totalTime =
@@ -821,7 +821,7 @@
       </div>
     </div>
     <div class="info-tile">
-      <div class="info-tile-header">Total Gain</div>
+      <div class="info-tile-header">2024 Total Gain</div>
       <div class="info-tile-value">${formatNumber(totalGained)}</div>
       <div class="info-tile-change"><strong>Over the last</strong> ${formatTime(
         totalTime
