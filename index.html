@@ -1512,10 +1512,14 @@
       while (currentDate < endDate) {
         const nextDate = new Date(currentDate);
         nextDate.setDate(currentDate.getDate() + 1);
-        nextDate.setUTCHours(4, 0, 0, 0);
+
+        const isDST = isEDT(currentDate);
+        const utcHourOffset = isDST ? 4 : 5;
+
+        nextDate.setUTCHours(utcHourOffset, 0, 0, 0);
 
         const utcCurrentDate = new Date(currentDate);
-        utcCurrentDate.setUTCHours(4, 0, 0, 0);
+        utcCurrentDate.setUTCHours(utcHourOffset, 0, 0, 0);
 
         const closestStartEntry = findClosestEntry(data, utcCurrentDate);
         const closestEndEntry = findClosestEntry(data, nextDate);
@@ -1549,7 +1553,7 @@
         const utcTime = new Date(utcCurrentDate);
         const edtTime = new Date(
           currentDate.getTime() +
-          (currentDate.getTimezoneOffset() + 240) * 60000
+          (currentDate.getTimezoneOffset() + (isDST ? 240 : 300)) * 60000
         );
 
         const edtDateString = edtTime.toLocaleDateString('en-US', {
@@ -1641,6 +1645,46 @@
           now
         )} US Eastern</span>`;
       }
+    }
+
+    function isEDT(date) {
+      const year = date.getFullYear();
+
+      const dstStart = new Date(year, 2, 1);
+      dstStart.setDate(14 - dstStart.getDay());
+      dstStart.setHours(2, 0, 0, 0);
+
+      const dstEnd = new Date(year, 10, 1);
+      dstEnd.setDate(7 - dstEnd.getDay());
+      dstEnd.setHours(1, 59, 59, 999);
+
+      const easternDate = new Date(date.toLocaleString('en-US', { timeZone: 'America/New_York' }));
+
+      const month = easternDate.getMonth();
+      const day = easternDate.getDate();
+      const hours = easternDate.getHours();
+      const minutes = easternDate.getMinutes();
+
+      if (easternDate.getTime() === dstStart.getTime()) {
+        return true;
+      } else if (
+        month === 2 &&
+        day === dstStart.getDate() &&
+        hours >= 2
+      ) {
+        return true;
+      } else if (
+        month === 10 &&
+        day === dstEnd.getDate() &&
+        hours === 1
+      ) {
+        const standardDate = new Date(date);
+        standardDate.setHours(1);
+        return standardDate.getTime() <= date.getTime() &&
+          date.getTime() < new Date(standardDate.getTime() + 3600000);
+      }
+
+      return date > dstStart && date <= dstEnd;
     }
 
     function convertDataToCSV(data, type = 'minutely') {
