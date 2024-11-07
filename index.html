@@ -696,34 +696,6 @@
       lastScrollTop = scrollTop;
     });
 
-    async function fetchDataAndDrawChart() {
-      try {
-        let response = await fetch('https://api.communitrics.com/mrbeast');
-        const data = await response.json();
-
-        allMrbeastData = data.map(entry => [
-          new Date(entry.currentTime).getTime(),
-          entry.count,
-        ]);
-
-        if (allMrbeastData.length > 3599) {
-          filteredMrbeastData = allMrbeastData.slice(-3599);
-        } else {
-          filteredMrbeastData = allMrbeastData;
-        }
-
-        updateInfoSection(data);
-        drawChart(filteredMrbeastData);
-        fillHourlyTable(data);
-        fillDailyTable(data);
-      } catch (error) {
-        console.error('Failed to fetch data:', error);
-      } finally {
-        document.getElementById('loader').style.display = 'none';
-        document.getElementById('mainContent').style.display = 'block';
-      }
-    }
-
     async function updateInfoSection(filteredData) {
       const formatNumber = (num, decimalPlaces = 0) =>
         num.toLocaleString(undefined, {
