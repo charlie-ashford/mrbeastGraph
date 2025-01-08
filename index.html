@@ -581,24 +581,18 @@
   <div id="mainContent" style="display: none">
     <h1>MrBeast Studio Subscriber Count</h1>
     <h2>
-      This graph is in US Eastern time and updates every 5 seconds with <br />
-      MrBeast's studio subscriber count, powered by
-      <a href="https://www.viewstats.com/mrbeast-live-count/" target="_blank">ViewStats</a>.
-      <br />
-      <br />
-      The graph includes the previous 3,600 points, around 5 hours worth of
-      data.
+      This graph shows the last 5 hours of MrBeast’s live studio subscriber count
+      <br>updating every 5 seconds (powered by
+      <a href="https://www.viewstats.com/mrbeast-live-count/" target="_blank">ViewStats</a>).
       <br /><br />
-      To see all the data, download the CSV (options of minutely, hourly, or
-      daily data) <br />or view the tables with the buttons above.
+      To view more data, download the CSV (minutely, hourly, or daily) <br>or view the
+      tables with the buttons above.
       <br /><br />
-      This website is not owned by
+      This website is not affiliated with
       <a href="https://www.viewstats.com/mrbeast-live-count/" target="_blank">ViewStats</a>
       or
-      <a href="https://www.youtube.com/@mrbeast/" target="_blank">MrBeast</a>,
-      it is an independently owned site.<br />
-      If you would like 5-secondly data for any time period, contact me
-      through
+      <a href="https://www.youtube.com/@mrbeast/" target="_blank">MrBeast</a>.
+      <br>For 5-second data over any time period, contact me via
       <a href="https://twitter.com/charlieashfordd" target="_blank">Twitter</a>
       or
       <a href="https://discord.com/users/1158588351943811142" target="_blank">Discord</a>.
@@ -627,15 +621,9 @@
             " />
       </div>
       <h2>
-        <span style="
-              font-weight: 600;
-              color: #d4d0d0;
-              padding-bottom: 12px;
-              display: inline-block;
-            ">
-          If there is missing data for any row, the API or count was likely
-          down. <br /><br />However if the Viewstats count was down for a day
-          or more, there is estimated data based on views and likes.
+        <span style="font-weight: 600; color: #d4d0d0; padding-bottom: 12px; display: inline-block;">
+          If any row has missing data, the API or count was likely down. <br /><br />
+          For outages of a day or more, data is estimated based on views and likes.
         </span>
       </h2>
       <table id="hourlyGainsTable">
@@ -656,12 +644,10 @@
           All data from
           <span style="font-weight: 800">August 09, 9am to September 02, 6pm, 2024</span>
           is
-        </span>
-        <span style="font-weight: 600; color: #d4d0d0">
-          <span style="font-weight: 800">estimated based on views</span>, as
-          the Viewstats count was down. <br /><br />There are also estimates
-          based on views and likes during other periods when the count was
-          down, however these periods are typically a few days at most at a time.
+          <span style="font-weight: 800">estimated based on views</span>
+          because the ViewStats count was down. <br /><br />
+          Other shorter downtime periods may also include estimates
+          based on views and likes.
         </span>
       </h2>
       <div class="scrollable-table-container">
@@ -920,7 +906,7 @@
         xAxis: {
           type: 'datetime',
           title: {
-            text: 'Time',
+            text: 'Time (US Eastern)',
             style: {
               fontFamily: 'Poppins, sans-serif',
               color: '#E0E0E0',
