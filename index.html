@@ -1,531 +1,557 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MrBeast Subscriber Count Graph</title>
-  <script src="https://code.highcharts.com/12.0.2/highcharts.js"></script>
-  <script src="https://code.highcharts.com/12.0.2/modules/boost.js"></script>
-  <script src="https://code.highcharts.com/12.0.2/modules/accessibility.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.34/moment-timezone-with-data.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
-    rel="stylesheet" />
-  <link rel="icon" href="image.png" type="image/png" />
-  <link rel="apple-touch-icon" href="image.png" />
-  <link rel="canonical" href="https://www.mrbeastgraph.com" />
-  <meta name="description"
-    content="See MrBeast's real studio subscriber count, updated in real-time with full historical data available for download." />
-  <meta name="theme-color" content="#60a5fa" />
-  <meta property="og:title" content="MrBeast Subscriber Count Graph" />
-  <meta property="og:description"
-    content="See MrBeast's real studio subscriber count, updated in real-time with full historical data available for download." />
-  <meta property="og:image" content="https://www.mrbeastgraph.com/embed.png" />
-  <meta property="og:url" content="https://www.mrbeastgraph.com" />
-  <meta property="og:type" content="website" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="MrBeast Subscriber Count Graph" />
-  <meta name="twitter:description"
-    content="See MrBeast's real studio subscriber count, updated in real-time with full historical data available for download." />
-  <meta name="twitter:image" content="https://www.mrbeastgraph.com/embed.png" />
-  <meta name="twitter:url" content="https://www.mrbeastgraph.com" />
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: 'Poppins', sans-serif;
-      background-color: #0f0f0f;
-      color: #e0e0e0;
-      line-height: 1.6;
-    }
-
-    * {
-      font-family: 'Poppins', sans-serif !important;
-      box-sizing: border-box;
-    }
-
-    .smaller-text {
-      font-size: calc(100% - 1px);
-    }
-
-    @keyframes spin {
-      0% {
-        transform: rotate(0deg);
-      }
-
-      100% {
-        transform: rotate(360deg);
-      }
-    }
-
-    #container {
-      width: 90%;
-      height: 360px;
-      margin: 0 auto;
-      padding: 10px 15px 15px 15px;
-      border-radius: 16px;
-      background-color: #1e1e1e;
-    }
-
-    h1 {
-      text-align: center;
-      font-weight: 800;
-      color: #ffffff;
-      margin-top: 25px;
-      margin-bottom: 15px;
-      font-size: 24px;
-      letter-spacing: 0.5px;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    h2 {
-      text-align: center;
-      font-weight: 500;
-      color: #bdbdbd;
-      margin-top: 12px;
-      margin-bottom: 12px;
-      font-size: 14px;
-      max-width: 800px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    #info {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-      gap: 30px;
-      margin: 48px auto;
-      width: 96%;
-      max-width: 1450px;
-    }
-
-    .info-tile {
-      background-color: rgba(25, 25, 25, 0.95);
-      border-radius: 24px;
-      padding: 34px;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25),
-        0 0 0 1px rgba(255, 255, 255, 0.1);
-      transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-      backdrop-filter: blur(10px);
-    }
-
-    .info-tile:hover {
-      transform: scale(1.05);
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3),
-        0 0 0 1px rgba(255, 255, 255, 0.15);
-    }
-
-    .info-tile::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle,
-          rgba(45, 212, 255, 0.08) 0%,
-          rgba(45, 212, 255, 0) 70%);
-      transform: rotate(30deg);
-      transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
-    }
-
-    .info-tile:hover::before {
-      transform: rotate(0deg);
-      background: radial-gradient(circle,
-          rgba(45, 212, 255, 0.12) 0%,
-          rgba(45, 212, 255, 0) 70%);
-    }
-
-    .info-tile-header {
-      font-size: 15px;
-      text-transform: uppercase;
-      letter-spacing: 1.9px;
-      color: #3adbff;
-      margin-bottom: 24px;
-      font-weight: 700;
-      position: relative;
-      display: inline-block;
-    }
-
-    .info-tile-header::after {
-      content: '';
-      position: absolute;
-      bottom: -6px;
-      left: 0;
-      width: 100%;
-      height: 2px;
-      background-color: #3adbff;
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-    }
-
-    .info-tile:hover .info-tile-header::after {
-      transform: scaleX(1);
-    }
-
-    .info-tile-value {
-      font-size: 34px;
-      font-weight: 800;
-      color: #ffffff;
-      margin-bottom: 20px;
-      transition: all 0.4s ease;
-      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    }
-
-    .info-tile:hover .info-tile-value {
-      color: #3adbff;
-      text-shadow: 0 2px 8px rgba(45, 212, 255, 0.3);
-    }
-
-    .info-tile-change {
-      font-size: 15px;
-      color: #d0d0d0;
-      line-height: 1.6;
-      transition: color 0.3s ease;
-    }
-
-    .info-tile:hover .info-tile-change {
-      color: #ffffff;
-    }
-
-    .info-tile-change strong {
-      color: #ffffff;
-      font-weight: 700;
-    }
-
-    @keyframes pulse {
-      0% {
-        box-shadow: 0 0 0 0 rgba(58, 219, 255, 0.4);
-      }
-
-      70% {
-        box-shadow: 0 0 0 10px rgba(58, 219, 255, 0);
-      }
-
-      100% {
-        box-shadow: 0 0 0 0 rgba(58, 219, 255, 0);
-      }
-    }
-
-    .info-tile:hover {
-      animation: pulse 1.5s infinite;
-    }
-
-    .button-container {
-      position: fixed;
-      right: 75px;
-      top: 25px;
-      z-index: 1000;
-      transition: opacity 0.3s linear;
-    }
-
-    .button-container.hidden {
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .button-container button,
-    .dropdown-content button {
-      display: block;
-      padding: 12px 22px;
-      font-size: 16px;
-      color: #1a1a1a;
-      background-color: #20b2cf;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      margin-bottom: 12px;
-      width: 210px;
-      text-align: center;
-      font-weight: 400;
-    }
-
-    .button-container button:hover,
-    .dropdown-content button:hover {
-      background-color: #1cc2e3;
-    }
-
-    .dropdown {
-      position: relative;
-      display: inline-block;
-    }
-
-    .dropdown-content {
-      display: none;
-      position: absolute;
-      background-color: #2a2a2a;
-      min-width: 210px;
-      z-index: 1;
-      border-radius: 10px;
-      overflow: hidden;
-    }
-
-    .dropdown-content button {
-      background-color: #2a2a2a;
-      color: #ffffff;
-      padding: 14px 16px;
-      text-decoration: none;
-      display: block;
-      border: none;
-      width: 100%;
-      text-align: left;
-      transition: background-color 0.3s;
-      font-size: 15px;
-    }
-
-    .dropdown-content button:hover {
-      background-color: #3f3f3f;
-    }
-
-    .dropdown-content.show {
-      display: block;
-      animation: fadeIn 0.3s ease;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(-10px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .highcharts-reset-zoom {
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    a {
-      color: inherit;
-      font-weight: 700;
-      text-decoration: none;
-      transition: color 0.3s ease;
-    }
-
-    a:hover {
-      text-decoration: none;
-      color: #20b2cf;
-    }
-
-    .tables-container {
-      display: none;
-      justify-content: space-around;
-      margin-top: 160px;
-      padding: 0 20px;
-    }
-
-    .scrollable-table-container {
-      max-height: 1930px;
-      overflow-y: auto;
-      scrollbar-width: thin;
-      scrollbar-color: #20b2cf #232323;
-      overscroll-behavior: contain;
-      border-radius: 12px;
-    }
-
-    .table-container {
-      width: 46%;
-      padding: 10px;
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
-      border-radius: 16px;
-      background-color: #1e1e1e;
-      text-align: center;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: separate;
-      border-spacing: 0;
-      color: #e0e0e0;
-      margin: 0 auto;
-      border-radius: 12px;
-      overflow: hidden;
-    }
-
-    .scrollable-table-container::-webkit-scrollbar {
-      width: 8px;
-    }
-
-    .scrollable-table-container::-webkit-scrollbar-track {
-      background: #232323;
-      border-radius: 4px;
-    }
-
-    .scrollable-table-container::-webkit-scrollbar-thumb {
-      background-color: #20b2cf;
-      border-radius: 4px;
-      border: 2px solid #232323;
-    }
-
-    th,
-    td {
-      padding: 12px;
-      text-align: left;
-      border-bottom: 1px solid #3a3a3a;
-    }
-
-    th {
-      background-color: #20b2cf;
-      color: #1e1e1e;
-      position: sticky;
-      top: 0;
-      z-index: 1;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    tr:last-child td {
-      border-bottom: none;
-    }
-
-    tr:hover {
-      background-color: rgba(45, 213, 255, 0.08);
-    }
-
-    #datePicker {
-      background-color: #2a2a2a;
-      color: #e0e0e0;
-      border: 1px solid #444;
-      border-radius: 8px;
-      padding: 10px;
-      margin-right: 15px;
-      font-size: 14px;
-    }
-
-    #loader {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      background-color: #0f0f0f;
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: 9999;
-    }
-
-    .spinner {
-      border: 8px solid #2a2a2a;
-      border-top: 8px solid #2dd4ff;
-      border-radius: 50%;
-      width: 65px;
-      height: 65px;
-      animation: spin 1.2s linear infinite;
-    }
-
-    @media (max-width: 768px) {
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MrBeast Subscriber Count Graph</title>
+    <script src="https://code.highcharts.com/12.0.2/highcharts.js"></script>
+    <script src="https://code.highcharts.com/12.0.2/modules/boost.js"></script>
+    <script src="https://code.highcharts.com/12.0.2/modules/accessibility.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.34/moment-timezone-with-data.min.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="icon"
+      href="https://api.communitrics.com/youtube/profile?channel=@mrbeast"
+      type="image/png"
+    />
+    <link
+      rel="apple-touch-icon"
+      href="https://api.communitrics.com/youtube/profile?channel=@mrbeast"
+    />
+    <link rel="canonical" href="https://www.mrbeastgraph.com" />
+    <meta
+      name="description"
+      content="See MrBeast's real studio subscriber count, updated in real-time with full historical data available for download."
+    />
+    <meta name="theme-color" content="#60a5fa" />
+    <meta property="og:title" content="MrBeast Subscriber Count Graph" />
+    <meta
+      property="og:description"
+      content="See MrBeast's real studio subscriber count, updated in real-time with full historical data available for download."
+    />
+    <meta
+      property="og:image"
+      content="https://www.mrbeastgraph.com/embed.png"
+    />
+    <meta property="og:url" content="https://www.mrbeastgraph.com" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="MrBeast Subscriber Count Graph" />
+    <meta
+      name="twitter:description"
+      content="See MrBeast's real studio subscriber count, updated in real-time with full historical data available for download."
+    />
+    <meta
+      name="twitter:image"
+      content="https://www.mrbeastgraph.com/embed.png"
+    />
+    <meta name="twitter:url" content="https://www.mrbeastgraph.com" />
+    <style>
       body {
-        overflow-x: hidden;
+        margin: 0;
+        padding: 0;
+        font-family: "Poppins", sans-serif;
+        background-color: #0f0f0f;
+        color: #e0e0e0;
+        line-height: 1.6;
+      }
+
+      * {
+        font-family: "Poppins", sans-serif !important;
+        box-sizing: border-box;
+      }
+
+      .smaller-text {
+        font-size: calc(100% - 1px);
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+
+        100% {
+          transform: rotate(360deg);
+        }
       }
 
       #container {
-        width: 96%;
-        margin: 15px auto;
-        padding: 15px;
+        width: 90%;
+        height: 360px;
+        margin: 0 auto;
+        padding: 10px 15px 15px 15px;
+        border-radius: 16px;
+        background-color: #1e1e1e;
       }
 
       h1 {
-        font-size: 26px;
+        text-align: center;
+        font-weight: 800;
+        color: #ffffff;
+        margin-top: 25px;
+        margin-bottom: 15px;
+        font-size: 24px;
+        letter-spacing: 0.5px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       }
 
       h2 {
+        text-align: center;
+        font-weight: 500;
+        color: #bdbdbd;
+        margin-top: 12px;
+        margin-bottom: 12px;
         font-size: 14px;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
       }
 
       #info {
-        grid-template-columns: 1fr;
-        gap: 25px;
-      }
-
-      #info {
-        grid-template-columns: 1fr;
-        gap: 20px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+        gap: 30px;
+        margin: 48px auto;
+        width: 96%;
+        max-width: 1450px;
       }
 
       .info-tile {
-        box-shadow: none;
-        transform: scale(1.01);
-        animation: none;
-        padding: 25px;
+        background-color: rgba(25, 25, 25, 0.95);
+        border-radius: 24px;
+        padding: 34px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25),
+          0 0 0 1px rgba(255, 255, 255, 0.1);
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        backdrop-filter: blur(10px);
       }
 
-      .info-tile-header {
-        font-size: 14px;
-      }
-
-      .info-tile-value {
-        font-size: 32px;
-      }
-
-      .info-tile-change {
-        font-size: 14px;
+      .info-tile:hover {
+        transform: scale(1.05);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3),
+          0 0 0 1px rgba(255, 255, 255, 0.15);
       }
 
       .info-tile::before {
-        background: none;
-        transform: none;
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(
+          circle,
+          rgba(45, 212, 255, 0.08) 0%,
+          rgba(45, 212, 255, 0) 70%
+        );
+        transform: rotate(30deg);
+        transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+      }
+
+      .info-tile:hover::before {
+        transform: rotate(0deg);
+        background: radial-gradient(
+          circle,
+          rgba(45, 212, 255, 0.12) 0%,
+          rgba(45, 212, 255, 0) 70%
+        );
+      }
+
+      .info-tile-header {
+        font-size: 15px;
+        text-transform: uppercase;
+        letter-spacing: 1.9px;
+        color: #3adbff;
+        margin-bottom: 24px;
+        font-weight: 700;
+        position: relative;
+        display: inline-block;
+      }
+
+      .info-tile-header::after {
+        content: "";
+        position: absolute;
+        bottom: -6px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background-color: #3adbff;
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+      }
+
+      .info-tile:hover .info-tile-header::after {
+        transform: scaleX(1);
+      }
+
+      .info-tile-value {
+        font-size: 34px;
+        font-weight: 800;
+        color: #ffffff;
+        margin-bottom: 20px;
+        transition: all 0.4s ease;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+
+      .info-tile:hover .info-tile-value {
+        color: #3adbff;
+        text-shadow: 0 2px 8px rgba(45, 212, 255, 0.3);
+      }
+
+      .info-tile-change {
+        font-size: 15px;
+        color: #d0d0d0;
+        line-height: 1.6;
+        transition: color 0.3s ease;
+      }
+
+      .info-tile:hover .info-tile-change {
+        color: #ffffff;
+      }
+
+      .info-tile-change strong {
+        color: #ffffff;
+        font-weight: 700;
+      }
+
+      @keyframes pulse {
+        0% {
+          box-shadow: 0 0 0 0 rgba(58, 219, 255, 0.4);
+        }
+
+        70% {
+          box-shadow: 0 0 0 10px rgba(58, 219, 255, 0);
+        }
+
+        100% {
+          box-shadow: 0 0 0 0 rgba(58, 219, 255, 0);
+        }
+      }
+
+      .info-tile:hover {
+        animation: pulse 1.5s infinite;
       }
 
       .button-container {
-        position: static;
-        text-align: center;
-        margin-top: 25px;
-        width: 100%;
+        position: fixed;
+        right: 75px;
+        top: 25px;
+        z-index: 1000;
+        transition: opacity 0.3s linear;
+      }
+
+      .button-container.hidden {
+        opacity: 0;
+        pointer-events: none;
       }
 
       .button-container button,
       .dropdown-content button {
-        font-size: 14px;
-        padding: 10px 20px;
-        margin: 10px auto;
         display: block;
-        width: 92%;
+        padding: 12px 22px;
+        font-size: 16px;
+        color: #1a1a1a;
+        background-color: #20b2cf;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-bottom: 12px;
+        width: 210px;
+        text-align: center;
+        font-weight: 400;
+      }
+
+      .button-container button:hover,
+      .dropdown-content button:hover {
+        background-color: #1cc2e3;
       }
 
       .dropdown {
-        width: 100%;
+        position: relative;
+        display: inline-block;
       }
 
       .dropdown-content {
-        width: 92%;
-        left: 4%;
-        right: 4%;
+        display: none;
+        position: absolute;
+        background-color: #2a2a2a;
+        min-width: 210px;
+        z-index: 1;
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      .dropdown-content button {
+        background-color: #2a2a2a;
+        color: #ffffff;
+        padding: 14px 16px;
+        text-decoration: none;
+        display: block;
+        border: none;
+        width: 100%;
+        text-align: left;
+        transition: background-color 0.3s;
+        font-size: 15px;
+      }
+
+      .dropdown-content button:hover {
+        background-color: #3f3f3f;
+      }
+
+      .dropdown-content.show {
+        display: block;
+        animation: fadeIn 0.3s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .highcharts-reset-zoom {
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      a {
+        color: inherit;
+        font-weight: 700;
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+
+      a:hover {
+        text-decoration: none;
+        color: #20b2cf;
       }
 
       .tables-container {
-        flex-direction: column;
-        width: 100%;
-        margin: 25px auto;
+        display: none;
+        justify-content: space-around;
+        margin-top: 160px;
+        padding: 0 20px;
+      }
+
+      .scrollable-table-container {
+        max-height: 1930px;
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: #20b2cf #232323;
+        overscroll-behavior: contain;
+        border-radius: 12px;
       }
 
       .table-container {
-        width: 100%;
-        margin-bottom: 25px;
-        overflow-x: auto;
+        width: 46%;
+        padding: 10px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+        border-radius: 16px;
+        background-color: #1e1e1e;
+        text-align: center;
       }
 
       table {
         width: 100%;
-        min-width: 500px;
+        border-collapse: separate;
+        border-spacing: 0;
+        color: #e0e0e0;
+        margin: 0 auto;
+        border-radius: 12px;
+        overflow: hidden;
       }
-    }
-  </style>
-</head>
 
-<body>
-  <div id="loader" style="
+      .scrollable-table-container::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      .scrollable-table-container::-webkit-scrollbar-track {
+        background: #232323;
+        border-radius: 4px;
+      }
+
+      .scrollable-table-container::-webkit-scrollbar-thumb {
+        background-color: #20b2cf;
+        border-radius: 4px;
+        border: 2px solid #232323;
+      }
+
+      th,
+      td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #3a3a3a;
+      }
+
+      th {
+        background-color: #20b2cf;
+        color: #1e1e1e;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      tr:last-child td {
+        border-bottom: none;
+      }
+
+      tr:hover {
+        background-color: rgba(45, 213, 255, 0.08);
+      }
+
+      #datePicker {
+        background-color: #2a2a2a;
+        color: #e0e0e0;
+        border: 1px solid #444;
+        border-radius: 8px;
+        padding: 10px;
+        margin-right: 15px;
+        font-size: 14px;
+      }
+
+      #loader {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #0f0f0f;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 9999;
+      }
+
+      .spinner {
+        border: 8px solid #2a2a2a;
+        border-top: 8px solid #2dd4ff;
+        border-radius: 50%;
+        width: 65px;
+        height: 65px;
+        animation: spin 1.2s linear infinite;
+      }
+
+      @media (max-width: 768px) {
+        body {
+          overflow-x: hidden;
+        }
+
+        #container {
+          width: 96%;
+          margin: 15px auto;
+          padding: 15px;
+        }
+
+        h1 {
+          font-size: 26px;
+        }
+
+        h2 {
+          font-size: 14px;
+        }
+
+        #info {
+          grid-template-columns: 1fr;
+          gap: 25px;
+        }
+
+        #info {
+          grid-template-columns: 1fr;
+          gap: 20px;
+        }
+
+        .info-tile {
+          box-shadow: none;
+          transform: scale(1.01);
+          animation: none;
+          padding: 25px;
+        }
+
+        .info-tile-header {
+          font-size: 14px;
+        }
+
+        .info-tile-value {
+          font-size: 32px;
+        }
+
+        .info-tile-change {
+          font-size: 14px;
+        }
+
+        .info-tile::before {
+          background: none;
+          transform: none;
+        }
+
+        .button-container {
+          position: static;
+          text-align: center;
+          margin-top: 25px;
+          width: 100%;
+        }
+
+        .button-container button,
+        .dropdown-content button {
+          font-size: 14px;
+          padding: 10px 20px;
+          margin: 10px auto;
+          display: block;
+          width: 92%;
+        }
+
+        .dropdown {
+          width: 100%;
+        }
+
+        .dropdown-content {
+          width: 92%;
+          left: 4%;
+          right: 4%;
+        }
+
+        .tables-container {
+          flex-direction: column;
+          width: 100%;
+          margin: 25px auto;
+        }
+
+        .table-container {
+          width: 100%;
+          margin-bottom: 25px;
+          overflow-x: auto;
+        }
+
+        table {
+          width: 100%;
+          min-width: 500px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div
+      id="loader"
+      style="
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -537,79 +563,97 @@
         left: 0;
         width: 100%;
         z-index: 9999;
-      ">
-    <div class="spinner" style="
+      "
+    >
+      <div
+        class="spinner"
+        style="
           border: 12px solid #f3f3f3;
           border-top: 12px solid #2dd4ff;
           border-radius: 50%;
           width: 70px;
           height: 70px;
           animation: spin 0.5s ease-in-out infinite 0.1s;
-        "></div>
-    <p style="
+        "
+      ></div>
+      <p
+        style="
           color: #e0e0e0;
           margin-top: 20px;
           font-family: 'Poppins', sans-serif;
           font-weight: 700;
           font-size: 1.5rem;
           text-align: center;
-        ">
-      Loading data, please wait...<br />
-      If loading takes a while or is stuck, please refresh the page or try
-      again later.<br />
-    </p>
-  </div>
-  <div class="button-container">
-    <div class="dropdown">
-      <button id="exportCsvButton">Export Data to CSV</button>
-      <div class="dropdown-content">
-        <button id="downloadMinutelyData">
-          Minutely Data <br />
-          (All Time)
-        </button>
-        <button id="downloadMinutelyWeekData">
-          Minutely Data <br />
-          (Past Week)
-        </button>
-        <button id="downloadTenMinutelyData">10 Minutely Data</button>
-        <button id="downloadHourlyData">Hourly Data</button>
-        <button id="downloadDailyData">Daily Data (UTC)</button>
-      </div>
+        "
+      >
+        Loading data, please wait...<br />
+        If loading takes a while or is stuck, please refresh the page or try
+        again later.<br />
+      </p>
     </div>
-    <button id="viewDailyGainsButton">View Data Tables</button>
-  </div>
-  <div id="mainContent" style="display: none">
-    <h1>MrBeast Studio Subscriber Count</h1>
-    <h2>
-      This graph shows the last 5 hours of MrBeast’s live studio subscriber count
-      <br>updating every 5 seconds (powered by
-      <a href="https://www.viewstats.com/mrbeast-live-count/" target="_blank">ViewStats</a>).
-      <br /><br />
-      To view more data, download the CSV (minutely, hourly, or daily) <br>or view the
-      tables with the buttons above.
-      <br /><br />
-      This website is not affiliated with
-      <a href="https://www.viewstats.com/mrbeast-live-count/" target="_blank">ViewStats</a>
-      or
-      <a href="https://www.youtube.com/@mrbeast/" target="_blank">MrBeast</a>.
-      <br>For 5-second data over any time period, contact me via
-      <a href="https://twitter.com/charlieashfordd" target="_blank">Twitter</a>
-      or
-      <a href="https://discord.com/users/1158588351943811142" target="_blank">Discord</a>.
-    </h2>
-    <div id="container"></div>
-    <div id="info"></div>
-  </div>
-  <div id="tableContent" class="tables-container">
-    <div class="table-container">
-      <div style="
+    <div class="button-container">
+      <div class="dropdown">
+        <button id="exportCsvButton">Export Data to CSV</button>
+        <div class="dropdown-content">
+          <button id="downloadMinutelyData">
+            Minutely Data <br />
+            (All Time)
+          </button>
+          <button id="downloadMinutelyWeekData">
+            Minutely Data <br />
+            (Past Week)
+          </button>
+          <button id="downloadTenMinutelyData">10 Minutely Data</button>
+          <button id="downloadHourlyData">Hourly Data</button>
+          <button id="downloadDailyData">Daily Data (UTC)</button>
+        </div>
+      </div>
+      <button id="viewDailyGainsButton">View Data Tables</button>
+    </div>
+    <div id="mainContent" style="display: none">
+      <h1>MrBeast Studio Subscriber Count</h1>
+      <h2>
+        This graph shows the last 5 hours of MrBeast’s live studio subscriber
+        count
+        <br />updating every 5 seconds (powered by
+        <a href="https://www.viewstats.com/mrbeast-live-count/" target="_blank"
+          >ViewStats</a
+        >). <br /><br />
+        To view more data, download the CSV (minutely, hourly, or daily)
+        <br />or view the tables with the buttons above. <br /><br />
+        This website is not affiliated with
+        <a href="https://www.viewstats.com/mrbeast-live-count/" target="_blank"
+          >ViewStats</a
+        >
+        or
+        <a href="https://www.youtube.com/@mrbeast/" target="_blank">MrBeast</a>.
+        <br />For 5-second data over any time period, contact me via
+        <a href="https://twitter.com/charlieashfordd" target="_blank"
+          >Twitter</a
+        >
+        or
+        <a href="https://discord.com/users/1158588351943811142" target="_blank"
+          >Discord</a
+        >.
+      </h2>
+      <div id="container"></div>
+      <div id="info"></div>
+    </div>
+    <div id="tableContent" class="tables-container">
+      <div class="table-container">
+        <div
+          style="
             display: flex;
             justify-content: center;
             align-items: center;
             position: relative;
-          ">
-        <h1 style="flex-grow: 1; text-align: center">Hourly Gains</h1>
-        <input type="date" id="datePicker" style="
+          "
+        >
+          <h1 style="flex-grow: 1; text-align: center">Hourly Gains</h1>
+          <input
+            type="date"
+            id="datePicker"
+            style="
               background-color: #232323;
               color: #e0e0e0;
               border: 1px solid #444;
@@ -618,43 +662,28 @@
               margin-right: 10px;
               position: absolute;
               right: 0;
-            " />
-      </div>
-      <h2>
-        <span style="font-weight: 600; color: #d4d0d0; padding-bottom: 12px; display: inline-block;">
-          If any row has missing data, the API or count was likely down. <br /><br />
-          For outages of a day or more, data is estimated based on views and likes.
-        </span>
-      </h2>
-      <table id="hourlyGainsTable">
-        <thead>
-          <tr>
-            <th>Time (UTC)</th>
-            <th>Subscribers</th>
-            <th>Gains</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-    <div class="table-container">
-      <h1>Daily Gains</h1>
-      <h2>
-        <span style="font-weight: 600; color: #d4d0d0">
-          All data from
-          <span style="font-weight: 800">August 09, 9am to September 02, 6pm, 2024</span>
-          is
-          <span style="font-weight: 800">estimated based on views</span>
-          because the ViewStats count was down. <br /><br />
-          Other shorter downtime periods may also include estimates
-          based on views and likes.
-        </span>
-      </h2>
-      <div class="scrollable-table-container">
-        <table id="dailyGainsTable">
+            "
+          />
+        </div>
+        <h2>
+          <span
+            style="
+              font-weight: 600;
+              color: #d4d0d0;
+              padding-bottom: 12px;
+              display: inline-block;
+            "
+          >
+            If any row has missing data, the API or count was likely down.
+            <br /><br />
+            For outages of a day or more, data is estimated based on views and
+            likes.
+          </span>
+        </h2>
+        <table id="hourlyGainsTable">
           <thead>
             <tr>
-              <th>Date (US Eastern)</th>
+              <th>Time (UTC)</th>
               <th>Subscribers</th>
               <th>Gains</th>
             </tr>
@@ -662,92 +691,122 @@
           <tbody></tbody>
         </table>
       </div>
+      <div class="table-container">
+        <h1>Daily Gains</h1>
+        <h2>
+          <span style="font-weight: 600; color: #d4d0d0">
+            All data from
+            <span style="font-weight: 800"
+              >August 09, 9am to September 02, 6pm, 2024</span
+            >
+            is
+            <span style="font-weight: 800">estimated based on views</span>
+            because the ViewStats count was down. <br /><br />
+            Other shorter downtime periods may also include estimates based on
+            views and likes.
+          </span>
+        </h2>
+        <div class="scrollable-table-container">
+          <table id="dailyGainsTable">
+            <thead>
+              <tr>
+                <th>Date (US Eastern)</th>
+                <th>Subscribers</th>
+                <th>Gains</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
     </div>
-  </div>
-  <script>
-    let allMrbeastData = [];
-    let filteredMrbeastData = [];
+    <script>
+      let allMrbeastData = [];
+      let filteredMrbeastData = [];
 
-    let lastScrollTop = 0;
-    const buttonContainer = document.querySelector('.button-container');
-    window.addEventListener('scroll', () => {
-      const scrollTop =
-        window.pageYOffset || document.documentElement.scrollTop;
+      let lastScrollTop = 0;
+      const buttonContainer = document.querySelector(".button-container");
+      window.addEventListener("scroll", () => {
+        const scrollTop =
+          window.pageYOffset || document.documentElement.scrollTop;
 
-      if (scrollTop === 0) {
-        buttonContainer.classList.remove('hidden');
-      } else if (scrollTop > lastScrollTop) {
-        buttonContainer.classList.add('hidden');
-      }
-      lastScrollTop = scrollTop;
-    });
-
-    async function updateInfoSection(filteredData) {
-      const formatNumber = (num, decimalPlaces = 0) =>
-        num.toLocaleString(undefined, {
-          minimumFractionDigits: decimalPlaces,
-          maximumFractionDigits: decimalPlaces,
-        });
-
-      const formatDateTime = (dateString, includeSeconds = true) => {
-        const date = new Date(dateString);
-        if (includeSeconds) {
-          return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
-        } else {
-          return (
-            date.toLocaleDateString() +
-            ' ' +
-            date.toLocaleTimeString([], {
-              hour: '2-digit',
-              minute: '2-digit',
-            })
-          );
+        if (scrollTop === 0) {
+          buttonContainer.classList.remove("hidden");
+        } else if (scrollTop > lastScrollTop) {
+          buttonContainer.classList.add("hidden");
         }
-      };
+        lastScrollTop = scrollTop;
+      });
 
-      const firstEntry = { currentTime: '2025-01-01T05:00:00.000Z', count: 340665376 };
-      const lastEntry = filteredData[filteredData.length - 1];
-      const totalGained = lastEntry.count - firstEntry.count;
-      const totalTime =
-        new Date(lastEntry.currentTime).getTime() -
-        new Date(firstEntry.currentTime).getTime();
-      const daysElapsed = totalTime / (1000 * 3600 * 24);
+      async function updateInfoSection(filteredData) {
+        const formatNumber = (num, decimalPlaces = 0) =>
+          num.toLocaleString(undefined, {
+            minimumFractionDigits: decimalPlaces,
+            maximumFractionDigits: decimalPlaces,
+          });
 
-      const now = new Date();
-      const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-      const recentData = filteredData.filter(
-        entry => new Date(entry.currentTime) >= oneDayAgo
-      );
+        const formatDateTime = (dateString, includeSeconds = true) => {
+          const date = new Date(dateString);
+          if (includeSeconds) {
+            return date.toLocaleDateString() + " " + date.toLocaleTimeString();
+          } else {
+            return (
+              date.toLocaleDateString() +
+              " " +
+              date.toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              })
+            );
+          }
+        };
 
-      const recentGained =
-        recentData.length > 1
-          ? recentData[recentData.length - 1].count - recentData[0].count
-          : 0;
+        const firstEntry = {
+          currentTime: "2025-01-01T05:00:00.000Z",
+          count: 340665376,
+        };
+        const lastEntry = filteredData[filteredData.length - 1];
+        const totalGained = lastEntry.count - firstEntry.count;
+        const totalTime =
+          new Date(lastEntry.currentTime).getTime() -
+          new Date(firstEntry.currentTime).getTime();
+        const daysElapsed = totalTime / (1000 * 3600 * 24);
 
-      const subs24HoursAgo =
-        recentData.length > 0
-          ? recentData[0].count
-          : lastEntry.count - recentGained;
-
-      const formatTime = ms => {
-        const days = Math.floor(ms / (1000 * 60 * 60 * 24));
-        const hours = Math.floor(
-          (ms % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        const now = new Date();
+        const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+        const recentData = filteredData.filter(
+          (entry) => new Date(entry.currentTime) >= oneDayAgo
         );
-        const minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((ms % (1000 * 60)) / 1000);
-        return `${days}d, ${hours}h, ${minutes}m, ${seconds}s`;
-      };
 
-      const response = await fetch(
-        'https://api.communitrics.com/mrbeaststats'
-      );
-      const apiData = await response.json();
-      const totalSubscribersGained30Days =
-        apiData.monthlyStats.totalSubscribersGained;
+        const recentGained =
+          recentData.length > 1
+            ? recentData[recentData.length - 1].count - recentData[0].count
+            : 0;
 
-      const infoDiv = document.getElementById('info');
-      infoDiv.innerHTML = `
+        const subs24HoursAgo =
+          recentData.length > 0
+            ? recentData[0].count
+            : lastEntry.count - recentGained;
+
+        const formatTime = (ms) => {
+          const days = Math.floor(ms / (1000 * 60 * 60 * 24));
+          const hours = Math.floor(
+            (ms % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+          );
+          const minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((ms % (1000 * 60)) / 1000);
+          return `${days}d, ${hours}h, ${minutes}m, ${seconds}s`;
+        };
+
+        const response = await fetch(
+          "https://api.communitrics.com/mrbeaststats"
+        );
+        const apiData = await response.json();
+        const totalSubscribersGained30Days =
+          apiData.monthlyStats.totalSubscribersGained;
+
+        const infoDiv = document.getElementById("info");
+        infoDiv.innerHTML = `
     <div class="info-tile">
       <div class="info-tile-header">Current Subscriber Count</div>
       <div class="info-tile-value">${formatNumber(lastEntry.count)}</div>
@@ -759,9 +818,7 @@
       <div class="info-tile-header">24 Hour Gain</div>
       <div class="info-tile-value">${formatNumber(recentGained)}</div>
       <div class="info-tile-change">
-        <strong>Subscribers 24h ago:</strong> ${formatNumber(
-        subs24HoursAgo
-      )}
+        <strong>Subscribers 24h ago:</strong> ${formatNumber(subs24HoursAgo)}
       </div>
     </div>
     <div class="info-tile">
@@ -790,179 +847,225 @@
     </div>
   `;
 
-      const statsData = {
-        timestamp: new Date().toISOString(),
-        stats: {
-          subscriberCount: lastEntry.count,
-          gain24Hours: recentGained,
-          gain30Days: totalSubscribersGained30Days,
-          totalGain: totalGained,
-        }
-      };
-
-      try {
-        const saveResponse = await fetch('https://api.communitrics.com/statistics', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
+        const statsData = {
+          timestamp: new Date().toISOString(),
+          stats: {
+            subscriberCount: lastEntry.count,
+            gain24Hours: recentGained,
+            gain30Days: totalSubscribersGained30Days,
+            totalGain: totalGained,
           },
-          body: JSON.stringify(statsData),
+        };
+
+        try {
+          const saveResponse = await fetch(
+            "https://api.communitrics.com/statistics",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(statsData),
+            }
+          );
+
+          if (!saveResponse.ok) {
+            throw new Error(`Error: ${saveResponse.statusText}`);
+          }
+
+          console.log(
+            "Statistics saved successfully:",
+            await saveResponse.json()
+          );
+        } catch (error) {
+          console.error("Error saving statistics:", error);
+        }
+      }
+
+      function formatTime(ms) {
+        const days = Math.floor(ms / (1000 * 60 * 60 * 24));
+        const hours = Math.floor(
+          (ms % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
+        const minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
+        return `${days} days, ${hours} hours, ${minutes} minutes`;
+      }
+
+      function drawChart(mrbeastData) {
+        mrbeastData = mrbeastData.map((point) => {
+          return [moment.tz(point[0], "America/New_York").valueOf(), point[1]];
         });
 
-        if (!saveResponse.ok) {
-          throw new Error(`Error: ${saveResponse.statusText}`);
-        }
-
-        console.log('Statistics saved successfully:', await saveResponse.json());
-      } catch (error) {
-        console.error('Error saving statistics:', error);
-      }
-    }
-
-    function formatTime(ms) {
-      const days = Math.floor(ms / (1000 * 60 * 60 * 24));
-      const hours = Math.floor(
-        (ms % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-      );
-      const minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
-      return `${days} days, ${hours} hours, ${minutes} minutes`;
-    }
-
-    function drawChart(mrbeastData) {
-      mrbeastData = mrbeastData.map(point => {
-        return [moment.tz(point[0], 'America/New_York').valueOf(), point[1]];
-      });
-
-      Highcharts.setOptions({
-        time: {
-          timezone: 'America/New_York',
-        },
-      });
-      Highcharts.chart('container', {
-        chart: {
-          type: 'area',
-          zoomType: 'x',
-          panning: true,
-          panKey: 'shift',
-          animation: {
-            duration: 800,
-            easing: 'easeOutBounce',
+        Highcharts.setOptions({
+          time: {
+            timezone: "America/New_York",
           },
-          backgroundColor: {
-            linearGradient: { x1: 0, y1: 0, x2: 1, y2: 1 },
-            stops: [
-              [0, '#1E1E1E'],
-              [1, '#1E1E1E'],
-            ],
-          },
-          borderRadius: 10,
-          style: {
-            fontFamily: 'Poppins, sans-serif',
-            color: '#1E1E1E',
-          },
-          events: {
-            dblclick: function () {
-              this.zoomOut();
+        });
+        Highcharts.chart("container", {
+          chart: {
+            type: "area",
+            zoomType: "x",
+            panning: true,
+            panKey: "shift",
+            animation: {
+              duration: 800,
+              easing: "easeOutBounce",
             },
-          },
-          resetZoomButton: {
-            theme: {
-              fill: '#2A2A2A',
-              stroke: '#2DD4FF',
-              r: 5,
-              style: {
-                fontFamily: 'Poppins, sans-serif',
-                color: '#2DD4FF',
-                fontSize: '12px',
-                fontWeight: 'bold',
+            backgroundColor: {
+              linearGradient: { x1: 0, y1: 0, x2: 1, y2: 1 },
+              stops: [
+                [0, "#1E1E1E"],
+                [1, "#1E1E1E"],
+              ],
+            },
+            borderRadius: 10,
+            style: {
+              fontFamily: "Poppins, sans-serif",
+              color: "#1E1E1E",
+            },
+            events: {
+              dblclick: function () {
+                this.zoomOut();
               },
-              states: {
-                hover: {
-                  fill: '#2DD4FF',
-                  style: {
-                    color: '#232323',
+            },
+            resetZoomButton: {
+              theme: {
+                fill: "#2A2A2A",
+                stroke: "#2DD4FF",
+                r: 5,
+                style: {
+                  fontFamily: "Poppins, sans-serif",
+                  color: "#2DD4FF",
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                },
+                states: {
+                  hover: {
+                    fill: "#2DD4FF",
+                    style: {
+                      color: "#232323",
+                    },
                   },
                 },
               },
+              position: {
+                align: "right",
+                verticalAlign: "top",
+                x: -10,
+                y: 10,
+              },
+              relativeTo: "chart",
             },
-            position: {
-              align: 'right',
-              verticalAlign: 'top',
-              x: -10,
-              y: 10,
-            },
-            relativeTo: 'chart',
           },
-        },
-        title: {
-          text: 'MrBeast Subscriber Count',
-          style: {
-            fontFamily: 'Poppins, sans-serif',
-            color: '#FFFFFF',
-            fontSize: '20px',
-            fontWeight: '600',
-          },
-        },
-        xAxis: {
-          type: 'datetime',
           title: {
-            text: 'Time (US Eastern)',
+            text: "MrBeast Subscriber Count",
             style: {
-              fontFamily: 'Poppins, sans-serif',
-              color: '#E0E0E0',
-              fontWeight: 'bold',
+              fontFamily: "Poppins, sans-serif",
+              color: "#FFFFFF",
+              fontSize: "20px",
+              fontWeight: "600",
             },
           },
-          labels: {
-            style: {
-              fontFamily: 'Poppins, sans-serif',
-              color: '#E0E0E0',
-              fontSize: '12px',
+          xAxis: {
+            type: "datetime",
+            title: {
+              text: "Time (US Eastern)",
+              style: {
+                fontFamily: "Poppins, sans-serif",
+                color: "#E0E0E0",
+                fontWeight: "bold",
+              },
             },
-            format: '{value:%H:%M:%S}',
+            labels: {
+              style: {
+                fontFamily: "Poppins, sans-serif",
+                color: "#E0E0E0",
+                fontSize: "12px",
+              },
+              format: "{value:%H:%M:%S}",
+            },
+            dateTimeLabelFormats: {
+              second: "%H:%M:%S",
+              minute: "%H:%M",
+              hour: "%H:%M",
+              day: "%e. %b",
+              week: "%e. %b",
+              month: "%b '%y",
+              year: "%Y",
+            },
+            tickPixelInterval: 150,
+            lineColor: "#444444",
+            tickColor: "#444444",
           },
-          dateTimeLabelFormats: {
-            second: '%H:%M:%S',
-            minute: '%H:%M',
-            hour: '%H:%M',
-            day: '%e. %b',
-            week: '%e. %b',
-            month: "%b '%y",
-            year: '%Y',
+          yAxis: {
+            title: {
+              text: "Subscribers",
+              style: {
+                fontFamily: "Poppins, sans-serif",
+                color: "#E0E0E0",
+                fontWeight: "bold",
+              },
+            },
+            labels: {
+              style: {
+                fontFamily: "Poppins, sans-serif",
+                color: "#E0E0E0",
+                fontSize: "12px",
+              },
+            },
+            gridLineColor: "#444444",
+            tickColor: "#444444",
           },
-          tickPixelInterval: 150,
-          lineColor: '#444444',
-          tickColor: '#444444',
-        },
-        yAxis: {
-          title: {
-            text: 'Subscribers',
-            style: {
-              fontFamily: 'Poppins, sans-serif',
-              color: '#E0E0E0',
-              fontWeight: 'bold',
+          legend: {
+            enabled: false,
+          },
+          plotOptions: {
+            series: {
+              lineWidth: 3,
+              threshold: null,
+              connectNulls: true,
+              area: {
+                fillOpacity: 0.15,
+                fillColor: {
+                  linearGradient: {
+                    x1: 0,
+                    x2: 0,
+                    y1: 0,
+                    y2: 1,
+                  },
+                  stops: [
+                    [0, "rgba(45, 212, 255, 0.75)"],
+                    [1, "rgba(45, 212, 255, 0.25)"],
+                  ],
+                },
+              },
             },
           },
-          labels: {
+          tooltip: {
+            followPointer: false,
+            animation: false,
+            shared: true,
+            crosshairs: false,
+            backgroundColor: "rgba(0, 0, 0, 0.85)",
+            borderColor: "#2DD4FF",
+            borderRadius: 8,
             style: {
-              fontFamily: 'Poppins, sans-serif',
-              color: '#E0E0E0',
-              fontSize: '12px',
+              fontFamily: "Poppins, sans-serif",
+              color: "#E0E0E0",
+              fontSize: "14px",
+            },
+            formatter: function () {
+              return `<span style="font-size: 12px;">${Highcharts.dateFormat(
+                "%A, %b %e, %Y, %H:%M:%S",
+                this.x
+              )}</span><br/><b style="font-size: 14px;">Subscribers: ${this.points[0].y.toLocaleString()}</b>`;
             },
           },
-          gridLineColor: '#444444',
-          tickColor: '#444444',
-        },
-        legend: {
-          enabled: false,
-        },
-        plotOptions: {
-          series: {
-            lineWidth: 3,
-            threshold: null,
-            connectNulls: true,
-            area: {
-              fillOpacity: 0.15,
+          series: [
+            {
+              name: "MrBeast",
+              data: mrbeastData,
+              color: "#2DD4FF",
               fillColor: {
                 linearGradient: {
                   x1: 0,
@@ -971,777 +1074,735 @@
                   y2: 1,
                 },
                 stops: [
-                  [0, 'rgba(45, 212, 255, 0.75)'],
-                  [1, 'rgba(45, 212, 255, 0.25)'],
+                  [0, "rgba(45, 212, 255, 0.75)"],
+                  [1, "rgba(45, 212, 255, 0.25)"],
                 ],
               },
             },
+          ],
+          credits: {
+            enabled: false,
           },
-        },
-        tooltip: {
-          followPointer: false,
-          animation: false,
-          shared: true,
-          crosshairs: false,
-          backgroundColor: 'rgba(0, 0, 0, 0.85)',
-          borderColor: '#2DD4FF',
-          borderRadius: 8,
-          style: {
-            fontFamily: 'Poppins, sans-serif',
-            color: '#E0E0E0',
-            fontSize: '14px',
-          },
-          formatter: function () {
-            return `<span style="font-size: 12px;">${Highcharts.dateFormat(
-              '%A, %b %e, %Y, %H:%M:%S',
-              this.x
-            )}</span><br/><b style="font-size: 14px;">Subscribers: ${this.points[0].y.toLocaleString()}</b>`;
-          },
-        },
-        series: [
-          {
-            name: 'MrBeast',
-            data: mrbeastData,
-            color: '#2DD4FF',
-            fillColor: {
-              linearGradient: {
-                x1: 0,
-                x2: 0,
-                y1: 0,
-                y2: 1,
-              },
-              stops: [
-                [0, 'rgba(45, 212, 255, 0.75)'],
-                [1, 'rgba(45, 212, 255, 0.25)'],
-              ],
-            },
-          },
-        ],
-        credits: {
-          enabled: false,
-        },
-      });
-    }
+        });
+      }
 
-    document.addEventListener('DOMContentLoaded', async function () {
-      const dropdownButton = document.getElementById('exportCsvButton');
-      const dropdownContent = document.querySelector('.dropdown-content');
+      document.addEventListener("DOMContentLoaded", async function () {
+        const dropdownButton = document.getElementById("exportCsvButton");
+        const dropdownContent = document.querySelector(".dropdown-content");
 
-      dropdownButton.addEventListener('click', function () {
-        dropdownContent.classList.toggle('show');
-      });
-
-      window.addEventListener('click', function (e) {
-        if (
-          !dropdownButton.contains(e.target) &&
-          !dropdownContent.contains(e.target)
-        ) {
-          dropdownContent.classList.remove('show');
-        }
-      });
-
-      async function handleCsvDownload(url, filename, type) {
-        const buttons = document.querySelectorAll('.dropdown-content button');
-        buttons.forEach(button => {
-          button.disabled = true;
-          button.style.cursor = 'not-allowed';
+        dropdownButton.addEventListener("click", function () {
+          dropdownContent.classList.toggle("show");
         });
 
-        let popup;
-        const isMobile = window.innerWidth <= 768;
-        if (!isMobile) {
-          popup = document.createElement('div');
-          popup.style.position = 'fixed';
-          popup.style.top = '50%';
-          popup.style.left = '50%';
-          popup.style.transform = 'translate(-50%, -50%)';
-          popup.style.backgroundColor = '#333';
-          popup.style.color = '#e0e0e0';
-          popup.style.padding = '50px';
-          popup.style.borderRadius = '12px';
-          popup.style.boxShadow = '0 8px 16px rgba(0, 0, 0, 0.3)';
-          popup.style.zIndex = '10000';
-          popup.style.textAlign = 'center';
-          popup.style.width = '800px';
-          popup.innerHTML = `
+        window.addEventListener("click", function (e) {
+          if (
+            !dropdownButton.contains(e.target) &&
+            !dropdownContent.contains(e.target)
+          ) {
+            dropdownContent.classList.remove("show");
+          }
+        });
+
+        async function handleCsvDownload(url, filename, type) {
+          const buttons = document.querySelectorAll(".dropdown-content button");
+          buttons.forEach((button) => {
+            button.disabled = true;
+            button.style.cursor = "not-allowed";
+          });
+
+          let popup;
+          const isMobile = window.innerWidth <= 768;
+          if (!isMobile) {
+            popup = document.createElement("div");
+            popup.style.position = "fixed";
+            popup.style.top = "50%";
+            popup.style.left = "50%";
+            popup.style.transform = "translate(-50%, -50%)";
+            popup.style.backgroundColor = "#333";
+            popup.style.color = "#e0e0e0";
+            popup.style.padding = "50px";
+            popup.style.borderRadius = "12px";
+            popup.style.boxShadow = "0 8px 16px rgba(0, 0, 0, 0.3)";
+            popup.style.zIndex = "10000";
+            popup.style.textAlign = "center";
+            popup.style.width = "800px";
+            popup.innerHTML = `
               <p style="font-size: 2rem; font-weight: 700; margin-bottom: 10px; color: #20b2cf;">Download in progress...</p>
               <p style="font-size: 1.5rem;">This might take a while, as it is processing and filtering 100k+ datapoints. <br> <br> All CSVs are in UTC unless otherwise stated.</p>
             `;
-          document.body.appendChild(popup);
+            document.body.appendChild(popup);
+          }
+
+          try {
+            const csvData = convertDataToCSV(await fetchData(url), type);
+            downloadCSVFile(csvData, filename);
+          } catch (error) {
+            console.error("Failed to download CSV:", error);
+          } finally {
+            buttons.forEach((button) => {
+              button.disabled = false;
+              button.style.cursor = "";
+            });
+            if (popup) {
+              document.body.removeChild(popup);
+            }
+          }
         }
 
-        try {
-          const csvData = convertDataToCSV(await fetchData(url), type);
-          downloadCSVFile(csvData, filename);
-        } catch (error) {
-          console.error('Failed to download CSV:', error);
-        } finally {
-          buttons.forEach(button => {
-            button.disabled = false;
-            button.style.cursor = '';
+        document
+          .getElementById("downloadMinutelyData")
+          .addEventListener("click", function () {
+            handleCsvDownload(
+              "https://api.communitrics.com/mrbeast?minutely=true",
+              "MrBeast_Minutely_Subscribers.csv",
+              "minutely"
+            );
           });
-          if (popup) {
-            document.body.removeChild(popup);
-          }
-        }
-      }
 
-      document
-        .getElementById('downloadMinutelyData')
-        .addEventListener('click', function () {
-          handleCsvDownload(
-            'https://api.communitrics.com/mrbeast?minutely=true',
-            'MrBeast_Minutely_Subscribers.csv',
-            'minutely'
-          );
+        document
+          .getElementById("downloadMinutelyWeekData")
+          .addEventListener("click", function () {
+            handleCsvDownload(
+              "https://api.communitrics.com/mrbeast?minutelyPastWeek=true",
+              "MrBeast_Minutely_Subscribers_(Past_Week).csv",
+              "minutelyPastWeek"
+            );
+          });
+
+        document
+          .getElementById("downloadTenMinutelyData")
+          .addEventListener("click", function () {
+            handleCsvDownload(
+              "https://api.communitrics.com/mrbeast?tenminutely=true",
+              "MrBeast_10Minutely_Subscribers.csv",
+              "tenminutely"
+            );
+          });
+
+        document
+          .getElementById("downloadHourlyData")
+          .addEventListener("click", function () {
+            handleCsvDownload(
+              "https://api.communitrics.com/mrbeast?hourly=true",
+              "MrBeast_Hourly_Subscribers.csv",
+              "hourly"
+            );
+          });
+
+        document
+          .getElementById("downloadDailyData")
+          .addEventListener("click", function () {
+            handleCsvDownload(
+              "https://api.communitrics.com/mrbeast?daily=true",
+              "MrBeast_Daily_Subscribers.csv",
+              "daily"
+            );
+          });
+
+        fetchDataAndDrawChart();
+
+        document
+          .getElementById("viewDailyGainsButton")
+          .addEventListener("click", function () {
+            const mainContent = document.getElementById("mainContent");
+            const tableContent = document.getElementById("tableContent");
+            const button = document.getElementById("viewDailyGainsButton");
+            if (mainContent.style.display === "none") {
+              mainContent.style.display = "block";
+              tableContent.style.display = "none";
+              button.textContent = "View Data Tables";
+            } else {
+              mainContent.style.display = "none";
+              tableContent.style.display = "flex";
+              button.textContent = "View Graph";
+            }
+          });
+
+        const datePicker = document.getElementById("datePicker");
+        const today = new Date().toISOString().split("T")[0];
+        datePicker.value = today;
+
+        datePicker.addEventListener("change", function () {
+          const selectedDate = this.value;
+          const filteredData = filterDataByDate(selectedDate);
+          fillHourlyTable(filteredData, selectedDate);
         });
 
-      document
-        .getElementById('downloadMinutelyWeekData')
-        .addEventListener('click', function () {
-          handleCsvDownload(
-            'https://api.communitrics.com/mrbeast?minutelyPastWeek=true',
-            'MrBeast_Minutely_Subscribers_(Past_Week).csv',
-            'minutelyPastWeek'
-          );
-        });
-
-      document
-        .getElementById('downloadTenMinutelyData')
-        .addEventListener('click', function () {
-          handleCsvDownload(
-            'https://api.communitrics.com/mrbeast?tenminutely=true',
-            'MrBeast_10Minutely_Subscribers.csv',
-            'tenminutely'
-          );
-        });
-
-      document
-        .getElementById('downloadHourlyData')
-        .addEventListener('click', function () {
-          handleCsvDownload(
-            'https://api.communitrics.com/mrbeast?hourly=true',
-            'MrBeast_Hourly_Subscribers.csv',
-            'hourly'
-          );
-        });
-
-      document
-        .getElementById('downloadDailyData')
-        .addEventListener('click', function () {
-          handleCsvDownload(
-            'https://api.communitrics.com/mrbeast?daily=true',
-            'MrBeast_Daily_Subscribers.csv',
-            'daily'
-          );
-        });
-
-      fetchDataAndDrawChart();
-
-      document
-        .getElementById('viewDailyGainsButton')
-        .addEventListener('click', function () {
-          const mainContent = document.getElementById('mainContent');
-          const tableContent = document.getElementById('tableContent');
-          const button = document.getElementById('viewDailyGainsButton');
-          if (mainContent.style.display === 'none') {
-            mainContent.style.display = 'block';
-            tableContent.style.display = 'none';
-            button.textContent = 'View Data Tables';
-          } else {
-            mainContent.style.display = 'none';
-            tableContent.style.display = 'flex';
-            button.textContent = 'View Graph';
-          }
-        });
-
-      const datePicker = document.getElementById('datePicker');
-      const today = new Date().toISOString().split('T')[0];
-      datePicker.value = today;
-
-      datePicker.addEventListener('change', function () {
-        const selectedDate = this.value;
-        const filteredData = filterDataByDate(selectedDate);
-        fillHourlyTable(filteredData, selectedDate);
-      });
-
-      const initialFilteredData = filterDataByDate(today);
-      fillHourlyTable(initialFilteredData, today);
-    });
-
-    async function fetchDataAndDrawChart() {
-      try {
-        let response = await fetch('https://api.communitrics.com/mrbeast');
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const data = await response.json();
-
-        allMrbeastData = data.map(entry => [
-          new Date(entry.currentTime).getTime(),
-          Number(entry.count),
-        ]);
-
-        filteredMrbeastData =
-          allMrbeastData.length > 3599
-            ? allMrbeastData.slice(-3599)
-            : allMrbeastData;
-
-        updateInfoSection(data);
-        drawChart(filteredMrbeastData);
-        const today = new Date().toISOString().split('T')[0];
         const initialFilteredData = filterDataByDate(today);
         fillHourlyTable(initialFilteredData, today);
-        fillDailyTable(data);
-      } catch (error) {
-        console.error('Failed to fetch data:', error);
-      } finally {
-        document.getElementById('loader').style.display = 'none';
-        document.getElementById('mainContent').style.display = 'block';
-      }
-    }
+      });
 
-    function filterDataByDate(date) {
-      return allMrbeastData
-        .filter(entry => {
-          const entryDate = new Date(entry[0]).toISOString().split('T')[0];
-          return entryDate === date;
-        })
-        .map(entry => ({
-          currentTime: new Date(entry[0]),
-          count: entry[1],
-        }));
-    }
+      async function fetchDataAndDrawChart() {
+        try {
+          let response = await fetch("https://api.communitrics.com/mrbeast");
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          const data = await response.json();
 
-    async function fetchData(url) {
-      try {
-        let response = await fetch(url);
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
+          allMrbeastData = data.map((entry) => [
+            new Date(entry.currentTime).getTime(),
+            Number(entry.count),
+          ]);
+
+          filteredMrbeastData =
+            allMrbeastData.length > 3599
+              ? allMrbeastData.slice(-3599)
+              : allMrbeastData;
+
+          updateInfoSection(data);
+          drawChart(filteredMrbeastData);
+          const today = new Date().toISOString().split("T")[0];
+          const initialFilteredData = filterDataByDate(today);
+          fillHourlyTable(initialFilteredData, today);
+          fillDailyTable(data);
+        } catch (error) {
+          console.error("Failed to fetch data:", error);
+        } finally {
+          document.getElementById("loader").style.display = "none";
+          document.getElementById("mainContent").style.display = "block";
         }
-        return await response.json();
-      } catch (error) {
-        console.error('Failed to fetch data:', error);
-      }
-    }
-
-    function findClosestEntry(data, targetDate) {
-      return data.reduce((prev, curr) => {
-        const prevDiff = Math.abs(
-          new Date(prev.currentTime).getTime() - targetDate.getTime()
-        );
-        const currDiff = Math.abs(
-          new Date(curr.currentTime).getTime() - targetDate.getTime()
-        );
-        return currDiff < prevDiff ? curr : prev;
-      }, data[0]);
-    }
-
-    function fillHourlyTable(data, selectedDate) {
-      const hourlyTable = document
-        .getElementById('hourlyGainsTable')
-        .getElementsByTagName('tbody')[0];
-      hourlyTable.innerHTML = '';
-
-      if (data.length === 0) {
-        console.error('No data available to process.');
-        return;
       }
 
-      let { previousCount, previousGain, previousGainChange } =
-        getPreviousDayLastCount(selectedDate);
-      let lastHourCount = previousCount;
-      let subscriberBuffer = [];
-      let gainBuffer = [];
+      function filterDataByDate(date) {
+        return allMrbeastData
+          .filter((entry) => {
+            const entryDate = new Date(entry[0]).toISOString().split("T")[0];
+            return entryDate === date;
+          })
+          .map((entry) => ({
+            currentTime: new Date(entry[0]),
+            count: entry[1],
+          }));
+      }
 
-      const currentUTCDate = new Date().toISOString().split('T')[0];
-      const currentUTCHour = new Date().getUTCHours();
+      async function fetchData(url) {
+        try {
+          let response = await fetch(url);
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          return await response.json();
+        } catch (error) {
+          console.error("Failed to fetch data:", error);
+        }
+      }
 
-      for (let hour = 0; hour < 24; hour++) {
-        const targetDate = new Date(selectedDate);
-        targetDate.setUTCHours(hour, 0, 0, 0);
-        const nextHourDate = new Date(targetDate);
-        nextHourDate.setUTCHours(hour + 1, 0, 0, 0);
+      function findClosestEntry(data, targetDate) {
+        return data.reduce((prev, curr) => {
+          const prevDiff = Math.abs(
+            new Date(prev.currentTime).getTime() - targetDate.getTime()
+          );
+          const currDiff = Math.abs(
+            new Date(curr.currentTime).getTime() - targetDate.getTime()
+          );
+          return currDiff < prevDiff ? curr : prev;
+        }, data[0]);
+      }
 
-        const closestEntry = findClosestEntry(data, nextHourDate);
-        const row = document.createElement('tr');
-        const timeCell = document.createElement('td');
-        const subscriberCell = document.createElement('td');
-        const gainCell = document.createElement('td');
+      function fillHourlyTable(data, selectedDate) {
+        const hourlyTable = document
+          .getElementById("hourlyGainsTable")
+          .getElementsByTagName("tbody")[0];
+        hourlyTable.innerHTML = "";
 
-        const estTime = new Date(targetDate);
-        const estFormatter = new Intl.DateTimeFormat('en-US', {
-          timeZone: 'America/New_York',
-          hour: '2-digit',
-          minute: '2-digit',
-          timeZoneName: 'short',
-        });
+        if (data.length === 0) {
+          console.error("No data available to process.");
+          return;
+        }
 
-        timeCell.innerHTML = `${hour
-          .toString()
-          .padStart(2, '0')}:00 UTC (${targetDate.toLocaleTimeString(
-            'en-US',
-            { hour: '2-digit', minute: '2-digit' }
+        let { previousCount, previousGain, previousGainChange } =
+          getPreviousDayLastCount(selectedDate);
+        let lastHourCount = previousCount;
+        let subscriberBuffer = [];
+        let gainBuffer = [];
+
+        const currentUTCDate = new Date().toISOString().split("T")[0];
+        const currentUTCHour = new Date().getUTCHours();
+
+        for (let hour = 0; hour < 24; hour++) {
+          const targetDate = new Date(selectedDate);
+          targetDate.setUTCHours(hour, 0, 0, 0);
+          const nextHourDate = new Date(targetDate);
+          nextHourDate.setUTCHours(hour + 1, 0, 0, 0);
+
+          const closestEntry = findClosestEntry(data, nextHourDate);
+          const row = document.createElement("tr");
+          const timeCell = document.createElement("td");
+          const subscriberCell = document.createElement("td");
+          const gainCell = document.createElement("td");
+
+          const estTime = new Date(targetDate);
+          const estFormatter = new Intl.DateTimeFormat("en-US", {
+            timeZone: "America/New_York",
+            hour: "2-digit",
+            minute: "2-digit",
+            timeZoneName: "short",
+          });
+
+          timeCell.innerHTML = `${hour
+            .toString()
+            .padStart(2, "0")}:00 UTC (${targetDate.toLocaleTimeString(
+            "en-US",
+            { hour: "2-digit", minute: "2-digit" }
           )} local)<br>${estFormatter.format(estTime)}`;
 
-        let gainValue = '-';
-        let gain = null;
+          let gainValue = "-";
+          let gain = null;
 
-        if (hour > 0) {
-          subscriberCell.textContent = subscriberBuffer.shift();
-          gainCell.innerHTML = gainBuffer.shift();
-        } else {
-          subscriberCell.textContent =
-            previousCount !== null ? previousCount.toLocaleString() : '-';
-          if (previousGain !== null) {
-            let gainChange = previousGainChange;
-            let color = previousGainChange > 0 ? 'lime' : 'red';
-            gainCell.innerHTML = `<span style="color: ${color}; font-weight: bold;">${previousGain.toLocaleString()}</span>`;
-            gainCell.innerHTML += `<br><span style="font-size: smaller;">(${gainChange > 0 ? '+' : ''
-              }${gainChange.toLocaleString()})</span>`;
+          if (hour > 0) {
+            subscriberCell.textContent = subscriberBuffer.shift();
+            gainCell.innerHTML = gainBuffer.shift();
           } else {
-            gainCell.innerHTML = '-';
+            subscriberCell.textContent =
+              previousCount !== null ? previousCount.toLocaleString() : "-";
+            if (previousGain !== null) {
+              let gainChange = previousGainChange;
+              let color = previousGainChange > 0 ? "lime" : "red";
+              gainCell.innerHTML = `<span style="color: ${color}; font-weight: bold;">${previousGain.toLocaleString()}</span>`;
+              gainCell.innerHTML += `<br><span style="font-size: smaller;">(${
+                gainChange > 0 ? "+" : ""
+              }${gainChange.toLocaleString()})</span>`;
+            } else {
+              gainCell.innerHTML = "-";
+            }
           }
-        }
 
-        if (
-          targetDate.toISOString().split('T')[0] === currentUTCDate &&
-          hour === (currentUTCHour + 1) % 24
-        ) {
-          const localTime = new Date();
-          const localFormatter = new Intl.DateTimeFormat('en-US', {
-            hour: '2-digit',
-            minute: '2-digit',
+          if (
+            targetDate.toISOString().split("T")[0] === currentUTCDate &&
+            hour === (currentUTCHour + 1) % 24
+          ) {
+            const localTime = new Date();
+            const localFormatter = new Intl.DateTimeFormat("en-US", {
+              hour: "2-digit",
+              minute: "2-digit",
+            });
+            gainCell.innerHTML += `<br><span style="font-size: calc(0.9em - 15%);">As of ${localFormatter.format(
+              localTime
+            )} local time</span>`;
+          }
+
+          if (closestEntry) {
+            const currentCount = closestEntry.count;
+            if (currentCount !== undefined) {
+              gain =
+                lastHourCount !== null ? currentCount - lastHourCount : null;
+              if (gain !== null) {
+                gainValue = gain.toLocaleString();
+                let color = "red";
+                if (previousGain !== null && gain < previousGain) {
+                  color = "red";
+                } else if (gain > 0) {
+                  color = "lime";
+                }
+                gainBuffer.push(
+                  gain === 0
+                    ? `<span style="font-weight: bold;">-</span>`
+                    : `<span style="color: ${color}; font-weight: bold;">${gainValue}</span>`
+                );
+                if (gain !== 0 && previousGain !== null) {
+                  gainBuffer[
+                    gainBuffer.length - 1
+                  ] += `<br><span style="font-size: smaller;">(${
+                    gain > previousGain ? "+" : ""
+                  }${(gain - previousGain).toLocaleString()})</span>`;
+                }
+                previousGain = gain;
+              } else {
+                gainBuffer.push("-");
+              }
+              subscriberBuffer.push(currentCount.toLocaleString());
+              lastHourCount = currentCount;
+            } else {
+              console.error(
+                `currentCount is undefined for entry: ${JSON.stringify(
+                  closestEntry
+                )}`
+              );
+              subscriberBuffer.push("-");
+              gainBuffer.push("-");
+            }
+          } else {
+            subscriberBuffer.push("-");
+            gainBuffer.push("-");
+          }
+
+          row.appendChild(timeCell);
+          row.appendChild(subscriberCell);
+          row.appendChild(gainCell);
+
+          hourlyTable.appendChild(row);
+        }
+      }
+
+      function getPreviousDayLastCount(selectedDate) {
+        const previousDay = new Date(selectedDate);
+        previousDay.setDate(previousDay.getDate() - 1);
+        const previousDayDateString = previousDay.toISOString().split("T")[0];
+
+        const previousDayData = allMrbeastData
+          .filter((entry) => {
+            const entryDate = new Date(entry[0]).toISOString().split("T")[0];
+            return entryDate === previousDayDateString;
+          })
+          .map((entry) => ({
+            currentTime: new Date(entry[0]),
+            count: entry[1],
+          }));
+
+        if (previousDayData.length > 0) {
+          const targetTime = new Date(previousDay);
+          targetTime.setUTCHours(23, 59, 59, 999);
+          const closestEntry = previousDayData.reduce((prev, curr) => {
+            const prevDiff = Math.abs(
+              new Date(prev.currentTime).getTime() - targetTime.getTime()
+            );
+            const currDiff = Math.abs(
+              new Date(curr.currentTime).getTime() - targetTime.getTime()
+            );
+            return currDiff < prevDiff ? curr : prev;
           });
-          gainCell.innerHTML += `<br><span style="font-size: calc(0.9em - 15%);">As of ${localFormatter.format(
-            localTime
-          )} local time</span>`;
-        }
+          const elevenPMCount = closestEntry.count;
+          targetTime.setUTCHours(22, 59, 59, 999);
+          const previousHourEntry = previousDayData.reduce((prev, curr) => {
+            const prevDiff = Math.abs(
+              new Date(prev.currentTime).getTime() - targetTime.getTime()
+            );
+            const currDiff = Math.abs(
+              new Date(curr.currentTime).getTime() - targetTime.getTime()
+            );
+            return currDiff < prevDiff ? curr : prev;
+          });
 
-        if (closestEntry) {
-          const currentCount = closestEntry.count;
-          if (currentCount !== undefined) {
-            gain =
-              lastHourCount !== null ? currentCount - lastHourCount : null;
+          targetTime.setUTCHours(21, 59, 59, 999);
+          const ninePMEntry = previousDayData.reduce((prev, curr) => {
+            const prevDiff = Math.abs(
+              new Date(prev.currentTime).getTime() - targetTime.getTime()
+            );
+            const currDiff = Math.abs(
+              new Date(curr.currentTime).getTime() - targetTime.getTime()
+            );
+            return currDiff < prevDiff ? curr : prev;
+          });
+
+          const tenPMCount = previousHourEntry.count;
+          const ninePMCount = ninePMEntry.count;
+          const tenPMGain = tenPMCount - ninePMCount;
+          const elevenPMGain = elevenPMCount - tenPMCount;
+          const elevenPMGainChange = elevenPMGain - tenPMGain;
+
+          return {
+            previousCount: elevenPMCount,
+            previousGain: elevenPMGain,
+            previousGainChange: elevenPMGainChange,
+          };
+        }
+        return {
+          previousCount: null,
+          previousGain: null,
+          previousGainChange: null,
+        };
+      }
+
+      function fillDailyTable(data) {
+        const dailyTable = document
+          .getElementById("dailyGainsTable")
+          .getElementsByTagName("tbody")[0];
+        dailyTable.innerHTML = "";
+
+        let previousCount = null;
+        let previousGain = null;
+        let mostRecentRow = null;
+
+        let currentDate = new Date(data[0].currentTime);
+        currentDate = new Date(
+          currentDate.toLocaleString("en-US", { timeZone: "America/New_York" })
+        );
+        currentDate.setHours(0, 0, 0, 0);
+        let endDate = new Date();
+        endDate = new Date(
+          endDate.toLocaleString("en-US", { timeZone: "America/New_York" })
+        );
+        endDate.setHours(0, 0, 0, 0);
+        endDate.setDate(endDate.getDate() + 2);
+
+        while (currentDate < endDate) {
+          const nextDate = new Date(currentDate);
+          nextDate.setDate(currentDate.getDate() + 1);
+
+          const isDST = isEDT(currentDate);
+          const utcHourOffset = isDST ? 4 : 5;
+
+          nextDate.setUTCHours(utcHourOffset, 0, 0, 0);
+
+          const utcCurrentDate = new Date(currentDate);
+          utcCurrentDate.setUTCHours(utcHourOffset, 0, 0, 0);
+
+          const closestStartEntry = findClosestEntry(data, utcCurrentDate);
+          const closestEndEntry = findClosestEntry(data, nextDate);
+
+          const row = document.createElement("tr");
+          const dateCell = document.createElement("td");
+          const subscriberCell = document.createElement("td");
+          const gainCell = document.createElement("td");
+
+          const localTimeFormatter = new Intl.DateTimeFormat("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+            timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          });
+
+          const utcTimeFormatter = new Intl.DateTimeFormat("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+            timeZone: "UTC",
+          });
+
+          const edtTimeFormatter = new Intl.DateTimeFormat("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+            timeZone: "America/New_York",
+          });
+
+          const localTime = new Date(
+            currentDate.getTime() + currentDate.getTimezoneOffset() * 60000
+          );
+          const utcTime = new Date(utcCurrentDate);
+          const edtTime = new Date(
+            currentDate.getTime() +
+              (currentDate.getTimezoneOffset() + (isDST ? 240 : 300)) * 60000
+          );
+
+          const edtDateString = edtTime.toLocaleDateString("en-US", {
+            weekday: "short",
+            month: "short",
+            day: "numeric",
+            timeZone: "America/New_York",
+          });
+          const edtISODateString = edtTime.toISOString().split("T")[0];
+
+          dateCell.innerHTML = `${edtDateString}<br>${edtISODateString}`;
+          subscriberCell.textContent = closestEndEntry
+            ? closestEndEntry.count.toLocaleString()
+            : "-";
+
+          let gainValue = "-";
+          let gain = null;
+
+          if (previousCount !== null && closestEndEntry) {
+            gain = closestEndEntry.count - closestStartEntry.count;
+
             if (gain !== null) {
               gainValue = gain.toLocaleString();
-              let color = 'red';
+              let color = "red";
               if (previousGain !== null && gain < previousGain) {
-                color = 'red';
+                color = "red";
               } else if (gain > 0) {
-                color = 'lime';
+                color = "lime";
               }
-              gainBuffer.push(
+              gainCell.innerHTML =
                 gain === 0
                   ? `<span style="font-weight: bold;">-</span>`
-                  : `<span style="color: ${color}; font-weight: bold;">${gainValue}</span>`
-              );
+                  : `<span style="color: ${color}; font-weight: bold;">${gainValue}</span>`;
               if (gain !== 0 && previousGain !== null) {
-                gainBuffer[
-                  gainBuffer.length - 1
-                ] += `<br><span style="font-size: smaller;">(${gain > previousGain ? '+' : ''
+                gainCell.innerHTML += `<br><span style="font-size: smaller;">(${
+                  gain > previousGain ? "+" : ""
                 }${(gain - previousGain).toLocaleString()})</span>`;
               }
               previousGain = gain;
             } else {
-              gainBuffer.push('-');
+              gainCell.textContent = "-";
             }
-            subscriberBuffer.push(currentCount.toLocaleString());
-            lastHourCount = currentCount;
-          } else {
-            console.error(
-              `currentCount is undefined for entry: ${JSON.stringify(
-                closestEntry
-              )}`
-            );
-            subscriberBuffer.push('-');
-            gainBuffer.push('-');
-          }
-        } else {
-          subscriberBuffer.push('-');
-          gainBuffer.push('-');
-        }
-
-        row.appendChild(timeCell);
-        row.appendChild(subscriberCell);
-        row.appendChild(gainCell);
-
-        hourlyTable.appendChild(row);
-      }
-    }
-
-    function getPreviousDayLastCount(selectedDate) {
-      const previousDay = new Date(selectedDate);
-      previousDay.setDate(previousDay.getDate() - 1);
-      const previousDayDateString = previousDay.toISOString().split('T')[0];
-
-      const previousDayData = allMrbeastData
-        .filter(entry => {
-          const entryDate = new Date(entry[0]).toISOString().split('T')[0];
-          return entryDate === previousDayDateString;
-        })
-        .map(entry => ({
-          currentTime: new Date(entry[0]),
-          count: entry[1],
-        }));
-
-      if (previousDayData.length > 0) {
-        const targetTime = new Date(previousDay);
-        targetTime.setUTCHours(23, 59, 59, 999);
-        const closestEntry = previousDayData.reduce((prev, curr) => {
-          const prevDiff = Math.abs(
-            new Date(prev.currentTime).getTime() - targetTime.getTime()
-          );
-          const currDiff = Math.abs(
-            new Date(curr.currentTime).getTime() - targetTime.getTime()
-          );
-          return currDiff < prevDiff ? curr : prev;
-        });
-        const elevenPMCount = closestEntry.count;
-        targetTime.setUTCHours(22, 59, 59, 999);
-        const previousHourEntry = previousDayData.reduce((prev, curr) => {
-          const prevDiff = Math.abs(
-            new Date(prev.currentTime).getTime() - targetTime.getTime()
-          );
-          const currDiff = Math.abs(
-            new Date(curr.currentTime).getTime() - targetTime.getTime()
-          );
-          return currDiff < prevDiff ? curr : prev;
-        });
-
-        targetTime.setUTCHours(21, 59, 59, 999);
-        const ninePMEntry = previousDayData.reduce((prev, curr) => {
-          const prevDiff = Math.abs(
-            new Date(prev.currentTime).getTime() - targetTime.getTime()
-          );
-          const currDiff = Math.abs(
-            new Date(curr.currentTime).getTime() - targetTime.getTime()
-          );
-          return currDiff < prevDiff ? curr : prev;
-        });
-
-        const tenPMCount = previousHourEntry.count;
-        const ninePMCount = ninePMEntry.count;
-        const tenPMGain = tenPMCount - ninePMCount;
-        const elevenPMGain = elevenPMCount - tenPMCount;
-        const elevenPMGainChange = elevenPMGain - tenPMGain;
-
-        return {
-          previousCount: elevenPMCount,
-          previousGain: elevenPMGain,
-          previousGainChange: elevenPMGainChange,
-        };
-      }
-      return {
-        previousCount: null,
-        previousGain: null,
-        previousGainChange: null,
-      };
-    }
-
-    function fillDailyTable(data) {
-      const dailyTable = document
-        .getElementById('dailyGainsTable')
-        .getElementsByTagName('tbody')[0];
-      dailyTable.innerHTML = '';
-
-      let previousCount = null;
-      let previousGain = null;
-      let mostRecentRow = null;
-
-      let currentDate = new Date(data[0].currentTime);
-      currentDate = new Date(
-        currentDate.toLocaleString('en-US', { timeZone: 'America/New_York' })
-      );
-      currentDate.setHours(0, 0, 0, 0);
-      let endDate = new Date();
-      endDate = new Date(
-        endDate.toLocaleString('en-US', { timeZone: 'America/New_York' })
-      );
-      endDate.setHours(0, 0, 0, 0);
-      endDate.setDate(endDate.getDate() + 2);
-
-      while (currentDate < endDate) {
-        const nextDate = new Date(currentDate);
-        nextDate.setDate(currentDate.getDate() + 1);
-
-        const isDST = isEDT(currentDate);
-        const utcHourOffset = isDST ? 4 : 5;
-
-        nextDate.setUTCHours(utcHourOffset, 0, 0, 0);
-
-        const utcCurrentDate = new Date(currentDate);
-        utcCurrentDate.setUTCHours(utcHourOffset, 0, 0, 0);
-
-        const closestStartEntry = findClosestEntry(data, utcCurrentDate);
-        const closestEndEntry = findClosestEntry(data, nextDate);
-
-        const row = document.createElement('tr');
-        const dateCell = document.createElement('td');
-        const subscriberCell = document.createElement('td');
-        const gainCell = document.createElement('td');
-
-        const localTimeFormatter = new Intl.DateTimeFormat('en-US', {
-          hour: '2-digit',
-          minute: '2-digit',
-          timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        });
-
-        const utcTimeFormatter = new Intl.DateTimeFormat('en-US', {
-          hour: '2-digit',
-          minute: '2-digit',
-          timeZone: 'UTC',
-        });
-
-        const edtTimeFormatter = new Intl.DateTimeFormat('en-US', {
-          hour: '2-digit',
-          minute: '2-digit',
-          timeZone: 'America/New_York',
-        });
-
-        const localTime = new Date(
-          currentDate.getTime() + currentDate.getTimezoneOffset() * 60000
-        );
-        const utcTime = new Date(utcCurrentDate);
-        const edtTime = new Date(
-          currentDate.getTime() +
-          (currentDate.getTimezoneOffset() + (isDST ? 240 : 300)) * 60000
-        );
-
-        const edtDateString = edtTime.toLocaleDateString('en-US', {
-          weekday: 'short',
-          month: 'short',
-          day: 'numeric',
-          timeZone: 'America/New_York',
-        });
-        const edtISODateString = edtTime.toISOString().split('T')[0];
-
-        dateCell.innerHTML = `${edtDateString}<br>${edtISODateString}`;
-        subscriberCell.textContent = closestEndEntry
-          ? closestEndEntry.count.toLocaleString()
-          : '-';
-
-        let gainValue = '-';
-        let gain = null;
-
-        if (previousCount !== null && closestEndEntry) {
-          gain = closestEndEntry.count - closestStartEntry.count;
-
-          if (gain !== null) {
+          } else if (
+            previousCount === null &&
+            closestEndEntry &&
+            closestStartEntry
+          ) {
+            gain = closestEndEntry.count - closestStartEntry.count;
             gainValue = gain.toLocaleString();
-            let color = 'red';
-            if (previousGain !== null && gain < previousGain) {
-              color = 'red';
-            } else if (gain > 0) {
-              color = 'lime';
-            }
-            gainCell.innerHTML =
-              gain === 0
-                ? `<span style="font-weight: bold;">-</span>`
-                : `<span style="color: ${color}; font-weight: bold;">${gainValue}</span>`;
-            if (gain !== 0 && previousGain !== null) {
-              gainCell.innerHTML += `<br><span style="font-size: smaller;">(${gain > previousGain ? '+' : ''
-                }${(gain - previousGain).toLocaleString()})</span>`;
-            }
+            gainCell.innerHTML = `<span style="color: lime; font-weight: bold;">${gainValue}</span><br><span style="font-size: calc(0.9em - 15%);"> (Data started May <br>15th, at 12pm US Eastern)</span>`;
             previousGain = gain;
           } else {
-            gainCell.textContent = '-';
-          }
-        } else if (
-          previousCount === null &&
-          closestEndEntry &&
-          closestStartEntry
-        ) {
-          gain = closestEndEntry.count - closestStartEntry.count;
-          gainValue = gain.toLocaleString();
-          gainCell.innerHTML = `<span style="color: lime; font-weight: bold;">${gainValue}</span><br><span style="font-size: calc(0.9em - 15%);"> (Data started May <br>15th, at 12pm US Eastern)</span>`;
-          previousGain = gain;
-        } else {
-          gainCell.textContent = '-';
-        }
-
-        row.appendChild(dateCell);
-        row.appendChild(subscriberCell);
-        row.appendChild(gainCell);
-
-        dailyTable.insertBefore(row, dailyTable.firstChild);
-        mostRecentRow = row;
-
-        if (closestEndEntry) {
-          previousCount = closestEndEntry.count;
-        }
-
-        currentDate.setDate(currentDate.getDate() + 1);
-      }
-
-      const now = new Date();
-      now.toLocaleString('en-US', { timeZone: 'America/New_York' });
-      const edtTimeFormatter = new Intl.DateTimeFormat('en-US', {
-        hour: '2-digit',
-        minute: '2-digit',
-        timeZone: 'America/New_York',
-      });
-
-      const edtNowDateString = now.toLocaleString('en-US', {
-        weekday: 'short',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        timeZone: 'America/New_York',
-      });
-
-      if (mostRecentRow) {
-        const gainCell = mostRecentRow.getElementsByTagName('td')[2];
-        gainCell.innerHTML += `<br><span style="font-size: calc(0.9em - 15%);">As of ${edtTimeFormatter.format(
-          now
-        )} US Eastern</span>`;
-      }
-    }
-
-    function isEDT(date) {
-      const year = date.getFullYear();
-
-      const dstStart = new Date(year, 2, 1);
-      dstStart.setDate(14 - dstStart.getDay());
-      dstStart.setHours(2, 0, 0, 0);
-
-      const dstEnd = new Date(year, 10, 1);
-      dstEnd.setDate(7 - dstEnd.getDay());
-      dstEnd.setHours(1, 59, 59, 999);
-
-      const easternDate = new Date(date.toLocaleString('en-US', { timeZone: 'America/New_York' }));
-
-      const month = easternDate.getMonth();
-      const day = easternDate.getDate();
-      const hours = easternDate.getHours();
-      const minutes = easternDate.getMinutes();
-
-      if (easternDate.getTime() === dstStart.getTime()) {
-        return true;
-      } else if (
-        month === 2 &&
-        day === dstStart.getDate() &&
-        hours >= 2
-      ) {
-        return true;
-      } else if (
-        month === 10 &&
-        day === dstEnd.getDate() &&
-        hours === 1
-      ) {
-        const standardDate = new Date(date);
-        standardDate.setHours(1);
-        return standardDate.getTime() <= date.getTime() &&
-          date.getTime() < new Date(standardDate.getTime() + 3600000);
-      }
-
-      return date > dstStart && date <= dstEnd;
-    }
-
-    function convertDataToCSV(data, type = 'minutely') {
-      const csvRows = [];
-      const headers = [
-        'Time (UTC)',
-        'Subscriber Count',
-        type === 'minutely'
-          ? 'Minutely Gains'
-          : type === 'minutelyPastWeek'
-            ? 'Minutely Gains'
-            : type === 'tenminutely'
-              ? '10 Minutely Gains'
-              : type === 'hourly'
-                ? 'Hourly Gains'
-                : 'Daily Gains',
-      ];
-      csvRows.push(headers.join(','));
-
-      let lastSelectedTime = null;
-      let lastSelectedSubscribers = null;
-
-      data.sort((a, b) => new Date(a.currentTime) - new Date(b.currentTime));
-
-      let rowsToSkip = 1;
-      data.forEach(entry => {
-        const timestamp = new Date(entry.currentTime);
-        const subscribers = entry.count;
-
-        if (isNaN(timestamp.getTime())) {
-          console.error(`Invalid date value: ${entry.currentTime}`);
-          return;
-        }
-
-        timestamp.setSeconds(0, 0);
-
-        if (
-          lastSelectedTime === null ||
-          timestamp.getTime() - lastSelectedTime.getTime() >=
-          (type === 'minutely'
-            ? 60 * 1000
-            : type === 'minutelyPastWeek'
-              ? 60 * 1000
-              : type === 'tenminutely'
-                ? 60 * 10 * 1000
-                : type === 'hourly'
-                  ? 60 * 60 * 1000
-                  : 24 * 60 * 60 * 1000)
-        ) {
-          let gainsInPastPeriod = 0;
-          if (lastSelectedSubscribers !== null) {
-            gainsInPastPeriod = subscribers - lastSelectedSubscribers;
+            gainCell.textContent = "-";
           }
 
-          if (rowsToSkip > 0) {
-            rowsToSkip--;
-            lastSelectedTime = timestamp;
-            lastSelectedSubscribers = subscribers;
+          row.appendChild(dateCell);
+          row.appendChild(subscriberCell);
+          row.appendChild(gainCell);
+
+          dailyTable.insertBefore(row, dailyTable.firstChild);
+          mostRecentRow = row;
+
+          if (closestEndEntry) {
+            previousCount = closestEndEntry.count;
+          }
+
+          currentDate.setDate(currentDate.getDate() + 1);
+        }
+
+        const now = new Date();
+        now.toLocaleString("en-US", { timeZone: "America/New_York" });
+        const edtTimeFormatter = new Intl.DateTimeFormat("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+          timeZone: "America/New_York",
+        });
+
+        const edtNowDateString = now.toLocaleString("en-US", {
+          weekday: "short",
+          month: "short",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          timeZone: "America/New_York",
+        });
+
+        if (mostRecentRow) {
+          const gainCell = mostRecentRow.getElementsByTagName("td")[2];
+          gainCell.innerHTML += `<br><span style="font-size: calc(0.9em - 15%);">As of ${edtTimeFormatter.format(
+            now
+          )} US Eastern</span>`;
+        }
+      }
+
+      function isEDT(date) {
+        const year = date.getFullYear();
+
+        const dstStart = new Date(year, 2, 1);
+        dstStart.setDate(14 - dstStart.getDay());
+        dstStart.setHours(2, 0, 0, 0);
+
+        const dstEnd = new Date(year, 10, 1);
+        dstEnd.setDate(7 - dstEnd.getDay());
+        dstEnd.setHours(1, 59, 59, 999);
+
+        const easternDate = new Date(
+          date.toLocaleString("en-US", { timeZone: "America/New_York" })
+        );
+
+        const month = easternDate.getMonth();
+        const day = easternDate.getDate();
+        const hours = easternDate.getHours();
+        const minutes = easternDate.getMinutes();
+
+        if (easternDate.getTime() === dstStart.getTime()) {
+          return true;
+        } else if (month === 2 && day === dstStart.getDate() && hours >= 2) {
+          return true;
+        } else if (month === 10 && day === dstEnd.getDate() && hours === 1) {
+          const standardDate = new Date(date);
+          standardDate.setHours(1);
+          return (
+            standardDate.getTime() <= date.getTime() &&
+            date.getTime() < new Date(standardDate.getTime() + 3600000)
+          );
+        }
+
+        return date > dstStart && date <= dstEnd;
+      }
+
+      function convertDataToCSV(data, type = "minutely") {
+        const csvRows = [];
+        const headers = [
+          "Time (UTC)",
+          "Subscriber Count",
+          type === "minutely"
+            ? "Minutely Gains"
+            : type === "minutelyPastWeek"
+            ? "Minutely Gains"
+            : type === "tenminutely"
+            ? "10 Minutely Gains"
+            : type === "hourly"
+            ? "Hourly Gains"
+            : "Daily Gains",
+        ];
+        csvRows.push(headers.join(","));
+
+        let lastSelectedTime = null;
+        let lastSelectedSubscribers = null;
+
+        data.sort((a, b) => new Date(a.currentTime) - new Date(b.currentTime));
+
+        let rowsToSkip = 1;
+        data.forEach((entry) => {
+          const timestamp = new Date(entry.currentTime);
+          const subscribers = entry.count;
+
+          if (isNaN(timestamp.getTime())) {
+            console.error(`Invalid date value: ${entry.currentTime}`);
             return;
           }
 
-          const formattedDate = timestamp.toISOString();
-          csvRows.push(
-            [formattedDate, subscribers, gainsInPastPeriod].join(',')
-          );
+          timestamp.setSeconds(0, 0);
 
-          lastSelectedTime = timestamp;
-          lastSelectedSubscribers = subscribers;
-        }
-      });
+          if (
+            lastSelectedTime === null ||
+            timestamp.getTime() - lastSelectedTime.getTime() >=
+              (type === "minutely"
+                ? 60 * 1000
+                : type === "minutelyPastWeek"
+                ? 60 * 1000
+                : type === "tenminutely"
+                ? 60 * 10 * 1000
+                : type === "hourly"
+                ? 60 * 60 * 1000
+                : 24 * 60 * 60 * 1000)
+          ) {
+            let gainsInPastPeriod = 0;
+            if (lastSelectedSubscribers !== null) {
+              gainsInPastPeriod = subscribers - lastSelectedSubscribers;
+            }
 
-      return csvRows.join('\n');
-    }
+            if (rowsToSkip > 0) {
+              rowsToSkip--;
+              lastSelectedTime = timestamp;
+              lastSelectedSubscribers = subscribers;
+              return;
+            }
 
-    function downloadCSVFile(csvText, fileName) {
-      const blob = new Blob([csvText], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement('a');
-      if (link.download !== undefined) {
-        const url = URL.createObjectURL(blob);
-        link.setAttribute('href', url);
-        link.setAttribute('download', fileName);
-        link.style.visibility = 'hidden';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      } else {
-        window.open(
-          'data:text/csv;charset=utf-8,' + encodeURIComponent(csvText)
-        );
+            const formattedDate = timestamp.toISOString();
+            csvRows.push(
+              [formattedDate, subscribers, gainsInPastPeriod].join(",")
+            );
+
+            lastSelectedTime = timestamp;
+            lastSelectedSubscribers = subscribers;
+          }
+        });
+
+        return csvRows.join("\n");
       }
-    }
 
-    const tableContainer = document.getElementById('scrollableTable');
-    const isTouchDevice =
-      'ontouchstart' in window || navigator.maxTouchPoints > 0;
-
-    if (!isTouchDevice) {
-      tableContainer.addEventListener('wheel', function (e) {
-        if (tableContainer.scrollHeight > tableContainer.clientHeight) {
-          e.preventDefault();
-          tableContainer.scrollTop += e.deltaY;
+      function downloadCSVFile(csvText, fileName) {
+        const blob = new Blob([csvText], { type: "text/csv;charset=utf-8;" });
+        const link = document.createElement("a");
+        if (link.download !== undefined) {
+          const url = URL.createObjectURL(blob);
+          link.setAttribute("href", url);
+          link.setAttribute("download", fileName);
+          link.style.visibility = "hidden";
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        } else {
+          window.open(
+            "data:text/csv;charset=utf-8," + encodeURIComponent(csvText)
+          );
         }
-      });
-    }
-  </script>
-</body>
+      }
 
+      const tableContainer = document.getElementById("scrollableTable");
+      const isTouchDevice =
+        "ontouchstart" in window || navigator.maxTouchPoints > 0;
+
+      if (!isTouchDevice) {
+        tableContainer.addEventListener("wheel", function (e) {
+          if (tableContainer.scrollHeight > tableContainer.clientHeight) {
+            e.preventDefault();
+            tableContainer.scrollTop += e.deltaY;
+          }
+        });
+      }
+    </script>
+  </body>
 </html>
