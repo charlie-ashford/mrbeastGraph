@@ -70,16 +70,6 @@
         font-size: calc(100% - 1px);
       }
 
-      @keyframes spin {
-        0% {
-          transform: rotate(0deg);
-        }
-
-        100% {
-          transform: rotate(360deg);
-        }
-      }
-
       #container {
         width: 90%;
         height: 360px;
@@ -446,7 +436,17 @@
         border-radius: 50%;
         width: 65px;
         height: 65px;
-        animation: spin 1.2s linear infinite;
+        animation: spin 1.25s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+
+        100% {
+          transform: rotate(360deg);
+        }
       }
 
       @media (max-width: 768px) {
@@ -586,9 +586,9 @@
           text-align: center;
         "
       >
-        Loading data, please wait...<br />
-        If loading takes a while or shows no data, please refresh the page or try
-        again later.<br />
+        Loading data, please wait a moment...<br />
+        If loading takes a while or shows no data, refresh or try again
+        later.<br />
       </p>
     </div>
     <div class="button-container">
@@ -613,9 +613,11 @@
     <div id="mainContent" style="display: none">
       <h1>MrBeast Studio Subscriber Count</h1>
       <h2>
-        This graph shows the last 5 hours of MrBeast’s live studio subscriber
-        count
-        <br />updating every 5 seconds (powered by
+        This graph shows the last 5 hours of
+        <a href="https://www.youtube.com/@mrbeast/" target="_blank"
+          >MrBeast's</a
+        >
+        live studio subscriber count <br />updating every 5 seconds (powered by
         <a href="https://www.viewstats.com/mrbeast-live-count/" target="_blank"
           >ViewStats</a
         >). <br /><br />
