@@ -764,8 +764,8 @@
         };
 
         const firstEntry = {
-          currentTime: "2025-01-01T05:00:00.000Z",
-          count: 340665376,
+          currentTime: moment.tz('2025-01-01 00:00:00.000', 'America/Los_Angeles'),
+          count: 340691570,
         };
         const lastEntry = filteredData[filteredData.length - 1];
         const totalGained = lastEntry.count - firstEntry.count;
