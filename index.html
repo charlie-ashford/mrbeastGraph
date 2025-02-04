@@ -81,25 +81,25 @@
 
       h1 {
         text-align: center;
-        font-weight: 800;
-        color: #ffffff;
-        margin-top: 25px;
-        margin-bottom: 15px;
-        font-size: 24px;
-        letter-spacing: 0.5px;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        font-weight: 700;
+        background: #20b2cf;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin: 2rem 0 -0.5rem;
+        font-size: 2rem;
+        letter-spacing: -0.5px;
+        text-shadow: 0 2px 8px rgba(45, 212, 255, 0.15);
       }
 
       h2 {
         text-align: center;
-        font-weight: 500;
-        color: #bdbdbd;
-        margin-top: 12px;
-        margin-bottom: 12px;
+        font-weight: 400;
+        color: #cccccc;
+        margin: 1.5rem auto;
         font-size: 14px;
         max-width: 800px;
-        margin-left: auto;
-        margin-right: auto;
+        line-height: 1.7;
+        padding: 0 1rem;
       }
 
       #info {
@@ -432,7 +432,7 @@
 
       .spinner {
         border: 8px solid #2a2a2a;
-        border-top: 8px solid #2dd4ff;
+        border-top: 8px solid #20b2cf;
         border-radius: 50%;
         width: 65px;
         height: 65px;
@@ -672,12 +672,11 @@
             style="
               font-weight: 600;
               color: #d4d0d0;
-              padding-bottom: 12px;
               display: inline-block;
             "
           >
             If any row has missing data, the API or count was likely down.
-            <br /><br />
+            <br />
             For outages of a day or more, data is estimated based on views and
             likes.
           </span>
@@ -697,14 +696,14 @@
         <h1>Daily Gains</h1>
         <h2>
           <span style="font-weight: 600; color: #d4d0d0">
-            All data from
+            Data from
             <span style="font-weight: 800"
-              >August 09, 9am to September 02, 6pm, 2024</span
+              >Aug 09 to Sept 02, 2024</span
             >
             is
             <span style="font-weight: 800">estimated based on views</span>
-            because the ViewStats count was down. <br /><br />
-            Other shorter downtime periods may also include estimates based on
+            because the live count was down. <br />
+            Other shorter downtime periods include estimates based on
             views and likes.
           </span>
         </h2>
@@ -1094,17 +1093,39 @@
       document.addEventListener("DOMContentLoaded", async function () {
         const dropdownButton = document.getElementById("exportCsvButton");
         const dropdownContent = document.querySelector(".dropdown-content");
+        const dropdownContainer = document.querySelector(".dropdown");
 
         dropdownButton.addEventListener("click", function () {
           dropdownContent.classList.toggle("show");
         });
-
         window.addEventListener("click", function (e) {
           if (
             !dropdownButton.contains(e.target) &&
             !dropdownContent.contains(e.target)
           ) {
             dropdownContent.classList.remove("show");
+          }
+        });
+
+        let autoOpened = false;
+        let hoverTimeout;
+        dropdownContainer.addEventListener("mouseenter", function () {
+          hoverTimeout = setTimeout(() => {
+            if (!dropdownContent.classList.contains("show")) {
+              dropdownContent.classList.add("show");
+              autoOpened = true;
+            }
+          }, 400); 
+        });
+
+        dropdownContainer.addEventListener("mouseleave", function () {
+          if (hoverTimeout) {
+            clearTimeout(hoverTimeout);
+            hoverTimeout = null;
+          }
+          if (autoOpened) {
+            dropdownContent.classList.remove("show");
+            autoOpened = false;
           }
         });
 
