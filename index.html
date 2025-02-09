@@ -62,7 +62,7 @@
         font-family: 'Poppins', sans-serif;
         background-color: #121212;
         color: #e0e0e0;
-        min-height: 100vh; 
+        min-height: 100vh;
         line-height: 1.6;
       }
 
@@ -95,6 +95,7 @@
         font-weight: 700;
         background: #20b2cf;
         -webkit-background-clip: text;
+        background-clip: text;
         -webkit-text-fill-color: transparent;
         margin: 2rem 0 -0.5rem;
         font-size: 2rem;
@@ -466,13 +467,13 @@
       }
 
       #overlay {
-        display: none; 
+        display: none;
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(0, 0, 0, 0.7); 
+        background-color: rgba(0, 0, 0, 0.7);
         z-index: 9998;
       }
 
@@ -486,7 +487,7 @@
         padding: 40px;
         border-radius: 12px;
         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-        z-index: 9999; 
+        z-index: 9999;
         text-align: center;
         width: 90%;
         max-width: 500px;
@@ -497,6 +498,36 @@
         font-weight: 700;
         margin-bottom: 10px;
         color: #20b2cf;
+      }
+
+      :focus {
+        outline: 3px solid #20b2cf !important;
+        outline-offset: 2px;
+        box-shadow: 0 0 6px rgba(32, 178, 207, 0.7);
+        border-radius: 6px;
+      }
+
+      button:focus,
+      a:focus,
+      input:focus,
+      textarea:focus,
+      select:focus {
+        outline: 3px solid #2dd4ff !important;
+        outline-offset: 2px;
+        box-shadow: 0 0 8px rgba(45, 212, 255, 0.75);
+        border-radius: 6px;
+      }
+
+      button:hover,
+      a:hover,
+      input:hover,
+      textarea:hover,
+      select:hover {
+        outline: none;
+      }
+
+      ::-moz-focus-inner {
+        border: 0;
       }
 
       @keyframes spin {
@@ -657,7 +688,10 @@
           <i class="fas fa-download"></i> Export Data to CSV
         </button>
         <div class="dropdown-content">
-          <button id="downloadMinutelyData">Minutely Data (All Time)</button>
+          <button id="downloadMinutelyData">
+            Minutely Data <br />
+            (All Time)
+          </button>
           <button id="downloadMinutelyWeekData">
             Minutely Data <br />
             (Past Week)
@@ -1284,11 +1318,11 @@
             );
           });
 
-          document
+        document
           .getElementById('downloadDailyDataEST')
           .addEventListener('click', function () {
             handleCsvDownload(
-              'https://api.communitrics.com/mrbeast?hourly=true', 
+              'https://api.communitrics.com/mrbeast?hourly=true',
               'MrBeast_Daily_Subscribers_EST.csv',
               'dailyEST'
             );
@@ -1801,10 +1835,10 @@
         const year = date.getUTCFullYear();
 
         const dstStart = new Date(Date.UTC(year, 2, 8, 7, 0, 0));
-        dstStart.setUTCDate(8 - dstStart.getUTCDay()); 
+        dstStart.setUTCDate(8 - dstStart.getUTCDay());
 
-        const dstEnd = new Date(Date.UTC(year, 10, 1, 6, 0, 0)); 
-        dstEnd.setUTCDate(1 + (7 - dstEnd.getUTCDay()) % 7); 
+        const dstEnd = new Date(Date.UTC(year, 10, 1, 6, 0, 0));
+        dstEnd.setUTCDate(1 + ((7 - dstEnd.getUTCDay()) % 7));
         return date >= dstStart && date < dstEnd;
       }
 
@@ -1832,54 +1866,60 @@
         data.sort((a, b) => new Date(a.currentTime) - new Date(b.currentTime));
 
         if (type === 'dailyEST') {
-        const dailyData = [];
-        data.forEach(entry => {
-          const timestamp = new Date(entry.currentTime);
+          const dailyData = [];
+          data.forEach(entry => {
+            const timestamp = new Date(entry.currentTime);
 
-          const isDST = isEDT(timestamp); 
-          const offset = isDST ? -4 : -5;
-          const estDate = new Date(timestamp.getTime() + offset * 60 * 60 * 1000);
+            const isDST = isEDT(timestamp);
+            const offset = isDST ? -4 : -5;
+            const estDate = new Date(
+              timestamp.getTime() + offset * 60 * 60 * 1000
+            );
 
-          if (estDate.getUTCHours() === 0) {
-            dailyData.push(entry);
-          }
-        });
-
-        let lastDate = null;
-        dailyData.forEach(entry => {
-          const timestamp = new Date(entry.currentTime);
-          const subscribers = entry.count;
-
-          const isDST = isEDT(timestamp);
-          const offset = isDST ? -4 : -5;
-
-          const estDate = new Date(timestamp.getTime() + offset * 60 * 60 * 1000);
-          estDate.setUTCHours(0, 0, 0, 0); 
-
-          if (lastDate) {
-            const nextDate = new Date(lastDate);
-            nextDate.setDate(nextDate.getDate() + 1); 
-            while (nextDate < estDate) {
-              csvRows.push([nextDate.toISOString(), '', ''].join(','));
-              nextDate.setDate(nextDate.getDate() + 1); 
+            if (estDate.getUTCHours() === 0) {
+              dailyData.push(entry);
             }
-          }
+          });
 
-          const gainsInPastPeriod =
-            lastSelectedSubscribers !== null
-              ? subscribers - lastSelectedSubscribers
-              : '';
+          let lastDate = null;
+          dailyData.forEach(entry => {
+            const timestamp = new Date(entry.currentTime);
+            const subscribers = entry.count;
 
-          csvRows.push(
-            [timestamp.toISOString(), subscribers, gainsInPastPeriod].join(',')
-          );
+            const isDST = isEDT(timestamp);
+            const offset = isDST ? -4 : -5;
 
-          lastSelectedSubscribers = subscribers;
-          lastDate = estDate; 
-        });
+            const estDate = new Date(
+              timestamp.getTime() + offset * 60 * 60 * 1000
+            );
+            estDate.setUTCHours(0, 0, 0, 0);
 
-        return csvRows.join('\n');
-      }
+            if (lastDate) {
+              const nextDate = new Date(lastDate);
+              nextDate.setDate(nextDate.getDate() + 1);
+              while (nextDate < estDate) {
+                csvRows.push([nextDate.toISOString(), '', ''].join(','));
+                nextDate.setDate(nextDate.getDate() + 1);
+              }
+            }
+
+            const gainsInPastPeriod =
+              lastSelectedSubscribers !== null
+                ? subscribers - lastSelectedSubscribers
+                : '';
+
+            csvRows.push(
+              [timestamp.toISOString(), subscribers, gainsInPastPeriod].join(
+                ','
+              )
+            );
+
+            lastSelectedSubscribers = subscribers;
+            lastDate = estDate;
+          });
+
+          return csvRows.join('\n');
+        }
 
         let lastSelectedTime = null;
         const interval =
