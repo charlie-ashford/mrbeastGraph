@@ -530,6 +530,15 @@
         border: 0;
       }
 
+      button:focus:not(:focus-visible),
+      a:focus:not(:focus-visible),
+      input:focus:not(:focus-visible),
+      textarea:focus:not(:focus-visible),
+      select:focus:not(:focus-visible) {
+        outline: none !important;
+        box-shadow: none !important;
+      }
+
       @keyframes spin {
         0% {
           transform: rotate(0deg);
