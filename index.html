@@ -631,6 +631,7 @@
           <button id="downloadTenMinutelyData">10 Minutely Data</button>
           <button id="downloadHourlyData">Hourly Data</button>
           <button id="downloadDailyData">Daily Data (UTC)</button>
+          <button id="downloadDailyDataEST">Daily Data (EST)</button>
         </div>
       </div>
       <button id="viewDailyGainsButton">
@@ -1163,17 +1164,26 @@
             popup.style.top = '50%';
             popup.style.left = '50%';
             popup.style.transform = 'translate(-50%, -50%)';
-            popup.style.backgroundColor = '#333';
+            popup.style.backgroundColor = '#1e1e1e';
             popup.style.color = '#e0e0e0';
-            popup.style.padding = '50px';
+            popup.style.padding = '40px';
             popup.style.borderRadius = '12px';
             popup.style.boxShadow = '0 8px 16px rgba(0, 0, 0, 0.3)';
             popup.style.zIndex = '10000';
             popup.style.textAlign = 'center';
-            popup.style.width = '800px';
+            popup.style.width = '90%';
+            popup.style.maxWidth = '500px';
             popup.innerHTML = `
-              <p style="font-size: 2rem; font-weight: 700; margin-bottom: 10px; color: #20b2cf;">Download in progress...</p>
-              <p style="font-size: 1.5rem;">This might take a while, as it is processing and filtering 100k+ datapoints. <br> <br> All CSVs are in UTC unless otherwise stated.</p>
+              <i class="fas fa-download" style="font-size: 3rem; color: #20b2cf; margin-bottom: 20px;"></i>
+              <h2 style="font-size: 1.8rem; font-weight: 700; margin-bottom: 10px; color: #20b2cf;">
+                Download in Progress
+              </h2>
+              <p style="font-size: 1.2rem; line-height: 1.6; margin-bottom: 20px;">
+                Processing download. This may take a while, as it is filtering 100,000+ datapoints.
+              </p>
+              <p style="font-size: 1rem; color: #cccccc;">
+                All CSV files are in UTC unless otherwise stated.
+              </p>
             `;
             document.body.appendChild(popup);
           }
@@ -1241,6 +1251,16 @@
               'https://api.communitrics.com/mrbeast?daily=true',
               'MrBeast_Daily_Subscribers.csv',
               'daily'
+            );
+          });
+
+          document
+          .getElementById('downloadDailyDataEST')
+          .addEventListener('click', function () {
+            handleCsvDownload(
+              'https://api.communitrics.com/mrbeast?hourly=true', 
+              'MrBeast_Daily_Subscribers_EST.csv',
+              'dailyEST'
             );
           });
 
@@ -1747,6 +1767,17 @@
         return date > dstStart && date <= dstEnd;
       }
 
+      function isEDT(date) {
+        const year = date.getUTCFullYear();
+
+        const dstStart = new Date(Date.UTC(year, 2, 8, 7, 0, 0));
+        dstStart.setUTCDate(8 - dstStart.getUTCDay()); 
+
+        const dstEnd = new Date(Date.UTC(year, 10, 1, 6, 0, 0)); 
+        dstEnd.setUTCDate(1 + (7 - dstEnd.getUTCDay()) % 7); 
+        return date >= dstStart && date < dstEnd;
+      }
+
       function convertDataToCSV(data, type = 'minutely') {
         const csvRows = [];
         const headers = [
@@ -1760,16 +1791,78 @@
             ? '10 Minutely Gains'
             : type === 'hourly'
             ? 'Hourly Gains'
+            : type === 'dailyEST'
+            ? 'Daily Gains (EST)'
             : 'Daily Gains',
         ];
         csvRows.push(headers.join(','));
 
-        let lastSelectedTime = null;
         let lastSelectedSubscribers = null;
 
         data.sort((a, b) => new Date(a.currentTime) - new Date(b.currentTime));
 
-        let rowsToSkip = 1;
+        if (type === 'dailyEST') {
+        const dailyData = [];
+        data.forEach(entry => {
+          const timestamp = new Date(entry.currentTime);
+
+          const isDST = isEDT(timestamp); 
+          const offset = isDST ? -4 : -5;
+          const estDate = new Date(timestamp.getTime() + offset * 60 * 60 * 1000);
+
+          if (estDate.getUTCHours() === 0) {
+            dailyData.push(entry);
+          }
+        });
+
+        let lastDate = null;
+        dailyData.forEach(entry => {
+          const timestamp = new Date(entry.currentTime);
+          const subscribers = entry.count;
+
+          const isDST = isEDT(timestamp);
+          const offset = isDST ? -4 : -5;
+
+          const estDate = new Date(timestamp.getTime() + offset * 60 * 60 * 1000);
+          estDate.setUTCHours(0, 0, 0, 0); 
+
+          if (lastDate) {
+            const nextDate = new Date(lastDate);
+            nextDate.setDate(nextDate.getDate() + 1); 
+            while (nextDate < estDate) {
+              csvRows.push([nextDate.toISOString(), '', ''].join(','));
+              nextDate.setDate(nextDate.getDate() + 1); 
+            }
+          }
+
+          const gainsInPastPeriod =
+            lastSelectedSubscribers !== null
+              ? subscribers - lastSelectedSubscribers
+              : '';
+
+          csvRows.push(
+            [timestamp.toISOString(), subscribers, gainsInPastPeriod].join(',')
+          );
+
+          lastSelectedSubscribers = subscribers;
+          lastDate = estDate; 
+        });
+
+        return csvRows.join('\n');
+      }
+
+        let lastSelectedTime = null;
+        const interval =
+          type === 'minutely'
+            ? 60 * 1000
+            : type === 'minutelyPastWeek'
+            ? 60 * 1000
+            : type === 'tenminutely'
+            ? 10 * 60 * 1000
+            : type === 'hourly'
+            ? 60 * 60 * 1000
+            : 24 * 60 * 60 * 1000;
+
         data.forEach(entry => {
           const timestamp = new Date(entry.currentTime);
           const subscribers = entry.count;
@@ -1779,41 +1872,29 @@
             return;
           }
 
-          timestamp.setSeconds(0, 0);
-
-          if (
-            lastSelectedTime === null ||
-            timestamp.getTime() - lastSelectedTime.getTime() >=
-              (type === 'minutely'
-                ? 60 * 1000
-                : type === 'minutelyPastWeek'
-                ? 60 * 1000
-                : type === 'tenminutely'
-                ? 60 * 10 * 1000
-                : type === 'hourly'
-                ? 60 * 60 * 1000
-                : 24 * 60 * 60 * 1000)
-          ) {
-            let gainsInPastPeriod = 0;
-            if (lastSelectedSubscribers !== null) {
-              gainsInPastPeriod = subscribers - lastSelectedSubscribers;
-            }
-
-            if (rowsToSkip > 0) {
-              rowsToSkip--;
-              lastSelectedTime = timestamp;
-              lastSelectedSubscribers = subscribers;
-              return;
-            }
-
-            const formattedDate = timestamp.toISOString();
-            csvRows.push(
-              [formattedDate, subscribers, gainsInPastPeriod].join(',')
-            );
-
+          if (lastSelectedTime === null) {
             lastSelectedTime = timestamp;
             lastSelectedSubscribers = subscribers;
+            csvRows.push([timestamp.toISOString(), subscribers, ''].join(','));
+            return;
           }
+
+          while (timestamp.getTime() - lastSelectedTime.getTime() > interval) {
+            lastSelectedTime = new Date(lastSelectedTime.getTime() + interval);
+            csvRows.push([lastSelectedTime.toISOString(), '', ''].join(','));
+          }
+
+          const gainsInPastPeriod =
+            lastSelectedSubscribers !== null
+              ? subscribers - lastSelectedSubscribers
+              : '';
+
+          csvRows.push(
+            [timestamp.toISOString(), subscribers, gainsInPastPeriod].join(',')
+          );
+
+          lastSelectedTime = timestamp;
+          lastSelectedSubscribers = subscribers;
         });
 
         return csvRows.join('\n');
